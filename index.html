@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beat or Die: Reaver Final Overdrive</title>
+    <title>Beat or Die: Reaver Final Overdrive - Balanced</title>
     <style>
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Arial Black', sans-serif; -webkit-user-select: none; }
         canvas { display: block; touch-action: none; width: 100vw; height: 100vh; -webkit-tap-highlight-color: transparent; }
@@ -70,13 +70,18 @@ function playJudgmentSound(type) {
     osc.start(); osc.stop(now + 0.1);
 }
 
-// --- 게임 변수 ---
+// --- 게임 변수 및 밸런스 세팅 ---
 let gameState = 'START';
 let score = 0, combo = 0, feverLevel = 0; 
 let currentBeat = 4, beatTimer = 0, lastTime = 0; 
-let gameTimer = 60, enemies = [], particles = [], shakeTime = 0, isMissSpeedUp = false;
+let gameTimer = 60, enemies = [], particles = [], debris = [], shakeTime = 0, shakePower = 0;
 let judgmentText = "", judgmentAlpha = 0, judgmentY = 0;
 let enemySpawnTimer = 0;
+let hitFlashes = [];
+
+// [BALANCE 핵심] 적이 화면 끝에서 벽까지 도달하는 시간 (초)
+const INITIAL_ARRIVAL_TIME = 20.0; 
+const MIN_ARRIVAL_TIME = 2.0; // 점수가 아무리 높아도 2초는 보장
 
 const COMMANDS = [
     { type: 'TAP', label: 'TAP', color: '#0FF' },
@@ -101,29 +106,49 @@ function generatePlan() {
     return plan;
 }
 
+function triggerShake(time, power) {
+    shakeTime = time;
+    shakePower = power;
+}
+
 function showJudgment(text) {
     judgmentText = text; judgmentAlpha = 1.2; judgmentY = height/2;
-    if(text === "MISS") { isMissSpeedUp = true; playJudgmentSound('FAIL'); combo = 0; feverLevel = 0; shakeTime = 10; }
-    else { isMissSpeedUp = false; playJudgmentSound('SUCCESS'); }
+    if(text === "MISS") { 
+        playJudgmentSound('FAIL'); combo = 0; feverLevel = 0; triggerShake(15, 10);
+    } else { 
+        playJudgmentSound('SUCCESS'); triggerShake(5, 3);
+    }
+}
+
+function createDebris(x, y, color) {
+    for(let i=0; i<15; i++) {
+        debris.push({
+            x: x, y: y,
+            vx: (Math.random() - 0.5) * 20,
+            vy: (Math.random() - 0.5) * 20,
+            life: 1.0,
+            color: color || '#f00'
+        });
+    }
+    triggerShake(8, 7);
 }
 
 function checkInput(type) {
     if(gameState !== 'PLAY' || currentBeat >= 4 || touch.handled) return;
     if(inputResults[currentBeat] !== 0 && inputResults[currentBeat] !== 3) return;
-    
     const diff = Math.abs(beatTimer - (BEAT_MS / 2));
     const target = currentPlan[currentBeat].type;
 
     if(target === type) {
         if (type === 'HOLD') { inputResults[currentBeat] = 3; return; }
-        if (diff < 150) showJudgment("PERFECT"); 
-        else if (diff < 250) showJudgment("GOOD");
-        else { showJudgment("MISS"); inputResults[currentBeat] = 2; touch.handled = true; return; }
-        
-        inputResults[currentBeat] = 1;
-        touch.handled = true;
-        const xPos = (width * 0.1) + (width * 0.8 / 4) * currentBeat + (width * 0.8 / 8);
-        for(let i=0; i<10; i++) particles.push({ x: xPos, y: height * 0.72, vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10, life: 1, color: currentPlan[currentBeat].color });
+        let status = (diff < 150) ? "PERFECT" : (diff < 250) ? "GOOD" : "MISS";
+        if(status === "MISS") { showJudgment("MISS"); inputResults[currentBeat] = 2; touch.handled = true; return; }
+        showJudgment(status);
+        inputResults[currentBeat] = 1; touch.handled = true;
+        const segW = (width * 0.8) / 4;
+        const xPos = (width * 0.1) + segW * currentBeat + segW/2;
+        hitFlashes.push({ x: xPos, alpha: 1.0, color: currentPlan[currentBeat].color });
+        for(let i=0; i<12; i++) particles.push({ x: xPos, y: height * 0.72, vx: (Math.random()-0.5)*15, vy: (Math.random()-0.5)*15, life: 1, color: currentPlan[currentBeat].color });
     } else if (type.startsWith('SWIPE') || (target === 'TAP' && type === 'TAP')) {
         showJudgment("MISS"); inputResults[currentBeat] = 2; touch.handled = true;
     }
@@ -157,19 +182,16 @@ function update(t) {
             if (inputResults[currentBeat] === 3) {
                 if (touch.active) { showJudgment("PERFECT"); inputResults[currentBeat] = 1; }
                 else { showJudgment("MISS"); inputResults[currentBeat] = 2; }
-            } else if (inputResults[currentBeat] === 0) {
-                showJudgment("MISS"); inputResults[currentBeat] = 2;
-            }
+            } else if (inputResults[currentBeat] === 0) { showJudgment("MISS"); inputResults[currentBeat] = 2; }
         }
         currentBeat = newBeat;
         touch.handled = false; 
         if(currentBeat === 0) { currentPlan = [...nextPlan]; nextPlan = generatePlan(); inputResults = [0,0,0,0]; }
         if(currentBeat === 4) {
             if(inputResults.every(r => r === 1)) {
-                combo++;
-                feverLevel = combo >= 10 ? 2 : (combo >= 5 ? 1 : 0);
+                combo++; feverLevel = combo >= 10 ? 2 : (combo >= 5 ? 1 : 0);
                 let kCount = feverLevel === 2 ? 4 : (feverLevel === 1 ? 2 : 1);
-                for(let k=0; k<kCount; k++) { if(enemies.length > 0) { enemies[0].hp--; if(enemies[0].hp <= 0) enemies.shift(); } }
+                for(let k=0; k<kCount; k++) { if(enemies.length > 0) { enemies[0].hp--; if(enemies[0].hp <= 0) { createDebris(enemies[0].x, enemies[0].y, feverLevel === 2 ? '#f00' : '#0ff'); enemies.shift(); } } }
                 score += 200 * (feverLevel + 1);
             } else { combo = 0; feverLevel = 0; }
         }
@@ -182,20 +204,32 @@ function update(t) {
 
     enemySpawnTimer += dt;
     if(enemySpawnTimer > (1400 + Math.random() * 800)) {
-        enemies.push({ x: width + 100, y: (height * 0.15) + (Math.random() * (height * 0.3)), hp: Math.random() < 0.1 ? 2 : 1, offset: Math.random() * 10, speed: 85 + score/500 });
+        enemies.push({ x: width + 100, y: (height * 0.15) + (Math.random() * (height * 0.3)), hp: Math.random() < 0.1 ? 2 : 1, offset: Math.random() * 10 });
         enemySpawnTimer = 0;
     }
 
-    particles.forEach((p, i) => { p.x += p.vx; p.y += p.vy; p.life -= 0.035; if(p.life <= 0) particles.splice(i, 1); });
+    // [BALANCE 핵심] 화면 비율에 상관없이 속도 산출
+    const wallX = 80;
+    const travelDistance = width - wallX;
+    // 점수가 오를수록 도달 시간 단축 (최소 MIN_ARRIVAL_TIME초까지)
+    let currentArrival = Math.max(MIN_ARRIVAL_TIME, INITIAL_ARRIVAL_TIME - (score / 10000));
+    let pixelSpeed = travelDistance / currentArrival;
+
     enemies.forEach(en => {
-        en.x -= en.speed * (isMissSpeedUp ? 2.5 : 1.0) * (dt/1000) * (feverLevel === 2 ? 0.5 : (feverLevel === 1 ? 0.8 : 1.1));
-        if(en.x < 80) gameState = 'GAMEOVER';
+        // Fever 배율 및 Miss 페널티 적용
+        let speedMultiplier = (feverLevel === 2 ? 0.5 : (feverLevel === 1 ? 0.8 : 1.1));
+        en.x -= pixelSpeed * speedMultiplier * (dt/1000);
+        if(en.x < wallX) gameState = 'GAMEOVER';
     });
+
+    particles.forEach((p, i) => { p.x += p.vx; p.y += p.vy; p.life -= 0.035; if(p.life <= 0) particles.splice(i, 1); });
+    debris.forEach((d, i) => { d.x += d.vx; d.y += d.vy; d.vy += 0.5; d.life -= 0.02; if(d.life <= 0) debris.splice(i, 1); });
+    hitFlashes.forEach((f, i) => { f.alpha -= 0.1; if(f.alpha <= 0) hitFlashes.splice(i, 1); });
 }
 
 function draw() {
     ctx.save();
-    if(shakeTime > 0) ctx.translate((Math.random()-0.5)*shakeTime, (Math.random()-0.5)*shakeTime);
+    if(shakeTime > 0) ctx.translate((Math.random()-0.5)*shakePower, (Math.random()-0.5)*shakePower);
     ctx.fillStyle = '#050508'; ctx.fillRect(0, 0, width, height);
 
     const wallX = 80;
@@ -218,12 +252,17 @@ function draw() {
         ctx.fillText('x' + en.hp, en.x, en.y - 55);
     });
 
+    debris.forEach(d => { ctx.globalAlpha = d.life; ctx.fillStyle = d.color; ctx.fillRect(d.x, d.y, 6, 6); });
     particles.forEach(p => { ctx.globalAlpha = p.life; ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, 4, 4); });
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha = 1.0;
 
-    // --- 레일 UI ---
     const railY = height * 0.72, railX = width * 0.1, railW = width * 0.8, railH = 100;
     ctx.fillStyle = '#11111a'; ctx.fillRect(railX, railY - railH/2, railW, railH);
+    hitFlashes.forEach(f => {
+        ctx.save(); ctx.globalAlpha = f.alpha * 0.5; ctx.fillStyle = f.color;
+        ctx.fillRect(f.x - (railW/8), railY - railH/2, railW/4, railH); ctx.restore();
+    });
+
     for(let i=0; i<4; i++) {
         const segW = railW / 4, x = railX + segW * i, isActive = (currentBeat === i), cmd = currentPlan[i] || {label: ""};
         ctx.fillStyle = isActive ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.05)';
@@ -231,10 +270,7 @@ function draw() {
         ctx.textAlign = 'center'; ctx.font = 'bold 15px Arial';
         ctx.fillStyle = isActive ? (inputResults[i] !== 0 ? '#fff' : cmd.color) : '#444';
         if(inputResults[i] === 2) ctx.fillStyle = '#f00';
-        if(inputResults[i] === 3) {
-             ctx.fillStyle = '#FF0';
-             ctx.fillRect(x + 5, railY + 20, (segW - 10) * (beatTimer/BEAT_MS), 6);
-        }
+        if(inputResults[i] === 3) { ctx.fillStyle = '#FF0'; ctx.fillRect(x + 5, railY + 20, (segW - 10) * (beatTimer/BEAT_MS), 6); }
         ctx.fillText(cmd.label, x + segW/2, railY + 7);
     }
 
@@ -242,38 +278,33 @@ function draw() {
     for(let i=0; i<4; i++) if(nextPlan[i]) ctx.fillText("NEXT: " + nextPlan[i].label, railX + (railW/4)*i + (railW/8), railY + 85);
     ctx.globalAlpha = 1.0;
 
-    // --- 가상(위) / 진짜(안) 타임바 궤도 분리 연출 ---
     const prog = beatTimer / BEAT_MS;
-    const readyLineY = railY - 120; // 가상 타임바 높이 (레일 위 120px)
-
+    const readyLineY = railY - 120; 
     if (audioCtx && (audioCtx.currentTime - startTime < 0 || currentBeat >= 4)) {
-        // [가상 커맨드 / READY 구간]
-        // 상단 가이드라인
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; ctx.lineWidth = 2;
-        ctx.setLineDash([5, 5]);
-        ctx.beginPath(); ctx.moveTo(railX, readyLineY); ctx.lineTo(railX + railW, readyLineY); ctx.stroke();
-        ctx.setLineDash([]);
-
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]);
+        ctx.beginPath(); ctx.moveTo(railX, readyLineY); ctx.lineTo(railX + railW, readyLineY); ctx.stroke(); ctx.setLineDash([]);
         const lx = railX + (railW/4) * (currentBeat % 4) + (railW/4) * prog;
         ctx.strokeStyle = '#fff'; ctx.lineWidth = 10; ctx.shadowBlur = 15; ctx.shadowColor = '#fff';
         ctx.beginPath(); ctx.moveTo(lx, readyLineY - 20); ctx.lineTo(lx, readyLineY + 20); ctx.stroke();
         ctx.shadowBlur = 0; ctx.fillStyle = '#fff'; ctx.font = 'bold 14px Arial';
         ctx.textAlign = 'center'; ctx.fillText("READY", lx, readyLineY - 30);
     } else {
-        // [본 게임 / ATTACK 구간]
         const sx = railX + (railW/4) * (currentBeat % 4) + (railW/4) * prog;
         ctx.strokeStyle = '#fff'; ctx.lineWidth = 12; ctx.shadowBlur = 15; ctx.shadowColor = '#fff';
-        ctx.beginPath(); ctx.moveTo(sx, railY - 50); ctx.lineTo(sx, railY + 50); ctx.stroke();
-        ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.moveTo(sx, railY - 50); ctx.lineTo(sx, railY + 50); ctx.stroke(); ctx.shadowBlur = 0;
     }
 
-    ctx.shadowBlur = 0; ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.font = 'bold 20px Arial';
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.font = 'bold 20px Arial';
     ctx.fillText(`COMBO: ${combo}`, 25, 50);
     ctx.fillStyle = feverLevel === 2 ? '#f00' : (feverLevel === 1 ? '#0ff' : '#444');
     ctx.fillRect(25, 65, Math.min(150, (combo % 11) * 15), 10);
-
-    if (judgmentAlpha > 0) { ctx.save(); ctx.globalAlpha = judgmentAlpha; ctx.textAlign = 'center'; ctx.fillStyle = judgmentText === "PERFECT" ? "#0FF" : "#F00"; ctx.font = `bold 50px Arial`; ctx.fillText(judgmentText, width / 2, judgmentY); ctx.restore(); }
-    ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 26px Arial'; ctx.fillText(Math.ceil(gameTimer) + "s", width/2, 45);
+    if (judgmentAlpha > 0) { 
+        ctx.save(); ctx.globalAlpha = judgmentAlpha; ctx.textAlign = 'center'; 
+        ctx.fillStyle = (judgmentText === "PERFECT" || judgmentText === "GOOD") ? "#0FF" : "#F00"; 
+        ctx.font = `bold ${40 + judgmentAlpha * 10}px Arial`; ctx.fillText(judgmentText, width / 2, judgmentY); ctx.restore(); 
+    }
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 26px Arial'; 
+    ctx.fillText(Math.ceil(gameTimer) + "s", width/2, 45);
 
     if(gameState !== 'PLAY') {
         ctx.fillStyle = 'rgba(0,0,0,0.9)'; ctx.fillRect(0, 0, width, height);
@@ -286,12 +317,10 @@ function draw() {
 
 const handleStart = async () => {
     if(gameState !== 'PLAY') {
-        setupAudio();
-        if(audioCtx.state === 'suspended') await audioCtx.resume();
+        setupAudio(); if(audioCtx.state === 'suspended') await audioCtx.resume();
         gameState = 'PLAY'; score = 0; combo = 0; gameTimer = 60; currentBeat = 4; beatTimer = 0;
-        currentPlan = generatePlan(); nextPlan = generatePlan(); enemies = [];
-        startTime = audioCtx.currentTime + (BEAT_MS * 4 / 1000); 
-        nextAudioBeatTime = audioCtx.currentTime;
+        currentPlan = generatePlan(); nextPlan = generatePlan(); enemies = []; debris = []; hitFlashes = [];
+        startTime = audioCtx.currentTime + (BEAT_MS * 4 / 1000); nextAudioBeatTime = audioCtx.currentTime;
     }
 };
 
@@ -312,8 +341,6 @@ canvas.addEventListener('pointermove', (e) => {
 });
 
 canvas.addEventListener('pointerup', () => { touch.active = false; });
-canvas.addEventListener('pointercancel', () => { touch.active = false; });
-
 function loop(t) { update(t); draw(); requestAnimationFrame(loop); }
 requestAnimationFrame(loop);
 </script>
