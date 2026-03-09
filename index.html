@@ -1,615 +1,321 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <title>합치다 보니 신이되었다 | Index</title>
-
-    <!-- 리소스 프리로드 -->
-    <link rel="preload" as="image" href="images/title.png">
-    <link rel="preload" as="image" href="images/start_btn.png">
-    <link rel="preload" as="audio" href="sounds/mainmap_bgm.mp3">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Beat or Die: Reaver Final Overdrive</title>
     <style>
-        :root {
-            --btn-offset-y: 200px;
-            --btn-max-width: 202px;
-            --sheet-bg: rgba(8,12,18,.84);
-            --card-bg: rgba(18,24,32,.9);
-            --fg: #e8f0ff;
-            --muted: #9fb0c7;
-            --accent: #46d3ff;
-            --ok: #67ff9a;
-            --warn: #ffcc4d;
-            --err: #ff6b6b;
-        }
-
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-            background: #000;
-            overflow: hidden;
-            font-family: system-ui,-apple-system,Segoe UI,Roboto,Pretendard,Arial,sans-serif;
-            color: var(--fg);
-        }
-
-            body.fade-out {
-                transition: opacity .6s ease;
-                opacity: 0;
-            }
-
-        #indexScreen {
-            position: fixed;
-            inset: 0;
-            display: grid;
-            place-items: center;
-            background: url("images/title.png") center/cover no-repeat;
-        }
-
-        .centerStack {
-            position: relative;
-            display: grid;
-            place-items: center;
-            width: 100%;
-            height: 100%;
-        }
-
-        #startBtn {
-            position: relative;
-            transform: translateY(var(--btn-offset-y));
-            width: min(56vw,var(--btn-max-width));
-            aspect-ratio: 3/1;
-            background: url("images/start_btn.png") center/contain no-repeat;
-            border: none;
-            cursor: pointer;
-            filter: drop-shadow(0 8px 18px rgba(0,0,0,.55));
-            transition: transform .08s ease;
-        }
-
-            #startBtn:active {
-                transform: translateY(calc(var(--btn-offset-y) + 2px)) scale(.98);
-            }
-
-        .sr-only {
-            position: absolute !important;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-            clip: rect(0,0,0,0);
-            white-space: nowrap;
-        }
-
-        /* 좌상단 버튼 */
-        #rankOpenBtn, #tipOpenBtn {
-            position: fixed;
-            left: 14px;
-            z-index: 6;
-            height: 48px;
-            padding: 0 14px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,.12);
-            background: rgba(0,0,0,.4);
-            color: var(--fg);
-            backdrop-filter: blur(6px);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        #rankOpenBtn {
-            top: 14px;
-        }
-
-        #tipOpenBtn {
-            top: 70px;
-        }
-
-        #rankOpenBtn .badge {
-            font-size: 12px;
-            padding: 2px 8px;
-            border-radius: 999px;
-            background: rgba(70,211,255,.2);
-            color: var(--accent);
-            border: 1px solid rgba(70,211,255,.35);
-        }
-
-        /* 우상단 ID */
-        #idBadge {
-            position: fixed;
-            right: 14px;
-            top: 14px;
-            z-index: 6;
-            height: 48px;
-            max-width: min(70vw,560px);
-            padding: 0 14px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,.12);
-            background: rgba(0,0,0,.42);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 800;
-        }
-
-            #idBadge .label {
-                color: var(--muted);
-                font-weight: 700;
-                font-size: 12px;
-            }
-
-            #idBadge .edit {
-                margin-left: auto;
-                padding: 6px 10px;
-                border-radius: 999px;
-                cursor: pointer;
-                border: 1px solid rgba(255,255,255,.14);
-                background: rgba(255,255,255,.06);
-                font-size: 12px;
-                color: #fff; /* 화이트 폰트 */
-            }
-
-        /* 공통 모달/시트 */
-        .modal-backdrop, .sheet-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,.6);
-            z-index: 10; /* 랭킹창 아래로 내려줌 */
-            opacity: 0;
-            pointer-events: none;
-            transition: .2s;
-        }
-
-            .modal-backdrop.open, .sheet-backdrop.open {
-                opacity: 1;
-                pointer-events: auto;
-            }
-
-        .modal {
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%,-50%) scale(.98);
-            z-index: 21;
-            width: min(92vw,520px);
-            background: var(--sheet-bg);
-            border: 1px solid rgba(255,255,255,.18);
-            border-radius: 16px;
-            opacity: 0;
-            pointer-events: none;
-            transition: .2s;
-        }
-
-            .modal.open {
-                opacity: 1;
-                pointer-events: auto;
-                transform: translate(-50%,-50%) scale(1);
-            }
-
-            .modal .hd {
-                padding: 14px 16px 8px;
-                text-align: center;
-                font-weight: 900;
-                font-size: 18px;
-            }
-
-            .modal .body {
-                padding: 0 16px 16px;
-                text-align: center;
-            }
-
-            .modal .ft {
-                padding: 12px 16px 16px;
-                text-align: center;
-            }
-
-        .btn {
-            padding: 12px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,.18);
-            background: rgba(255,255,255,.08);
-            color: var(--fg);
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-            .btn.ok {
-                background: rgba(103,255,154,.14);
-                border-color: rgba(103,255,154,.5);
-            }
-
-        /* 시트 (랭킹) */
-        .sheet {
-            position: fixed;
-            inset: auto 0 0 0;
-            z-index: 20; /* 딤드보다 위로 올림 */
-    background: var(--sheet-bg);
-            background: var(--sheet-bg);
-            border-radius: 18px 18px 0 0;
-            transform: translateY(100%);
-            transition: .28s;
-            max-height: 85vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 -12px 28px rgba(0,0,0,.35);
-            backdrop-filter: blur(10px);
-        }
-
-            .sheet.open {
-                transform: translateY(0);
-            }
-
-        .sheet-header {
-            position: relative;
-            padding: 14px 16px 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .sheet-title {
-            font-weight: 800;
-            font-size: 18px;
-            letter-spacing: .2px;
-        }
-
-        .sheet-sub {
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        .sheet-close {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            display: grid;
-            place-items: center;
-            background: rgba(255,255,255,.12);
-            border: 2px solid rgba(255,255,255,.95);
-            color: #fff;
-            font-size: 22px;
-            font-weight: 900;
-            cursor: pointer;
-        }
-
-        .pill-tabs {
-            display: flex;
-            gap: 8px;
-            padding: 0 16px 12px;
-            flex-wrap: wrap;
-        }
-
-        .pill {
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: rgba(255,255,255,.06);
-            border: 1px solid rgba(255,255,255,.1);
-            color: var(--muted);
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 13px;
-        }
-
-            .pill.active {
-                color: var(--accent);
-                border-color: rgba(70,211,255,.4);
-                background: rgba(70,211,255,.08);
-            }
-
-        .sheet-body {
-            min-height: 200px;
-            overflow: auto;
-            padding: 0 16px 20px;
-        }
-
-        .today-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,.08);
-            border-radius: 16px;
-            padding: 14px;
-            margin: 0 0 14px;
-            display: grid;
-            gap: 10px;
-        }
-
-        .row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
-
-        .date-badge {
-            font-size: 12px;
-            padding: 4px 10px;
-            border-radius: 999px;
-            background: rgba(255,255,255,.06);
-            border: 1px solid rgba(255,255,255,.1);
-            color: #cfe2ff;
-        }
-
-        .big-id {
-            font-weight: 900;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            overflow: hidden;
-        }
-
-        .score {
-            font-weight: 800;
-            color: #9affc0;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .note {
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        .list {
-            display: grid;
-            gap: 10px;
-        }
-
-        .item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            background: rgba(255,255,255,.04);
-            border: 1px solid rgba(255,255,255,.08);
-            padding: 10px 12px;
-            border-radius: 12px;
-        }
-
-            .item .left {
-                min-width: 0;
-                display: grid;
-                gap: 2px;
-            }
-
-            .item .date {
-                font-size: 12px;
-                color: #cde0ff;
-            }
-
-            .item .pid {
-                font-weight: 800;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                overflow: hidden;
-            }
-
-            .item .rscore {
-                font-weight: 800;
-                color: #96ffc0;
-                font-variant-numeric: tabular-nums;
-            }
-
-        .medal {
-            width: 18px;
-            aspect-ratio: 1/1;
-            filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
-        }
-
-        .empty {
-            padding: 14px;
-            text-align: center;
-            color: var(--muted);
-            border: 1px dashed rgba(255,255,255,.15);
-            background: rgba(255,255,255,.03);
-            border-radius: 12px;
-        }
-
-        .safe-bottom {
-            height: max(12px,env(safe-area-inset-bottom));
-        }
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Arial Black', sans-serif; -webkit-user-select: none; }
+        canvas { display: block; touch-action: none; width: 100vw; height: 100vh; -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
 <body>
-    <noscript>이 게임을 실행하려면 JavaScript가 필요합니다.</noscript>
+<canvas id="gameCanvas"></canvas>
 
-    <div id="indexScreen">
-        <button id="rankOpenBtn"><span>🏆 랭킹</span><span class="badge">Daily</span></button>
-        <button id="tipOpenBtn"><span>🎮 게임 팁</span></button>
-        <div id="idBadge">
-            <span class="label">현재 ID</span><span class="pid" id="currentId">—</span>
-            <button class="edit" id="editIdBtn">✏️ Edit</button>
-        </div>
-        <div class="centerStack"><button id="startBtn"><span class="sr-only">START</span></button></div>
-    </div>
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 
-    <!-- 랭킹 시트 -->
-    <div id="sheetBackdrop" class="sheet-backdrop"></div>
-    <section id="rankSheet" class="sheet">
-        <header class="sheet-header">
-            <div>
-                <div class="sheet-title">일일 TOP</div>
-                <div class="sheet-sub">하루 1명(최고 점수) · 날짜별 열람</div>
-            </div>
-            <button class="sheet-close" id="sheetClose">✕</button>
-        </header>
-        <nav class="pill-tabs">
-            <div class="pill active" data-tab="today">오늘</div>
-            <div class="pill" data-tab="bydate">날짜별</div>
-        </nav>
-        <div class="sheet-body">
-            <div id="tab-today">
-                <div class="today-card">
-                    <div class="row">
-                        <span class="date-badge" id="todayBadge">—</span>
-                        <span class="score" id="todayScore"></span>
-                    </div>
-                    <div class="big-id" id="todayId">불러오는중...</div>
-                    <div class="note">플레이 유도 코멘트, 혹은 공지사항</div>
-                </div>
-            </div>
-            <div id="tab-bydate" style="display:none">
-                <div class="list" id="dateList"></div>
-                <div class="safe-bottom"></div>
-            </div>
-        </div>
-    </section>
+const imgReaver = new Image(); imgReaver.src = 'assets/reaver.png'; 
+let assetsLoaded = false;
+imgReaver.onload = () => assetsLoaded = true;
 
-    <!-- 팁 모달 -->
-    <div id="tipModalBackdrop" class="modal-backdrop"></div>
-    <section id="tipModal" class="modal">
-        <div class="hd">게임 팁</div>
-        <div class="body">
-            <p>이 게임은 더 이상 이동할 블럭이 없을 때 종료됩니다.</p>
-            <p>4개 이상을 모아도 3개만 합쳐집니다.</p>
-            <p>최대한 비효율적으로 운영하면서 생존해보세요.</p>
-        </div>
-        <div class="ft"><button id="tipCloseBtn" class="btn ok">확인</button></div>
-    </section>
+let width, height;
+function resize() {
+    width = window.innerWidth; height = window.innerHeight;
+    canvas.width = width; canvas.height = height;
+}
+window.addEventListener('resize', resize);
+resize();
 
-    <audio id="bgm" src="sounds/mainmap_bgm.mp3" preload="auto" loop></audio>
+// --- 오디오 엔진 ---
+let audioCtx = null, masterGain = null;
+const BPM = 125, BEAT_MS = 60000 / BPM;
+let startTime = 0, nextAudioBeatTime = 0;
+const LOOK_AHEAD = 0.1;
 
-    <script>
-        const bgm = document.getElementById('bgm'),
-            startBtn = document.getElementById('startBtn');
-        const tipOpenBtn = document.getElementById('tipOpenBtn'),
-            tipModal = document.getElementById('tipModal'),
-            tipModalBackdrop = document.getElementById('tipModalBackdrop'),
-            tipCloseBtn = document.getElementById('tipCloseBtn');
-        const currentIdEl = document.getElementById('currentId'),
-            editIdBtn = document.getElementById('editIdBtn');
+function setupAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.connect(audioCtx.destination);
+    masterGain.gain.value = 0.5;
+}
 
-        /* ===== ID 저장 ===== */
-        const PID_KEY = "mergePlayerId";
-        function getPID() { return (localStorage.getItem(PID_KEY) || "").trim(); }
-        function setPID(v) { const t = String(v || "").trim(); if (!t) return; localStorage.setItem(PID_KEY, t); refreshIdBadge(); }
-        function refreshIdBadge() { currentIdEl.textContent = getPID() || '미설정'; }
+function playHeavyKick(time) {
+    if(!audioCtx) return;
+    const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
+    osc.frequency.setValueAtTime(180, time);
+    osc.frequency.exponentialRampToValueAtTime(40, time + 0.15);
+    g.gain.setValueAtTime(1.5, time);
+    g.gain.exponentialRampToValueAtTime(0.001, time + 0.3);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(time); osc.stop(time + 0.3);
+}
 
-        /* ===== 팁 모달 ===== */
-        function openTipModal() { tipModal.classList.add('open'); tipModalBackdrop.classList.add('open'); }
-        function closeTipModal() { tipModal.classList.remove('open'); tipModalBackdrop.classList.remove('open'); }
-        tipOpenBtn.addEventListener('click', openTipModal);
-        tipCloseBtn.addEventListener('click', closeTipModal);
-        tipModalBackdrop.addEventListener('click', closeTipModal);
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTipModal(); });
+function playJudgmentSound(type) {
+    if(!audioCtx || audioCtx.state !== 'running') return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
+    if(type === 'SUCCESS') {
+        osc.frequency.setValueAtTime(1100, now);
+        osc.frequency.linearRampToValueAtTime(500, now + 0.05);
+        g.gain.setValueAtTime(0.3, now);
+    } else {
+        osc.type = 'square'; osc.frequency.setValueAtTime(130, now);
+        g.gain.setValueAtTime(0.3, now);
+    }
+    g.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(); osc.stop(now + 0.1);
+}
 
-        /* ===== ID 입력 ===== */
-        function openIdModal(force = false) {
-            let pid = getPID();
-            if (!pid || force) {
-                let input = "";
-                while (!input) {
-                    input = prompt("플레이어 아이디를 입력하세요:");
-                    if (input === null) break;
-                    input = input.trim();
-                }
-                if (input) setPID(input);
+// --- 게임 변수 ---
+let gameState = 'START';
+let score = 0, combo = 0, feverLevel = 0; 
+let currentBeat = 4, beatTimer = 0, lastTime = 0; 
+let gameTimer = 60, enemies = [], particles = [], shakeTime = 0, isMissSpeedUp = false;
+let judgmentText = "", judgmentAlpha = 0, judgmentY = 0;
+let enemySpawnTimer = 0;
+
+const COMMANDS = [
+    { type: 'TAP', label: 'TAP', color: '#0FF' },
+    { type: 'SWIPE_L', label: 'SWIPE ◀', color: '#F0F' },
+    { type: 'SWIPE_R', label: 'SWIPE ▶', color: '#0F0' },
+    { type: 'HOLD', label: 'HOLD', color: '#FF0' }
+];
+let currentPlan = [], nextPlan = [], inputResults = [0,0,0,0]; 
+let touch = { startX: 0, startY: 0, active: false, handled: false };
+
+function generatePlan() {
+    const plan = [];
+    const timeElapsed = 60 - gameTimer;
+    for(let i=0; i<4; i++) {
+        if(timeElapsed < 20) {
+            if(i < 3) plan.push(COMMANDS[0]);
+            else plan.push(COMMANDS[Math.floor(Math.random() * 3) + 1]);
+        } else {
+            plan.push(Math.random() < 0.5 ? COMMANDS[Math.floor(Math.random() * 3) + 1] : COMMANDS[0]);
+        }
+    }
+    return plan;
+}
+
+function showJudgment(text) {
+    judgmentText = text; judgmentAlpha = 1.2; judgmentY = height/2;
+    if(text === "MISS") { isMissSpeedUp = true; playJudgmentSound('FAIL'); combo = 0; feverLevel = 0; shakeTime = 10; }
+    else { isMissSpeedUp = false; playJudgmentSound('SUCCESS'); }
+}
+
+function checkInput(type) {
+    if(gameState !== 'PLAY' || currentBeat >= 4 || touch.handled) return;
+    if(inputResults[currentBeat] !== 0 && inputResults[currentBeat] !== 3) return;
+    
+    const diff = Math.abs(beatTimer - (BEAT_MS / 2));
+    const target = currentPlan[currentBeat].type;
+
+    if(target === type) {
+        if (type === 'HOLD') { inputResults[currentBeat] = 3; return; }
+        if (diff < 150) showJudgment("PERFECT"); 
+        else if (diff < 250) showJudgment("GOOD");
+        else { showJudgment("MISS"); inputResults[currentBeat] = 2; touch.handled = true; return; }
+        
+        inputResults[currentBeat] = 1;
+        touch.handled = true;
+        const xPos = (width * 0.1) + (width * 0.8 / 4) * currentBeat + (width * 0.8 / 8);
+        for(let i=0; i<10; i++) particles.push({ x: xPos, y: height * 0.72, vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10, life: 1, color: currentPlan[currentBeat].color });
+    } else if (type.startsWith('SWIPE') || (target === 'TAP' && type === 'TAP')) {
+        showJudgment("MISS"); inputResults[currentBeat] = 2; touch.handled = true;
+    }
+}
+
+function update(t) {
+    const dt = t - lastTime; lastTime = t;
+    if(gameState !== 'PLAY' || !audioCtx) return;
+
+    const currentTime = audioCtx.currentTime;
+    const elapsed = currentTime - startTime;
+
+    while (nextAudioBeatTime < currentTime + LOOK_AHEAD) {
+        playHeavyKick(nextAudioBeatTime);
+        nextAudioBeatTime += BEAT_MS / 1000;
+    }
+
+    if (elapsed < 0) {
+        const readyStartTime = startTime - (BEAT_MS * 4 / 1000);
+        const readyElapsed = currentTime - readyStartTime;
+        beatTimer = (readyElapsed * 1000) % BEAT_MS;
+        currentBeat = 4 + Math.floor(readyElapsed / (BEAT_MS / 1000));
+        return; 
+    }
+
+    beatTimer = (elapsed * 1000) % BEAT_MS;
+    const newBeat = Math.floor((elapsed * 1000) / BEAT_MS) % 8;
+
+    if (newBeat !== currentBeat) {
+        if (currentBeat < 4) {
+            if (inputResults[currentBeat] === 3) {
+                if (touch.active) { showJudgment("PERFECT"); inputResults[currentBeat] = 1; }
+                else { showJudgment("MISS"); inputResults[currentBeat] = 2; }
+            } else if (inputResults[currentBeat] === 0) {
+                showJudgment("MISS"); inputResults[currentBeat] = 2;
             }
         }
-        editIdBtn.addEventListener('click', () => openIdModal(true));
-
-        /* ===== 랭킹 ===== */
-        const rankOpenBtn = document.getElementById('rankOpenBtn');
-        const sheet = document.getElementById('rankSheet'),
-            backdrop = document.getElementById('sheetBackdrop'),
-            sheetClose = document.getElementById('sheetClose');
-        const pills = Array.from(document.querySelectorAll('.pill')),
-            tabToday = document.getElementById('tab-today'),
-            tabByDate = document.getElementById('tab-bydate');
-        const todayBadge = document.getElementById('todayBadge'),
-            todayId = document.getElementById('todayId'),
-            todayScore = document.getElementById('todayScore'),
-            dateList = document.getElementById('dateList');
-
-        const RANK_API = 'https://script.google.com/macros/s/AKfycbwIJmiCseB5UAQjfTIKN_812VkvXdLqmTObnq01JGxJV6D3T5TzKdsrU26_qbxQGGPq/exec';
-
-        function openSheet() { backdrop.classList.add('open'); sheet.classList.add('open'); }
-        function closeSheet() { sheet.classList.remove('open'); backdrop.classList.remove('open'); }
-        rankOpenBtn.addEventListener('click', openSheet);
-        sheetClose.addEventListener('click', closeSheet);
-        backdrop.addEventListener('click', closeSheet);
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
-
-        pills.forEach(p => p.addEventListener('click', () => {
-            pills.forEach(x => x.classList.remove('active'));
-            p.classList.add('active');
-            const tab = p.dataset.tab;
-            tabToday.style.display = (tab === 'today') ? '' : 'none';
-            tabByDate.style.display = (tab === 'bydate') ? '' : 'none';
-        }));
-
-        const tz = 'Asia/Seoul';
-        function todayStr() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
-        function fmtK(dateStr) { const d = new Date(dateStr + 'T00:00:00'); return new Intl.DateTimeFormat('ko-KR', { dateStyle: 'medium', timeZone: tz }).format(d); }
-        function number(n) { return new Intl.NumberFormat('ko-KR').format(n); }
-        function esc(s = '') { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
-        const CROWN_SVG = `<svg class="medal" viewBox="0 0 24 24"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD95A"/><stop offset="1" stop-color="#FFB200"/></linearGradient></defs><path fill="url(#g)" d="M4 8l4 3 4-6 4 6 4-3v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8z"/><rect x="5" y="16" width="14" height="3" rx="1" fill="rgba(255,255,255,.35)"/></svg>`;
-
-        function buildRecentDays(n = 30) { const arr = [], base = new Date(); for (let i = 0; i < n; i++) { const d = new Date(base); d.setDate(base.getDate() - i); arr.push({ date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`, id: null, score: null }); } return arr; }
-        async function fetchDailyTop(limit = 60) { const res = await fetch(`${RANK_API}?mode=dailyTop&limit=${limit}`, { cache: 'no-store' }); const json = await res.json(); return Array.isArray(json.data) ? json.data : []; }
-        function renderToday(map) { const t = todayStr(), r = map.get(t); todayBadge.textContent = fmtK(t); if (r && r.id) { todayId.innerHTML = `${CROWN_SVG}<span>${esc(r.id)}</span>`; todayScore.textContent = r.score ? `${number(r.score)}점` : ''; } else { todayId.textContent = '기록 없음'; todayScore.textContent = ''; } }
-        function renderDateList(rows) { dateList.innerHTML = ''; if (!rows.length) { dateList.innerHTML = '<div class="empty">기록이 없습니다.</div>'; return; } const f = document.createDocumentFragment(); rows.forEach(r => { const el = document.createElement('div'); el.className = 'item'; el.innerHTML = `<div class="left"><div class="date">${fmtK(r.date)}</div><div class="pid">${r.id ? CROWN_SVG + '<span>' + esc(r.id) + '</span>' : '—'}</div></div><div class="rscore">${r.score ? number(r.score) : ''}</div>`; f.appendChild(el); }); dateList.appendChild(f); }
-        async function loadRanking() { const base = buildRecentDays(60), map = new Map(base.map(r => [r.date, r])); try { const apiRows = await fetchDailyTop(60); apiRows.forEach(x => { const d = x.date?.slice(0, 10); if (!d) return; if (map.has(d)) { const t = map.get(d); t.id = x.id || t.id; t.score = parseInt(x.score || '') || null; } else { map.set(d, { date: d, id: x.id || null, score: x.score || null }); } }); } catch (e) { console.warn('랭킹 로드 실패:', e); } renderToday(map); renderDateList(Array.from(map.values()).sort((a, b) => a.date < b.date ? 1 : -1)); }
-
-        /* ===== START ===== */
-        startBtn.addEventListener('click', () => {
-            document.body.classList.add('fade-out');
-            setTimeout(() => { window.location.href = "game.html"; }, 400);
-        });
-
-        /* ===== 초기 ===== */
-        window.addEventListener('load', () => {
-            refreshIdBadge();
-            if (!getPID()) {
-                openIdModal(true);
-                const chk = setInterval(() => {
-                    if (getPID()) { clearInterval(chk); openSheet(); loadRanking(); }
-                }, 300);
-            } else {
-                openSheet();
-                loadRanking();
-            }
-        });
-        /* ===== BGM 자동 재생 (모든 유저 입력에 반응) ===== */
-        let bgmStarted = false;
-
-        function tryPlayBGM() {
-            if (bgmStarted) return;
-            bgmStarted = true;
-            bgm.volume = 0.6;
-
-            const playPromise = bgm.play();
-            if (playPromise !== undefined) {
-                playPromise
-                    .then(() => console.log('BGM 재생 시작'))
-                    .catch(err => {
-                        console.warn('자동재생 차단됨, 재시도 대기:', err);
-                        // 일부 브라우저는 첫 play() 실패 시 다시 시도해야 함
-                        document.addEventListener('pointerdown', forcePlayBGM, { once: true });
-                        document.addEventListener('touchstart', forcePlayBGM, { once: true });
-                        document.addEventListener('click', forcePlayBGM, { once: true });
-                    });
-            }
+        currentBeat = newBeat;
+        touch.handled = false; 
+        if(currentBeat === 0) { currentPlan = [...nextPlan]; nextPlan = generatePlan(); inputResults = [0,0,0,0]; }
+        if(currentBeat === 4) {
+            if(inputResults.every(r => r === 1)) {
+                combo++;
+                feverLevel = combo >= 10 ? 2 : (combo >= 5 ? 1 : 0);
+                let kCount = feverLevel === 2 ? 4 : (feverLevel === 1 ? 2 : 1);
+                for(let k=0; k<kCount; k++) { if(enemies.length > 0) { enemies[0].hp--; if(enemies[0].hp <= 0) enemies.shift(); } }
+                score += 200 * (feverLevel + 1);
+            } else { combo = 0; feverLevel = 0; }
         }
+    }
 
-        function forcePlayBGM() {
-            bgm.play().then(() => console.log('BGM 재시작 성공')).catch(() => { });
+    gameTimer -= dt / 1000;
+    if(gameTimer <= 0) { gameTimer = 0; gameState = 'FINISH'; }
+    if(shakeTime > 0) shakeTime--;
+    judgmentAlpha = Math.max(0, judgmentAlpha - dt/600);
+
+    enemySpawnTimer += dt;
+    if(enemySpawnTimer > (1400 + Math.random() * 800)) {
+        enemies.push({ x: width + 100, y: (height * 0.15) + (Math.random() * (height * 0.3)), hp: Math.random() < 0.1 ? 2 : 1, offset: Math.random() * 10, speed: 85 + score/500 });
+        enemySpawnTimer = 0;
+    }
+
+    particles.forEach((p, i) => { p.x += p.vx; p.y += p.vy; p.life -= 0.035; if(p.life <= 0) particles.splice(i, 1); });
+    enemies.forEach(en => {
+        en.x -= en.speed * (isMissSpeedUp ? 2.5 : 1.0) * (dt/1000) * (feverLevel === 2 ? 0.5 : (feverLevel === 1 ? 0.8 : 1.1));
+        if(en.x < 80) gameState = 'GAMEOVER';
+    });
+}
+
+function draw() {
+    ctx.save();
+    if(shakeTime > 0) ctx.translate((Math.random()-0.5)*shakeTime, (Math.random()-0.5)*shakeTime);
+    ctx.fillStyle = '#050508'; ctx.fillRect(0, 0, width, height);
+
+    const wallX = 80;
+    ctx.strokeStyle = feverLevel === 2 ? '#f00' : '#0ff'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(wallX, 0); ctx.lineTo(wallX, height*0.45); ctx.stroke();
+
+    enemies.forEach(en => {
+        const time = Date.now() * 0.008 + en.offset;
+        const sX = 1 + Math.sin(time) * 0.18, sY = 1 - Math.sin(time) * 0.18;
+        ctx.save(); ctx.translate(en.x, en.y); ctx.scale(sX, sY);
+        if (assetsLoaded) {
+            if (en.hp > 1) ctx.filter = 'hue-rotate(270deg) saturate(2.5)';
+            ctx.drawImage(imgReaver, -45, -45, 90, 90);
+        } else {
+            ctx.fillStyle = en.hp > 1 ? '#4B0082' : '#C49102';
+            ctx.beginPath(); ctx.ellipse(0, 0, 45, 30, 0, 0, Math.PI*2); ctx.fill();
         }
+        ctx.restore();
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
+        ctx.fillText('x' + en.hp, en.x, en.y - 55);
+    });
 
-        /* 모든 입력에 반응하도록 */
-        ['click', 'touchstart', 'pointerdown', 'keydown'].forEach(evt => {
-            window.addEventListener(evt, tryPlayBGM, { once: true });
-        });
+    particles.forEach(p => { ctx.globalAlpha = p.life; ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, 4, 4); });
+    ctx.globalAlpha = 1;
 
-    </script>
+    // --- 레일 UI ---
+    const railY = height * 0.72, railX = width * 0.1, railW = width * 0.8, railH = 100;
+    ctx.fillStyle = '#11111a'; ctx.fillRect(railX, railY - railH/2, railW, railH);
+    for(let i=0; i<4; i++) {
+        const segW = railW / 4, x = railX + segW * i, isActive = (currentBeat === i), cmd = currentPlan[i] || {label: ""};
+        ctx.fillStyle = isActive ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.05)';
+        ctx.fillRect(x + segW/2 - 6, railY - railH/2, 12, railH);
+        ctx.textAlign = 'center'; ctx.font = 'bold 15px Arial';
+        ctx.fillStyle = isActive ? (inputResults[i] !== 0 ? '#fff' : cmd.color) : '#444';
+        if(inputResults[i] === 2) ctx.fillStyle = '#f00';
+        if(inputResults[i] === 3) {
+             ctx.fillStyle = '#FF0';
+             ctx.fillRect(x + 5, railY + 20, (segW - 10) * (beatTimer/BEAT_MS), 6);
+        }
+        ctx.fillText(cmd.label, x + segW/2, railY + 7);
+    }
+
+    ctx.globalAlpha = 0.4; ctx.fillStyle = '#aaa'; ctx.font = 'bold 12px Arial';
+    for(let i=0; i<4; i++) if(nextPlan[i]) ctx.fillText("NEXT: " + nextPlan[i].label, railX + (railW/4)*i + (railW/8), railY + 85);
+    ctx.globalAlpha = 1.0;
+
+    // --- 가상(위) / 진짜(안) 타임바 궤도 분리 연출 ---
+    const prog = beatTimer / BEAT_MS;
+    const readyLineY = railY - 120; // 가상 타임바 높이 (레일 위 120px)
+
+    if (audioCtx && (audioCtx.currentTime - startTime < 0 || currentBeat >= 4)) {
+        // [가상 커맨드 / READY 구간]
+        // 상단 가이드라인
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath(); ctx.moveTo(railX, readyLineY); ctx.lineTo(railX + railW, readyLineY); ctx.stroke();
+        ctx.setLineDash([]);
+
+        const lx = railX + (railW/4) * (currentBeat % 4) + (railW/4) * prog;
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 10; ctx.shadowBlur = 15; ctx.shadowColor = '#fff';
+        ctx.beginPath(); ctx.moveTo(lx, readyLineY - 20); ctx.lineTo(lx, readyLineY + 20); ctx.stroke();
+        ctx.shadowBlur = 0; ctx.fillStyle = '#fff'; ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'center'; ctx.fillText("READY", lx, readyLineY - 30);
+    } else {
+        // [본 게임 / ATTACK 구간]
+        const sx = railX + (railW/4) * (currentBeat % 4) + (railW/4) * prog;
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 12; ctx.shadowBlur = 15; ctx.shadowColor = '#fff';
+        ctx.beginPath(); ctx.moveTo(sx, railY - 50); ctx.lineTo(sx, railY + 50); ctx.stroke();
+        ctx.shadowBlur = 0;
+    }
+
+    ctx.shadowBlur = 0; ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.font = 'bold 20px Arial';
+    ctx.fillText(`COMBO: ${combo}`, 25, 50);
+    ctx.fillStyle = feverLevel === 2 ? '#f00' : (feverLevel === 1 ? '#0ff' : '#444');
+    ctx.fillRect(25, 65, Math.min(150, (combo % 11) * 15), 10);
+
+    if (judgmentAlpha > 0) { ctx.save(); ctx.globalAlpha = judgmentAlpha; ctx.textAlign = 'center'; ctx.fillStyle = judgmentText === "PERFECT" ? "#0FF" : "#F00"; ctx.font = `bold 50px Arial`; ctx.fillText(judgmentText, width / 2, judgmentY); ctx.restore(); }
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 26px Arial'; ctx.fillText(Math.ceil(gameTimer) + "s", width/2, 45);
+
+    if(gameState !== 'PLAY') {
+        ctx.fillStyle = 'rgba(0,0,0,0.9)'; ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = '#0ff'; ctx.font = '40px Arial'; ctx.textAlign = 'center';
+        ctx.fillText(gameState === 'START' ? 'BEAT OR DIE' : 'SYSTEM DOWN', width/2, height/2);
+        ctx.fillStyle = '#fff'; ctx.font = '16px Arial'; ctx.fillText('TOUCH TO START', width/2, height/2 + 60);
+    }
+    ctx.restore();
+}
+
+const handleStart = async () => {
+    if(gameState !== 'PLAY') {
+        setupAudio();
+        if(audioCtx.state === 'suspended') await audioCtx.resume();
+        gameState = 'PLAY'; score = 0; combo = 0; gameTimer = 60; currentBeat = 4; beatTimer = 0;
+        currentPlan = generatePlan(); nextPlan = generatePlan(); enemies = [];
+        startTime = audioCtx.currentTime + (BEAT_MS * 4 / 1000); 
+        nextAudioBeatTime = audioCtx.currentTime;
+    }
+};
+
+canvas.addEventListener('pointerdown', (e) => {
+    if(gameState !== 'PLAY') { handleStart(); return; }
+    touch.startX = e.clientX; touch.startY = e.clientY; touch.active = true; touch.handled = false;
+    if(currentBeat < 4) {
+        const type = currentPlan[currentBeat].type;
+        if(type === 'TAP') checkInput('TAP');
+        else if(type === 'HOLD') checkInput('HOLD');
+    }
+});
+
+canvas.addEventListener('pointermove', (e) => {
+    if(!touch.active || touch.handled || currentBeat >= 4) return;
+    const dx = e.clientX - touch.startX;
+    if(Math.abs(dx) > 40) { checkInput(dx > 0 ? 'SWIPE_R' : 'SWIPE_L'); }
+});
+
+canvas.addEventListener('pointerup', () => { touch.active = false; });
+canvas.addEventListener('pointercancel', () => { touch.active = false; });
+
+function loop(t) { update(t); draw(); requestAnimationFrame(loop); }
+requestAnimationFrame(loop);
+</script>
 </body>
 </html>
