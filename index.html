@@ -14,7 +14,6 @@
             --success: #2ed573;
             --special: #a29bfe;
             --accent: #ffa502;
-            /* 환경 컬러 */
             --env-sea: #1e90ff;
             --env-freshwater: #70a1ff;
             --env-desert: #eccc68;
@@ -26,7 +25,7 @@
 
         body {
             font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
-            background-color: #000; /* 모바일 외부 배경 */
+            background-color: #000;
             color: var(--text-main);
             margin: 0;
             padding: 0;
@@ -55,13 +54,18 @@
         }
 
         .screen {
-            padding: 20px 15px 160px 15px; /* 모바일에 맞춘 패딩 축소 */
+            padding: 20px 15px 160px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
             min-height: 100%;
             box-sizing: border-box;
+        }
+
+        .screen-noslot {
+            padding: 20px 10px 20px 10px !important;
+            height: 100vh;
         }
 
         h1, h2, h3 {
@@ -71,7 +75,7 @@
 
         h1 {
             color: var(--accent);
-            font-size: 2.4em; /* 사이즈 축소 */
+            font-size: 2.4em;
             font-weight: 900;
             margin-top: 10px;
         }
@@ -82,7 +86,6 @@
             font-size: 0.9em;
         }
 
-        /* 버튼 모바일 최적화 */
         button {
             background: linear-gradient(135deg, #ff4757, #ff6b81);
             color: white;
@@ -96,7 +99,7 @@
             transition: 0.3s;
             box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
             text-transform: uppercase;
-            width: 90%; /* 가로폭 채우기 */
+            width: 90%;
             max-width: 320px;
         }
 
@@ -116,7 +119,7 @@
             margin-top: 5px;
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(55, 66, 250, 0.4);
-            width: auto; /* 고정 크기 유지 */
+            width: auto;
         }
 
         .btn-confirm {
@@ -144,59 +147,104 @@
             }
         }
 
-        /* 도감 모바일 최적화 */
+        /* --- 도감 레이아웃 --- */
+        .collection-wrapper {
+            flex-grow: 1;
+            width: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            margin-bottom: 10px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         .collection-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 모바일용 4열 */
-            gap: 6px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
             width: 100%;
-            margin-bottom: 20px;
-            padding: 10px;
             background: rgba(0,0,0,0.4);
             border-radius: 12px;
+            padding: 4px;
             box-sizing: border-box;
         }
 
         .collection-slot {
             width: 100%;
-            aspect-ratio: 1;
+            aspect-ratio: 3/4;
             background-color: #2f3542;
-            border: 2px solid #57606f;
-            border-radius: 10px;
+            border: 1px solid #57606f;
+            border-radius: 8px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 1.5em;
+            box-sizing: border-box;
             color: #747d8c;
             position: relative;
+            overflow: hidden;
         }
 
             .collection-slot.filled {
                 background: linear-gradient(135deg, #2f3542, #1e272e);
                 border-color: var(--accent);
                 color: #fff;
-                box-shadow: 0 0 10px rgba(255,165,2,0.3);
+                box-shadow: 0 0 8px rgba(255,165,2,0.3);
             }
 
-                .collection-slot.filled::after {
-                    content: attr(data-name);
-                    position: absolute;
-                    bottom: 2px;
-                    font-size: 0.25em;
-                    color: #dfe4ea;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    max-width: 95%;
-                    font-weight: bold;
-                }
+            .collection-slot.dimmed {
+                filter: grayscale(100%);
+                opacity: 0.6;
+                border-color: #555 !important;
+                box-shadow: none !important;
+                background: #2f3542 !important;
+            }
 
-        /* 카드 UI 모바일 스케일 조정 */
+        .col-icon {
+            font-size: 3em;
+            line-height: 1;
+            margin-top: -5px;
+        }
+
+        .col-tier {
+            position: absolute;
+            top: 3px;
+            left: 4px;
+            font-size: 0.75em;
+            font-weight: 900;
+        }
+
+        .col-badge {
+            position: absolute;
+            top: 3px;
+            right: 4px;
+            padding: 1px 4px;
+            border-radius: 6px;
+            font-size: 0.65em;
+            font-weight: bold;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+        }
+
+        .col-name {
+            position: absolute;
+            bottom: 3px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.65em;
+            color: #dfe4ea;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 2px;
+            box-sizing: border-box;
+        }
+
+        /* --- 카드 UI --- */
         .deck-select-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 모바일용 2열 배치 */
-            gap: 10px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
             justify-content: center;
             width: 100%;
             margin-bottom: 20px;
@@ -218,8 +266,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.5em; /* 폰트 축소 */
-            padding-bottom: 70px; /* 정보 박스 높이 확보 */
+            font-size: 4.5em;
+            padding-bottom: 95px;
             text-shadow: 0px 10px 20px rgba(0,0,0,0.8);
             background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
         }
@@ -229,23 +277,32 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            padding: 8px; /* 패딩 축소 */
+            min-height: 95px;
+            height: auto;
+            padding: 10px 8px;
             box-sizing: border-box;
             z-index: 1;
             text-align: left;
             background: rgba(0,0,0,0.85);
             border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .card .card-name {
-            font-size: 1.05em; /* 축소 */
+            font-size: 1.1em;
             font-weight: 900;
             color: #fff;
-            margin-bottom: 2px;
+            margin-bottom: 5px;
+            line-height: 1.2;
             letter-spacing: -0.5px;
-            white-space: nowrap;
+            white-space: normal;
+            word-break: keep-all;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .card .card-stats {
@@ -260,26 +317,96 @@
         }
 
         .deck-card {
-            height: 160px;
+            height: 230px;
         }
-            /* 높이 축소 */
+
             .deck-card.selected {
                 border-color: var(--accent);
                 box-shadow: 0 0 20px var(--accent);
                 transform: scale(1.02) translateY(-2px);
             }
 
-        /* 전투 화면 모바일 최적화 */
         .combatant-card {
-            width: 140px; /* 폭 대폭 축소 */
-            height: 210px; /* 높이 축소 */
+            width: 145px;
+            height: 235px;
             border-width: 3px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
         }
 
             .combatant-card .card-icon-area {
-                font-size: 5em; /* 이모지 크기 축소 */
-                padding-bottom: 75px;
+                font-size: 5em;
+                padding-bottom: 100px;
             }
+
+        /* --- 전투 아레나 배경 스테이지 --- */
+        .arena-stage {
+            flex-grow: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            margin: 5px 0 15px 0;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 20px 0;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+            .arena-stage::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.45);
+                z-index: 0;
+            }
+
+        .arena-stage-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .versus-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .vs-text {
+            font-size: 1.8em;
+            font-weight: 900;
+            font-style: italic;
+            color: var(--danger);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-shadow: 0 0 15px rgba(0,0,0,0.9);
+        }
+
+        .env-info-center {
+            margin-top: 15px;
+            font-size: 1.2em;
+            font-weight: 900;
+            padding: 8px 25px;
+            border-radius: 30px;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+            border: 2px solid rgba(255,255,255,0.4);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
 
         /* 티어 스타일 */
         .t-9 {
@@ -332,16 +459,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 15px; /* 패딩 축소 */
+            padding: 10px 15px;
             box-sizing: border-box;
             background: rgba(0,0,0,0.8);
             border-radius: 20px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             border: 1px solid rgba(255,255,255,0.1);
+            z-index: 2;
         }
 
         .round-info {
-            font-size: 1.1em; /* 폰트 축소 */
+            font-size: 1.1em;
             font-weight: 900;
             color: var(--accent);
         }
@@ -350,51 +478,17 @@
             padding: 5px 12px;
             border-radius: 12px;
             font-size: 0.8em;
-            margin-top: 0;
             background: rgba(255,71,87,0.1);
             border: 1px solid rgba(255,71,87,0.3);
             color: #ff6b81;
         }
 
-        .versus-container {
-            display: flex;
-            gap: 10px; /* 간격 대폭 축소 */
-            align-items: center;
-            margin-top: 5px;
-            width: 100%;
-            justify-content: center;
-            position: relative;
-        }
-
-        .vs-text {
-            font-size: 1.8em; /* 사이즈 축소 */
-            font-weight: 900;
-            font-style: italic;
-            color: var(--danger);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-shadow: 0 0 10px rgba(255,71,87,0.5);
-        }
-
-        .env-info-center {
-            margin-top: 15px;
-            font-size: 1.2em; /* 폰트 축소 */
-            font-weight: 900;
-            padding: 10px 30px;
-            border-radius: 30px;
-            color: #fff;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-
-        /* 하단 슬롯 480px 대응 */
+        /* 하단 슬롯 */
         .slot-container {
             width: 100%;
             padding: 10px 15px;
             background: rgba(15, 15, 19, 0.95);
-            position: absolute; /* 모바일에선 absolute 추천 */
+            position: absolute;
             bottom: 0;
             left: 0;
             box-sizing: border-box;
@@ -404,7 +498,7 @@
 
         .slots {
             display: flex;
-            justify-content: flex-start; /* 모바일에선 좌측 정렬 스크롤이 편함 */
+            justify-content: flex-start;
             gap: 8px;
             overflow-x: auto;
             padding-bottom: 5px;
@@ -412,7 +506,7 @@
         }
 
         .slot {
-            flex: 0 0 55px; /* 슬롯 크기 축소 */
+            flex: 0 0 55px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -473,7 +567,6 @@
             pointer-events: none;
         }
 
-        /* 툴팁 모바일 조정 (모바일에선 터치시 보이도록) */
         .tooltip-content {
             visibility: hidden;
             opacity: 0;
@@ -499,24 +592,28 @@
             bottom: calc(100% + 5px);
         }
 
-        /* 보상 화면 모바일 최적화 */
+        /* 보상 화면 */
         .reward-cards {
             display: flex;
-            flex-wrap: wrap; /* 여러장 모바일 줄바꿈 처리 */
+            flex-wrap: wrap;
             gap: 15px;
             justify-content: center;
-            margin-top: 30px;
+            margin-top: 20px;
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 10px;
         }
 
         .reward-card {
-            width: 120px;
-            height: 180px;
+            width: 110px;
+            height: 165px;
             background: repeating-linear-gradient(45deg, #1e272e, #1e272e 10px, #2f3542 10px, #2f3542 20px);
             border: 3px solid var(--accent);
             border-radius: 12px;
             position: relative;
             transform-style: preserve-3d;
             transition: transform 0.6s;
+            cursor: pointer;
         }
 
             .reward-card.flipped {
@@ -539,11 +636,11 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 4em;
+            font-size: 3.5em;
             border: 3px solid #fff;
         }
 
-        /* 모달 모바일 최적화 */
+        /* 공용 모달 */
         .modal {
             position: fixed;
             top: 0;
@@ -570,7 +667,7 @@
             padding: 20px;
             border-radius: 16px;
             border: 2px solid var(--accent);
-            width: 88%; /* 모바일 폭 맞춤 */
+            width: 88%;
             max-width: 400px;
             max-height: 85vh;
             overflow-y: auto;
@@ -603,15 +700,41 @@
             .tier-table th, .tier-table td {
                 padding: 6px;
             }
+
+        /* --- 덱 교환 전용 모달 CSS --- */
+        #exchange-new-animal-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+            #exchange-new-animal-wrap .combatant-card {
+                width: 130px;
+                height: 210px;
+                border-color: var(--success);
+                box-shadow: 0 0 20px var(--success);
+                transform: scale(0.9);
+            }
+
+        .exchange-inventory-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
 
     <div id="game-container">
 
-        <div id="screen-main" class="screen">
+        <div id="screen-main" class="screen screen-noslot">
             <div style="margin-top: 50px;">
-                <span style="font-size: 1.1em; color: var(--accent); font-weight: 900; letter-spacing: 1px;">하드코어 생태계 서바이벌 v1.1</span>
+                <span style="font-size: 1.1em; color: var(--accent); font-weight: 900; letter-spacing: 1px;">생태계 서바이벌 v1.7</span>
                 <h1>누가 이겨?</h1>
                 <p><strong style="color:var(--danger)">5번 틀리면 모든 것을 잃고 게임 오버.</strong><br>생존을 위한 궁극의 덱을 구성하세요.</p>
             </div>
@@ -623,22 +746,34 @@
             </div>
         </div>
 
-        <div id="screen-collection" class="screen hidden">
-            <h2>위대한 생존자 도감 <span id="collection-count" style="color:var(--accent);">0</span> / 200</h2>
-            <p style="font-size:0.8em;">티어 및 전투력 순으로 정렬</p>
-            <div class="collection-grid" id="collection-grid"></div>
-            <button class="btn-secondary" onclick="showScreen('screen-main')">메인으로</button>
+        <div id="screen-collection" class="screen screen-noslot hidden">
+            <h2>생존자 도감 <span id="collection-count" style="color:var(--accent);">0</span> / 250</h2>
+            <p style="font-size:0.8em; margin-top:0;">수집한 생물 최상단 정렬. 소진 시 흑백 처리</p>
+            <div class="collection-wrapper">
+                <div class="collection-grid" id="collection-grid"></div>
+            </div>
+            <button class="btn-secondary" onclick="showScreen('screen-main')" style="margin-bottom: 10px;">메인으로 돌아가기</button>
         </div>
 
-        <div id="screen-deck-select" class="screen hidden">
-            <h2>전투 엔트리 선택 (최대 5)</h2>
-            <p id="deck-select-msg" style="color:var(--danger); font-weight:bold; font-size: 0.9em;">보유 덱 없음! 맨몸으로 시작합니다.</p>
-            <div class="deck-select-grid" id="deck-select-grid"></div>
-            <div style="font-size: 1.1em; margin-bottom: 15px; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px;">
+        <div id="screen-deck-select" class="screen screen-noslot hidden">
+            <h2>엔트리 준비 (최대 5)</h2>
+            <div class="analysis-box" style="text-align:center; padding: 12px; margin-top: 0; background:rgba(255, 165, 2, 0.1); border-color:var(--accent); width: 100%; box-sizing: border-box;">
+                <strong style="color:var(--accent); font-size:1.1em;">출전시킬 카드를 인벤토리에서 고르세요.</strong><br>
+                <span style="color:#ff4757; font-size:0.85em; font-weight:bold;">※ 전투에 투입된 카드는 인벤토리에서 차감됩니다!</span>
+            </div>
+
+            <p id="deck-select-msg" style="color:var(--danger); font-weight:bold; font-size: 0.9em; margin-top:5px;">보유 덱이 없습니다. 맨몸으로 시작합니다!</p>
+
+            <div class="collection-wrapper">
+                <div class="deck-select-grid" id="deck-select-grid"></div>
+            </div>
+            <div style="font-size: 1.1em; margin-bottom: 10px; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px;">
                 선택됨: <span id="select-count" style="color: var(--accent); font-weight: 900;">0</span> / 5
             </div>
-            <button onclick="startRound1()">1라운드 진입</button>
-            <button class="btn-secondary" onclick="showScreen('screen-main')">뒤로 가기</button>
+            <div style="display:flex; width:100%; gap:5px; justify-content:center;">
+                <button onclick="startRound1()" style="width:60%;">1라운드 진입</button>
+                <button class="btn-secondary" onclick="showScreen('screen-main')" style="width:30%;">취소</button>
+            </div>
         </div>
 
         <div id="screen-ingame-r1" class="screen hidden">
@@ -647,69 +782,74 @@
                 <div class="status-bar">오답 허용: <span id="r1-fails">0</span>/5</div>
             </div>
 
-            <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; width: 100%;">
-                <div class="versus-container">
-                    <div class="card combatant-card" id="r1-card-left" onclick="guessWinner('left')"></div>
-                    <div class="vs-text">
-                        <div>VS</div>
-                        <button class="btn-draw" onclick="guessWinner('draw')">무승부</button>
+            <div class="arena-stage" id="r1-arena-stage">
+                <div class="arena-stage-content">
+                    <div class="versus-container">
+                        <div class="card combatant-card" id="r1-card-left" onclick="guessWinner('left')"></div>
+                        <div class="vs-text">
+                            <div style="color:#fff; text-shadow:0 0 10px #ff4757;">VS</div>
+                            <button class="btn-draw" onclick="guessWinner('draw')">무승부</button>
+                        </div>
+                        <div class="card combatant-card" id="r1-card-right" onclick="guessWinner('right')"></div>
                     </div>
-                    <div class="card combatant-card" id="r1-card-right" onclick="guessWinner('right')"></div>
+                    <div class="env-info-center" id="r1-env-display">장소: 로딩중</div>
                 </div>
-                <div class="env-info-center" id="r1-env-display">장소: 로딩중</div>
             </div>
 
             <div class="slot-container">
-                <div style="font-size: 0.75em; margin-bottom: 5px; color:var(--text-muted); text-align:left; font-weight:bold;">보유 덱 (1R 사용 불가)</div>
+                <div style="font-size: 0.75em; margin-bottom: 5px; color:var(--text-muted); text-align:left; font-weight:bold;">임시 덱 (1R 사용 불가)</div>
                 <div class="slots" id="r1-inventory-slots"></div>
             </div>
         </div>
 
-        <div id="screen-r2-intro" class="screen hidden">
-            <h1 style="color:var(--danger); font-size:3em;">ROUND 2</h1>
+        <div id="screen-r2-intro" class="screen screen-noslot hidden">
+            <h1 style="color:var(--danger); font-size:3em; margin-top:30px;">ROUND 2</h1>
             <h2>서바이벌 덱 배틀</h2>
             <div class="analysis-box" style="text-align:center;">
-                1라운드에서 모은 덱으로 적과 겨루게 됩니다.<br><br>
+                1라운드에서 모은 덱으로 적과 10번의 전투를 치릅니다.<br><br>
                 <strong style="color:var(--accent)">1. 상대의 덱과 장소를 확인하세요.</strong><br>
                 <strong style="color:var(--accent)">2. 최적의 나의 덱을 선택하세요.</strong><br>
                 <strong style="color:var(--accent)">3. '출격 확인' 버튼을 누르세요.</strong><br><br>
-                ※ 한 번 사용한 덱은 소멸합니다.<br>
-                ※ 10판 중 5승 달성 시 최종 승리!
+                ※ 한 번 배틀에 던진 덱은 소멸합니다.<br>
+                ※ 10판 중 5승 이상 달성 시 획득한 전리품 보상!
             </div>
-            <button onclick="enterR2Stage()">전투 개시</button>
+            <button onclick="enterR2Stage()" style="margin-top:20px;">전투 개시</button>
         </div>
 
         <div id="screen-ingame-r2" class="screen hidden">
             <div class="arena-header" style="border-color: var(--danger);">
                 <div class="round-info" style="color: var(--danger);">R2 - STAGE <span id="r2-stage-num">1</span></div>
-                <div class="status-bar" style="border-color:var(--success); color:var(--success); background:rgba(46,213,115,0.1);">승수: <span id="r2-wins">0</span>/5</div>
-                <div class="status-bar">패배 허용: <span id="r2-fails">0</span>/5</div>
+                <div class="status-bar" style="border-color:var(--success); color:var(--success); background:rgba(46,213,115,0.1);">승수: <span id="r2-wins">0</span></div>
+                <div class="status-bar">패배: <span id="r2-fails">0</span>/5</div>
             </div>
 
-            <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; width: 100%;">
-                <p style="color: #a4b0be; margin-top: 0; font-weight:bold; font-size: 0.85em;">상대 덱에 맞춰 내 덱을 선택하세요.</p>
-                <div class="versus-container">
-                    <div class="card combatant-card" id="r2-card-left" style="border: 3px dashed #57606f; background: rgba(0,0,0,0.3); display:flex; justify-content:center; align-items:center; color:#57606f; font-size:1em; font-weight:bold; box-shadow:none; text-align:center;">
-                        하단 덱에서<br>선택 대기
+            <p style="color: #a4b0be; margin-top: 0; font-weight:bold; font-size: 0.85em; z-index:2;">상대 덱에 맞춰 내 덱을 선택하세요.</p>
+
+            <div class="arena-stage" id="r2-arena-stage">
+                <div class="arena-stage-content">
+                    <div class="versus-container">
+                        <div class="card combatant-card" id="r2-card-left" style="border: 3px dashed #fff; background: rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; color:#fff; font-size:1em; font-weight:bold; box-shadow:none; text-align:center;">
+                            하단 덱에서<br>선택 대기
+                        </div>
+                        <div class="vs-text"><div style="color:#fff; text-shadow:0 0 10px #ff4757;">VS</div></div>
+                        <div class="card combatant-card" id="r2-card-right" style="border-color: var(--danger); box-shadow: 0 0 20px rgba(255,71,87,0.8);"></div>
                     </div>
-                    <div class="vs-text"><div>VS</div></div>
-                    <div class="card combatant-card" id="r2-card-right" style="border-color: var(--danger); box-shadow: 0 0 20px rgba(255,71,87,0.3);"></div>
+                    <button id="btn-r2-confirm" class="btn-confirm hidden" onclick="confirmR2Card()" style="position:absolute; bottom:5px; z-index:20; box-shadow: 0 5px 20px #000;">출격 확인</button>
+                    <div class="env-info-center" id="r2-env-display">장소: 로딩중</div>
                 </div>
-                <button id="btn-r2-confirm" class="btn-confirm hidden" onclick="confirmR2Card()" style="position:absolute; bottom:130px; z-index:20;">출격 확인</button>
-                <div class="env-info-center" id="r2-env-display">장소: 로딩중</div>
             </div>
 
             <div class="slot-container">
-                <div style="font-size: 0.75em; margin-bottom: 5px; color:var(--text-muted); text-align:left; font-weight:bold;">내 덱 (마우스를 올려 확인)</div>
+                <div style="font-size: 0.75em; margin-bottom: 5px; color:var(--text-muted); text-align:left; font-weight:bold;">내 덱 (터치하여 출전 선택)</div>
                 <div class="slots" id="r2-inventory-slots"></div>
             </div>
         </div>
 
-        <div id="screen-reward" class="screen hidden">
-            <h1 style="font-size: 2.8em; text-shadow: 0 0 20px var(--accent);">🏆 최종 승리!</h1>
-            <p style="font-size: 1em;">카드를 하나 선택해 뒤집어 도감에 영구 기록하세요.</p>
+        <div id="screen-reward" class="screen screen-noslot hidden">
+            <h1 style="font-size: 2.8em; text-shadow: 0 0 20px var(--accent); margin-top:20px;">🏆 최종 승리!</h1>
+            <p id="reward-desc" style="font-size: 1em; font-weight:bold; color:var(--success);">총 X승 달성! 승리한 덱 중 하나를 영구 보관하세요.</p>
             <div class="reward-cards" id="reward-cards"></div>
-            <button class="hidden" id="btn-return-main" onclick="showScreen('screen-main')" style="margin-top:30px;">메인으로 복귀</button>
+            <button class="hidden" id="btn-return-main" onclick="showScreen('screen-main')" style="margin-top:20px;">메인으로 복귀</button>
         </div>
 
         <div id="msg-modal" class="modal">
@@ -720,20 +860,35 @@
             </div>
         </div>
 
+        <div id="exchange-modal" class="modal">
+            <div class="modal-content" style="padding: 15px;">
+                <h2 style="color:var(--accent); margin-top:0;">덱 슬롯 부족!</h2>
+                <p style="font-size:0.85em; color:#ccc;">덱이 10개로 가득 찼습니다.<br>새로운 생물을 영입하려면 기존 생물과 교환하세요.</p>
+
+                <div id="exchange-new-animal-wrap">
+                    <div id="exchange-new-card" class="card combatant-card"></div>
+                </div>
+                <button onclick="discardNewAnimal()" style="background:var(--danger); padding: 8px 15px; font-size: 0.9em; margin-top: -10px;">이 생물 버리기</button>
+
+                <p style="font-size:0.85em; margin: 15px 0 5px 0; font-weight:bold; color:var(--special);">교환할 기존 덱을 터치하세요<br>(자물쇠가 걸린 본 덱은 교환 불가)</p>
+                <div id="exchange-inventory" class="exchange-inventory-grid slots"></div>
+            </div>
+        </div>
+
         <div id="tier-modal" class="modal">
             <div class="modal-content">
                 <h1 style="color:var(--accent); font-size:1.5em;">생태계 티어표</h1>
                 <table class="tier-table">
                     <tr><th>등급</th><th>설명</th></tr>
-                    <tr><td class="t-9">SSS</td><td>거대/고대 포식자</td></tr>
-                    <tr><td class="t-8">SS</td><td>최상위 포식자</td></tr>
-                    <tr><td class="t-7">S</td><td>치명적인 대형 맹수</td></tr>
-                    <tr><td class="t-6">A</td><td>위협적인 중대형 동물</td></tr>
-                    <tr><td class="t-5">B</td><td>특수 능력 포식자</td></tr>
-                    <tr><td class="t-4">C</td><td>생존력 강한 중형 동물</td></tr>
-                    <tr><td class="t-3">D</td><td>일반 초식/중소형 동물</td></tr>
-                    <tr><td class="t-2">E</td><td>소형 맹수 및 조류</td></tr>
-                    <tr><td class="t-1">F</td><td>최하위 피식자/곤충</td></tr>
+                    <tr><td class="t-9">SSS</td><td>거대/고대 포식자 (90~100)</td></tr>
+                    <tr><td class="t-8">SS</td><td>최상위 포식자 (80~89)</td></tr>
+                    <tr><td class="t-7">S</td><td>치명적인 대형 맹수 (70~79)</td></tr>
+                    <tr><td class="t-6">A</td><td>위협적인 중대형 동물 (60~69)</td></tr>
+                    <tr><td class="t-5">B</td><td>특수 능력 포식자 (50~59)</td></tr>
+                    <tr><td class="t-4">C</td><td>생존력 강한 중형 동물 (40~49)</td></tr>
+                    <tr><td class="t-3">D</td><td>강인한 곤충/초식 동물 (30~39)</td></tr>
+                    <tr><td class="t-2">E</td><td>소형 맹수 및 곤충 (20~29)</td></tr>
+                    <tr><td class="t-1">F</td><td>최하위 피식자/소형 (1~19)</td></tr>
                 </table>
                 <button onclick="document.getElementById('tier-modal').classList.remove('show')" style="margin-top:15px;">닫기</button>
             </div>
@@ -742,81 +897,102 @@
     </div>
 
     <script>
-        // --- 데이터 정의 ---
+        // --- 1. 환경 세팅 (직관적인 바다, 흙탕물 강물로 교체) ---
         const ENV_DATA = {
-            '바다': { color: 'var(--env-sea)', bgColor: '#0a1b3f', type: 'water' },
-            '민물': { color: 'var(--env-freshwater)', bgColor: '#1c3b5e', type: 'water' },
-            '사막': { color: 'var(--env-desert)', bgColor: '#4a350a', type: 'land' },
-            '늪지대': { color: 'var(--env-swamp)', bgColor: '#2e1c05', type: 'amphibious' },
-            '정글': { color: 'var(--env-jungle)', bgColor: '#0a2e14', type: 'land' },
-            '하늘': { color: 'var(--env-sky)', bgColor: '#123959', type: 'air' },
-            '평원': { color: 'var(--env-land)', bgColor: '#2c332e', type: 'land' }
+            '바다': { color: 'var(--env-sea)', bgColor: '#0a1b3f', type: 'water', bgImg: 'https://images.unsplash.com/photo-1545028084-25785084918e?q=80&w=600&auto=format&fit=crop' }, // 심플한 수평선 바다
+            '민물': { color: 'var(--env-freshwater)', bgColor: '#1c3b5e', type: 'water', bgImg: 'https://images.unsplash.com/photo-1528659550742-df21cc61df4d?w=600&q=80' }, // 흙탕물 (아프리카 강)
+            '사막': { color: 'var(--env-desert)', bgColor: '#4a350a', type: 'land', bgImg: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=600&q=80' },
+            '늪지대': { color: 'var(--env-swamp)', bgColor: '#2e1c05', type: 'amphibious', bgImg: 'https://images.unsplash.com/photo-1533036496924-f7b53531bcf7?auto=format&fit=crop&w=600&q=80' },
+            '정글': { color: 'var(--env-jungle)', bgColor: '#0a2e14', type: 'land', bgImg: 'https://images.unsplash.com/photo-1516214104703-d2507a01736e?auto=format&fit=crop&w=600&q=80' },
+            '하늘': { color: 'var(--env-sky)', bgColor: '#123959', type: 'air', bgImg: 'https://images.unsplash.com/photo-1499346156599-72f627fb3313?auto=format&fit=crop&w=600&q=80' },
+            '평원': { color: 'var(--env-land)', bgColor: '#2c332e', type: 'land', bgImg: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80' }
         };
         const ENV_NAMES = Object.keys(ENV_DATA);
-
-        // 9단계 티어 시스템 (1~9)
         const TIER_NAMES = { 9: 'SSS', 8: 'SS', 7: 'S', 6: 'A', 5: 'B', 4: 'C', 3: 'D', 2: 'E', 1: 'F' };
 
-        // 200종 생물 리얼리즘 생성 (배열 매핑 & 티어 재조정 1~9)
+        function getPowerBounds(tier) {
+            if (tier === 9) return [90, 100];
+            if (tier === 8) return [80, 89];
+            if (tier === 7) return [70, 79];
+            if (tier === 6) return [60, 69];
+            if (tier === 5) return [50, 59];
+            if (tier === 4) return [40, 49];
+            if (tier === 3) return [30, 39];
+            if (tier === 2) return [20, 29];
+            return [1, 19];
+        }
+
+        // --- 2. 동식물 DB ---
         const BASE_DB = [
-            [1, "티라노사우루스", 9, 100, "정글,평원", "land", "🦖", 0], [2, "메갈로돈", 9, 100, "바다", "water", "🦈", 1],
-            [3, "모사사우루스", 9, 99, "바다", "water", "🦎", 1], [4, "범고래", 9, 98, "바다", "water", "🐋", 1],
-            [5, "코끼리", 8, 95, "평원,정글", "land", "🐘", 1], [6, "백상아리", 8, 94, "바다", "water", "🦈", 1],
-            [7, "트리케라톱스", 8, 93, "평원", "land", "🦕", 0], [8, "향유고래", 8, 93, "바다", "water", "🐳", 1],
-            [9, "하마", 7, 91, "민물,늪지대", "amphibious", "🦛", 1], [10, "바다악어", 7, 90, "늪지대,바다,민물", "amphibious", "🐊", 1],
-            [11, "호랑이", 7, 88, "정글,늪지대", "land", "🐅", 1], [12, "사자", 7, 87, "평원,정글", "land", "🦁", 0],
-            [13, "북극곰", 7, 86, "바다,민물", "amphibious", "🐻‍❄️", 1], [14, "불곰", 7, 85, "정글,민물", "land", "🐻", 1],
-            [15, "고릴라", 7, 84, "정글", "land", "🦍", 0], [16, "기린", 6, 82, "평원", "land", "🦒", 0],
-            [17, "아나콘다", 6, 81, "정글,늪지대,민물", "amphibious", "🐍", 1], [18, "바다코끼리", 6, 80, "바다", "water", "🦭", 1],
-            [19, "물소", 6, 79, "평원,늪지대", "land", "🐃", 1], [20, "표범", 6, 78, "정글,평원", "land", "🐆", 1],
-            [21, "코모도도마뱀", 5, 75, "정글,사막", "land", "🦎", 1], [22, "타조", 5, 74, "평원,사막", "land", "鸵", 0],
-            [23, "돌고래", 5, 73, "바다", "water", "🐬", 1], [24, "청새치", 5, 72, "바다", "water", "🐟", 1],
-            [25, "독수리", 5, 70, "하늘,평원", "air", "🦅", 0], [26, "늑대", 4, 68, "평원,정글", "land", "🐺", 1],
-            [27, "하이에나", 4, 67, "평원,사막", "land", "🐕", 0], [28, "캥거루", 4, 66, "평원,사막", "land", "🦘", 0],
-            [29, "대왕오징어", 4, 65, "바다", "water", "🦑", 1], [30, "바다거북", 4, 63, "바다", "water", "🐢", 1],
-            [31, "치타", 4, 61, "평원", "land", "🐆", 0], [32, "얼룩말", 3, 59, "평원", "land", "🦓", 0],
-            [33, "말", 3, 58, "평원", "land", "🐎", 1], [34, "낙타", 3, 57, "사막", "land", "🐫", 0],
-            [35, "전갈", 3, 55, "사막", "land", "🦂", 0], [36, "타란튤라", 3, 54, "정글,사막", "land", "🕷️", 0],
-            [37, "수달", 3, 53, "민물", "amphibious", "🦦", 1], [38, "오리너구리", 2, 50, "민물", "amphibious", "🦆", 1],
-            [39, "피라냐", 2, 49, "민물", "water", "🐟", 1], [40, "가오리", 2, 48, "바다", "water", "🐡", 1],
-            [41, "여우", 2, 45, "평원,정글", "land", "🦊", 1], [42, "개", 2, 42, "평원", "land", "🐕", 1],
-            [43, "고양이", 2, 41, "평원,정글", "land", "🐈", 0], [44, "돼지", 2, 40, "평원,늪지대", "land", "🐖", 1],
-            [45, "원숭이", 1, 34, "정글", "land", "🐒", 1], [46, "고슴도치", 1, 30, "평원,정글", "land", "🦔", 0],
-            [47, "토끼", 1, 28, "평원", "land", "🐇", 0], [48, "쥐", 1, 26, "평원,정글", "land", "🐀", 1],
-            [49, "박쥐", 1, 24, "하늘,정글", "air", "🦇", 0], [50, "부엉이", 1, 23, "하늘,정글", "air", "🦉", 0],
-            [51, "백조", 1, 18, "민물,하늘", "amphibious", "🦢", 1], [52, "오리", 1, 17, "민물,하늘", "amphibious", "🦆", 1],
-            [53, "펭귄", 1, 15, "바다,평원", "amphibious", "🐧", 1], [54, "갈매기", 1, 13, "하늘,바다", "air", "🐦", 1],
-            [55, "참새", 1, 10, "하늘,평원", "air", "🐦", 0], [56, "개구리", 1, 6, "늪지대,민물", "amphibious", "🐸", 1],
-            [57, "달팽이", 1, 2, "정글,늪지대", "land", "🐌", 0], [58, "벌", 1, 2, "하늘,정글", "air", "🐝", 0],
-            [59, "왕잠자리", 1, 5, "하늘,민물", "air", "🪰", 0], [60, "게", 1, 4, "바다,민물", "amphibious", "🦀", 1]
+            [1, "티라노사우루스", 9, 99, "정글,평원", "land", "🦖", 0], [2, "메갈로돈", 9, 98, "바다", "water", "🦈", 1],
+            [3, "모사사우루스", 9, 97, "바다", "water", "🦎", 1], [4, "범고래", 9, 95, "바다", "water", "🐋", 1],
+            [5, "코끼리", 8, 89, "평원,정글", "land", "🐘", 1], [6, "백상아리", 8, 88, "바다", "water", "🦈", 1],
+            [7, "트리케라톱스", 8, 87, "평원", "land", "🦕", 0], [8, "향유고래", 8, 86, "바다", "water", "🐳", 1],
+            [9, "하마", 7, 79, "민물,늪지대", "amphibious", "🦛", 1], [10, "바다악어", 7, 78, "늪지대,바다,민물", "amphibious", "🐊", 1],
+            [11, "호랑이", 7, 77, "정글,늪지대", "land", "🐅", 1], [12, "사자", 7, 76, "평원,정글", "land", "🦁", 0],
+            [13, "북극곰", 7, 75, "바다,민물", "amphibious", "🐻‍❄️", 1], [14, "불곰", 7, 74, "정글,민물", "land", "🐻", 1],
+            [15, "고릴라", 7, 73, "정글", "land", "🦍", 0],
+            [16, "기린", 6, 69, "평원", "land", "🦒", 0], [17, "아나콘다", 6, 68, "정글,늪지대,민물", "amphibious", "🐍", 1],
+            [18, "바다코끼리", 6, 67, "바다", "water", "🦭", 1], [19, "물소", 6, 66, "평원,늪지대", "land", "🐃", 1],
+            [20, "표범", 6, 65, "정글,평원", "land", "🐆", 1],
+            [21, "코모도도마뱀", 5, 59, "정글,사막", "land", "🦎", 1], [22, "타조", 5, 58, "평원,사막", "land", "鸵", 0],
+            [23, "돌고래", 5, 57, "바다", "water", "🐬", 1], [24, "청새치", 5, 56, "바다", "water", "🐟", 1],
+            [25, "독수리", 5, 55, "하늘,평원", "air", "🦅", 0],
+            [26, "늑대", 4, 49, "평원,정글", "land", "🐺", 1], [27, "하이에나", 4, 48, "평원,사막", "land", "🐕", 0],
+            [28, "캥거루", 4, 47, "평원,사막", "land", "🦘", 0], [29, "대왕오징어", 4, 46, "바다", "water", "🦑", 1],
+            [30, "바다거북", 4, 45, "바다", "water", "🐢", 1], [31, "치타", 4, 44, "평원", "land", "🐆", 0],
+            [32, "얼룩말", 3, 39, "평원", "land", "🦓", 0], [33, "말", 3, 38, "평원", "land", "🐎", 1],
+            [34, "낙타", 3, 37, "사막", "land", "🐫", 0], [35, "전갈", 3, 36, "사막", "land", "🦂", 0],
+            [36, "타란튤라", 3, 35, "정글,사막", "land", "🕷️", 0], [37, "헤라클레스장수풍뎅이", 3, 34, "정글", "land", "🪲", 0],
+            [38, "장수말벌", 3, 33, "하늘,정글", "air", "🐝", 0], [39, "사마귀", 3, 32, "정글,평원", "land", "🦗", 0],
+            [40, "수달", 2, 29, "민물", "amphibious", "🦦", 1], [41, "오리너구리", 2, 28, "민물", "amphibious", "🦆", 1],
+            [42, "피라냐", 2, 27, "민물", "water", "🐟", 1], [43, "가오리", 2, 26, "바다", "water", "🐡", 1],
+            [44, "여우", 2, 25, "평원,정글", "land", "🦊", 1], [45, "개", 2, 24, "평원", "land", "🐕", 1],
+            [46, "고양이", 2, 23, "평원,정글", "land", "🐈", 0], [47, "장수풍뎅이", 2, 22, "정글", "land", "🪲", 0],
+            [48, "사슴벌레", 2, 21, "정글", "land", "🪲", 0], [49, "지네", 2, 20, "정글,늪지대", "land", "🐛", 0],
+            [50, "원숭이", 1, 19, "정글", "land", "🐒", 1], [51, "고슴도치", 1, 18, "평원,정글", "land", "🦔", 0],
+            [52, "토끼", 1, 17, "평원", "land", "🐇", 0], [53, "쥐", 1, 16, "평원,정글", "land", "🐀", 1],
+            [54, "박쥐", 1, 15, "하늘,정글", "air", "🦇", 0], [55, "부엉이", 1, 14, "하늘,정글", "air", "🦉", 0],
+            [56, "백조", 1, 13, "민물,하늘", "air", "🦢", 1],
+            [57, "오리", 1, 12, "민물,하늘", "air", "🦆", 1], [58, "펭귄", 1, 11, "바다,평원", "amphibious", "🐧", 1],
+            [59, "갈매기", 1, 10, "하늘,바다", "air", "🐦", 1], [60, "참새", 1, 9, "하늘,평원", "air", "🐦", 0],
+            [61, "개구리", 1, 8, "늪지대,민물", "amphibious", "🐸", 1], [62, "말벌", 1, 7, "하늘,정글", "air", "🐝", 0],
+            [63, "나방", 1, 6, "하늘,정글", "air", "🦋", 0], [64, "게", 1, 5, "바다,민물", "amphibious", "🦀", 1],
+            [65, "달팽이", 1, 2, "정글,늪지대", "land", "🐌", 0],
+            [66, "스피노사우루스", 9, 98, "정글,늪지대,민물", "amphibious", "🦖", 1], [67, "브라키오사우루스", 8, 88, "평원,정글", "land", "🦕", 0],
+            [68, "안킬로사우루스", 7, 78, "평원", "land", "🦏", 0], [69, "프테라노돈", 7, 75, "하늘", "air", "🦅", 0],
+            [70, "벨로시랩터", 6, 68, "정글,평원", "land", "🦎", 0], [71, "개미핥기", 4, 45, "평원,정글", "land", "🐜", 0],
+            [72, "테이퍼", 3, 38, "정글,늪지대", "amphibious", "🐖", 1], [73, "카피바라", 3, 35, "민물,늪지대", "amphibious", "🐹", 1],
+            [74, "천산갑", 3, 34, "정글,사막", "land", "🦔", 0], [75, "아르마딜로", 3, 33, "사막,평원", "land", "🪨", 0],
+            [76, "나무늘보", 2, 22, "정글", "land", "🦥", 0], [77, "벌", 1, 4, "하늘,정글", "air", "🐝", 0],
+            [78, "왕잠자리", 1, 5, "하늘,민물", "air", "🪰", 0], [79, "모기", 1, 2, "하늘,늪지대", "air", "🦟", 0],
+            [80, "파리", 1, 1, "하늘,평원", "air", "🪰", 0]
         ];
 
-        const PREF = {
-            land: ["아프리카", "시베리아", "아시아", "아메리카", "점박이", "거대", "작은", "검은"],
-            water: ["심해", "태평양", "대서양", "거대", "푸른", "흰", "가시"],
-            amphibious: ["아마존", "나일", "거대", "아프리카", "푸른", "늪지대"],
-            air: ["북극", "큰", "작은", "붉은", "검은", "꼬리"]
-        };
+        const ADJECTIVES = ["거대한", "작은", "초거대", "새끼", "난폭한", "기괴한", "고대", "돌연변이"];
 
         let ANIMAL_DB = [];
         let idCounter = 1;
+
         BASE_DB.forEach(d => {
             ANIMAL_DB.push({ id: idCounter++, name: d[1], tier: d[2], power: d[3], habitats: d[4].split(','), type: d[5], icon: d[6], canSwim: !!d[7] });
         });
-        while (ANIMAL_DB.length < 200) {
+
+        while (ANIMAL_DB.length < 250) {
             let base = BASE_DB[Math.floor(Math.random() * BASE_DB.length)];
-            let typePrefs = PREF[base[5]];
-            let pre = typePrefs[Math.floor(Math.random() * typePrefs.length)];
+            let pre = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
             let newName = pre + " " + base[1];
+
             if (!ANIMAL_DB.find(a => a.name === newName)) {
-                let tierAdj = Math.random() > 0.7 ? (Math.random() > 0.5 ? 1 : -1) : 0;
+                let tierAdj = Math.random() > 0.8 ? (Math.random() > 0.5 ? 1 : -1) : 0;
                 let newTier = Math.min(9, Math.max(1, base[2] + tierAdj));
-                let newPower = Math.min(100, Math.max(1, base[3] + Math.floor(Math.random() * 12 - 6)));
+                let bounds = getPowerBounds(newTier);
+                let newPower = Math.floor(Math.random() * (bounds[1] - bounds[0] + 1)) + bounds[0];
                 ANIMAL_DB.push({ id: idCounter++, name: newName, tier: newTier, power: newPower, habitats: base[4].split(','), type: base[5], icon: base[6], canSwim: !!base[7] });
             }
         }
 
-        // --- 전투 논리 ---
+        // --- 3. 전투 논리 ---
         function checkSpecialVictory(animalA, animalB, envName) {
             const env = ENV_DATA[envName];
             if (animalA.id === animalB.id) return { isSpecial: true, winner: 'draw', desc: `동족 상잔! 치열한 영역 다툼 끝에 승부를 가리지 못했습니다.` };
@@ -854,7 +1030,11 @@
             } else if (animal.type === 'land' && env.type === 'air') {
                 power = Math.round(power * 0.1); note = "공중전에 대응하지 못해 전투력이 90% 감소했습니다.";
             } else if (animal.type === 'air' && env.type === 'water') {
-                power = Math.round(power * 0.3); note = "비행 생물이 수중전에 돌입하여 전투력이 70% 감소했습니다.";
+                if (animal.canSwim) {
+                    power = Math.round(power * 0.8); note = "수영이 가능하여 수중 패널티를 일부 방어했습니다.";
+                } else {
+                    power = Math.round(power * 0.3); note = "비행 생물이 수중전에 돌입하여 전투력이 70% 감소했습니다.";
+                }
             } else if (animal.habitats.includes(currentEnvName)) {
                 power += 15; note = `자신의 서식지(${currentEnvName}) 이점을 살려 전투력이 대폭(+15) 상승했습니다.`;
             } else {
@@ -863,12 +1043,16 @@
             return { finalPower: power, note: note };
         }
 
-        // --- 상태 관리 ---
-        let myCollection = JSON.parse(localStorage.getItem('whoWins_collection_v6')) || [];
+        // --- 4. 상태 관리 ---
+        let myCollection = JSON.parse(localStorage.getItem('whoWins_collection_v9')) || [];
+        let unlockedAnimals = JSON.parse(localStorage.getItem('whoWins_unlocked_v9')) || [];
         let selectedDecks = [];
         let currentRunSlots = [];
         let r2UsedSlots = [];
+        let r2WinningCards = [];
         let selectedR2Slot = null;
+
+        let pendingRewardAnimal = null; // R1에서 가득 찼을 때 대기하는 생물
 
         let r1Stage = 1, r1Fails = 0;
         let r2Stage = 1, r2Wins = 0, r2Fails = 0;
@@ -876,7 +1060,18 @@
         let currentEnv = null, currentFight = {}, r2EnemyData = {};
         let modalMode = '';
 
-        // --- UI 생성 ---
+        function saveData() {
+            localStorage.setItem('whoWins_collection_v9', JSON.stringify(myCollection));
+            localStorage.setItem('whoWins_unlocked_v9', JSON.stringify(unlockedAnimals));
+        }
+
+        function addPermanentCard(animal) {
+            myCollection.push(animal);
+            if (!unlockedAnimals.includes(animal.id)) unlockedAnimals.push(animal.id);
+            saveData();
+        }
+
+        // --- 5. UI 컨트롤 ---
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
             document.getElementById(screenId).classList.remove('hidden');
@@ -890,9 +1085,8 @@
                     <div class="card-info-box">
                         <div class="card-name">${animal.name}</div>
                         <div class="card-stats">
-                            <span class="t-${animal.tier}">[${TIER_NAMES[animal.tier]} 등급]</span><br>
-                            전투력: <span style="color:#fff; font-weight:bold;">${animal.power}</span><br>
-                            유리: <span class="stat-habitat">${animal.habitats.join(', ')}</span><br>
+                            <span class="t-${animal.tier}">[${TIER_NAMES[animal.tier]} 등급]</span> <span style="color:#fff; font-weight:bold;">💪${animal.power}</span><br>
+                            지형: <span class="stat-habitat">${animal.habitats.join(', ')}</span><br>
                             ${animal.type === 'water' ? '수생' : animal.type === 'land' ? '육상' : animal.type === 'air' ? '공중' : '수륙양용'}${animal.canSwim ? ' (수영O)' : ' (수영X)'}
                         </div>
                     </div>
@@ -908,62 +1102,81 @@
             document.getElementById('msg-modal').classList.add('show');
         }
 
-        function showTierModal() {
-            document.getElementById('tier-modal').classList.add('show');
-        }
+        function showTierModal() { document.getElementById('tier-modal').classList.add('show'); }
 
+        // 탈락 시 위로 보상 제거 (하드코어)
         function triggerGameOver(reason) {
-            let prizeMsg = "";
-            if (currentRunSlots.length > 0) {
-                let lowTiers = currentRunSlots.filter(a => a.tier <= 6); // A등급 이하
-                if (lowTiers.length === 0) lowTiers = currentRunSlots; // 전부 고티어면 아무거나
-                let prize = lowTiers[Math.floor(Math.random() * lowTiers.length)];
-                if (!myCollection.find(x => x.id === prize.id)) {
-                    myCollection.push(prize);
-                    localStorage.setItem('whoWins_collection_v6', JSON.stringify(myCollection));
-                }
-                prizeMsg = `<br><br><div style="color:var(--accent); font-weight:bold;">[위로 보상 지급]</div>도감에 <span style="color:#fff;">[${prize.name}]</span>이(가) 기록되었습니다.`;
-            }
-            showModal('게임 오버', 'var(--danger)', `<strong style="color:var(--danger)">${reason}</strong><br>모든 엔트리를 잃었습니다.${prizeMsg}`, '메인으로', 'end_lose');
+            showModal('게임 오버', 'var(--danger)', `<strong style="color:var(--danger)">${reason}</strong><br>모든 엔트리와 도전 기회를 잃었습니다.<br>보상 없이 게임이 종료됩니다.`, '메인으로', 'end_lose');
         }
 
         function modalAction() {
             document.getElementById('msg-modal').classList.remove('show');
             if (modalMode === 'next_r1') { r1Stage++; loadR1Stage(); }
+            else if (modalMode === 'pending_exchange') { showExchangeModal(); }
             else if (modalMode === 'to_r2_intro') { showScreen('screen-r2-intro'); document.getElementById('game-container').style.backgroundColor = 'var(--bg-panel)'; }
             else if (modalMode === 'next_r2') { r2Stage++; loadR2Stage(); }
             else if (modalMode === 'end_win') { showRewardScreen(); }
             else if (modalMode === 'end_lose') { showScreen('screen-main'); }
         }
 
-        // --- 1. 메인 / 도감 ---
         function initCollection() {
             const grid = document.getElementById('collection-grid');
             grid.innerHTML = '';
 
-            let uniqueCollected = [...new Map(myCollection.map(item => [item.id, item])).values()];
-            // 도감 정렬: 1순위 티어(내림차순), 2순위 파워(내림차순)
-            uniqueCollected.sort((a, b) => b.tier - a.tier || b.power - a.power);
+            let counts = {};
+            myCollection.forEach(a => counts[a.id] = (counts[a.id] || 0) + 1);
 
-            document.getElementById('collection-count').innerText = uniqueCollected.length;
+            let sortedDB = [...ANIMAL_DB].sort((a, b) => {
+                let aOwned = counts[a.id] > 0 || unlockedAnimals.includes(a.id);
+                let bOwned = counts[b.id] > 0 || unlockedAnimals.includes(b.id);
+                if (aOwned !== bOwned) return aOwned ? -1 : 1;
+                return b.tier - a.tier || b.power - a.power;
+            });
 
-            for (let i = 0; i < 200; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'collection-slot';
-                if (uniqueCollected[i]) {
-                    slot.classList.add('filled');
-                    slot.innerText = uniqueCollected[i].icon;
-                    slot.setAttribute('data-name', uniqueCollected[i].name);
-                    slot.title = `[${TIER_NAMES[uniqueCollected[i].tier]}] ${uniqueCollected[i].name} (전투력: ${uniqueCollected[i].power})`;
-                } else { slot.innerText = "?"; slot.style.fontSize = "1em"; }
-                grid.appendChild(slot);
-            }
+            document.getElementById('collection-count').innerText = Object.keys(counts).length;
+
+            sortedDB.forEach(animal => {
+                let count = counts[animal.id] || 0;
+                let isUnlocked = unlockedAnimals.includes(animal.id);
+
+                if (count > 0 || isUnlocked) {
+                    const slot = document.createElement('div');
+                    slot.className = 'collection-slot';
+
+                    if (count > 0) {
+                        slot.classList.add('filled');
+                        slot.innerHTML = `
+                                <div class="col-badge">x${count}</div>
+                                <div class="col-tier t-${animal.tier}">${TIER_NAMES[animal.tier]}</div>
+                                <div class="col-icon">${animal.icon}</div>
+                                <div class="col-name">${animal.name}</div>
+                            `;
+                    } else if (isUnlocked) {
+                        slot.classList.add('filled', 'dimmed');
+                        slot.innerHTML = `
+                                <div class="col-badge" style="background:#444;">x0</div>
+                                <div class="col-tier t-${animal.tier}" style="color:#aaa; text-shadow:none;">${TIER_NAMES[animal.tier]}</div>
+                                <div class="col-icon">${animal.icon}</div>
+                                <div class="col-name" style="color:#aaa;">${animal.name}</div>
+                            `;
+                    }
+                    slot.title = `[${TIER_NAMES[animal.tier]}] ${animal.name} (전투력: ${animal.power})`;
+                    grid.appendChild(slot);
+                } else {
+                    const slot = document.createElement('div');
+                    slot.className = 'collection-slot';
+                    slot.innerHTML = `<div class="col-icon" style="color:#555;">?</div>`;
+                    grid.appendChild(slot);
+                }
+            });
         }
 
         function resetGame() {
             if (confirm("모든 도감 데이터가 삭제됩니다. 정말 초기화하시겠습니까?")) {
-                localStorage.removeItem('whoWins_collection_v6');
+                localStorage.removeItem('whoWins_collection_v9');
+                localStorage.removeItem('whoWins_unlocked_v9');
                 myCollection = [];
+                unlockedAnimals = [];
                 alert("초기화되었습니다.");
                 initCollection();
             }
@@ -979,17 +1192,18 @@
                 document.getElementById('deck-select-msg').classList.remove('hidden');
             } else {
                 document.getElementById('deck-select-msg').classList.add('hidden');
-                let uniqueDecks = [...new Map(myCollection.map(item => [item.id, item])).values()];
-                // 덱 선택창도 정렬
-                uniqueDecks.sort((a, b) => b.tier - a.tier || b.power - a.power);
-                uniqueDecks.forEach(animal => {
+
+                let tempCollection = myCollection.map((a, i) => ({ ...a, originIndex: i }));
+                tempCollection.sort((a, b) => b.tier - a.tier || b.power - a.power);
+
+                tempCollection.forEach(animal => {
                     const card = document.createElement('div');
                     card.className = 'card deck-card';
                     card.innerHTML = createCardHTML(animal);
                     card.onclick = () => {
                         if (card.classList.contains('selected')) {
                             card.classList.remove('selected');
-                            selectedDecks = selectedDecks.filter(a => a.id !== animal.id);
+                            selectedDecks = selectedDecks.filter(a => a.originIndex !== animal.originIndex);
                         } else {
                             if (selectedDecks.length >= 5) return alert('최대 5개까지만 출전 가능합니다.');
                             card.classList.add('selected');
@@ -1003,8 +1217,16 @@
             showScreen('screen-deck-select');
         }
 
-        // --- 2. 1라운드 ---
+        // --- 1라운드 ---
         function startRound1() {
+            if (selectedDecks.length === 0 && myCollection.length > 0) {
+                if (!confirm("덱을 선택하지 않으셨습니다. 맨몸으로 1라운드에 진입하시겠습니까?")) return;
+            }
+
+            let usedIndexes = selectedDecks.map(a => a.originIndex);
+            myCollection = myCollection.filter((_, i) => !usedIndexes.includes(i));
+            saveData();
+
             r1Stage = 1; r1Fails = 0;
             currentRunSlots = [...selectedDecks];
             showScreen('screen-ingame-r1');
@@ -1038,6 +1260,8 @@
             document.getElementById('r1-env-display').innerText = `장소: ${currentEnv}`;
             document.getElementById('r1-env-display').style.backgroundColor = envData.color;
             document.getElementById('game-container').style.backgroundColor = envData.bgColor;
+
+            document.getElementById('r1-arena-stage').style.backgroundImage = `url('${envData.bgImg}')`;
 
             let a = ANIMAL_DB[Math.floor(Math.random() * ANIMAL_DB.length)];
             let b = ANIMAL_DB[Math.floor(Math.random() * ANIMAL_DB.length)];
@@ -1076,40 +1300,91 @@
 
             if (isCorrect) {
                 title = '정답!'; color = 'var(--success)';
-                if (currentFight.winnerChoice === 'draw') {
-                    let randomPick = Math.random() > 0.5 ? currentFight.left : currentFight.right;
-                    if (currentRunSlots.length < 10) {
-                        currentRunSlots.push(randomPick);
-                        htmlDesc += `<strong style="color:var(--success)">정확한 무승부 예측!<br>보상으로 [${randomPick.name}] 덱 획득!</strong>`;
+                let wonAnimal = currentFight.winnerChoice === 'draw' ?
+                    (Math.random() > 0.5 ? currentFight.left : currentFight.right) :
+                    currentFight.winnerAnimal;
+
+                if (currentRunSlots.length < 10) {
+                    currentRunSlots.push(wonAnimal);
+                    htmlDesc += `<strong style="color:var(--success)">정확한 예측!<br>임시 보상으로 [${wonAnimal.name}] 덱 획득!</strong>`;
+
+                    if (r1Stage >= 10) {
+                        btnText = '2라운드 안내'; mode = 'to_r2_intro';
+                        htmlDesc += `<br><br><strong>1라운드 생존! 모은 덱으로 2라운드에 돌입합니다.</strong>`;
+                    } else {
+                        btnText = '다음 스테이지'; mode = 'next_r1';
                     }
+                    showModal(title, color, htmlDesc, btnText, mode);
                 } else {
-                    if (currentRunSlots.length < 10) {
-                        currentRunSlots.push(currentFight.winnerAnimal);
-                        htmlDesc += `<strong style="color:var(--success)">[${currentFight.winnerAnimal.name}] 덱 임시 획득!</strong>`;
-                    } else { htmlDesc += `<span style="color:#aaa">슬롯이 가득 찼습니다.</span>`; }
+                    pendingRewardAnimal = wonAnimal;
+                    htmlDesc += `<strong style="color:var(--accent)">[${wonAnimal.name}] 영입 대기 중!</strong><br><span style="color:#aaa">임시 덱(10개)이 가득 차서 교환이 필요합니다.</span>`;
+                    showModal(title, color, htmlDesc, '교환 화면으로', 'pending_exchange');
                 }
             } else {
                 title = '오답!'; color = 'var(--danger)';
                 r1Fails++;
                 if (currentFight.winnerChoice === 'draw') htmlDesc += `<strong style="color:var(--danger)"><br>이 전투는 무승부였습니다! 예측 실패.</strong>`;
-            }
 
-            if (r1Fails >= 5) {
-                triggerGameOver("5번의 오답으로 생존에 실패했습니다.");
-                return;
-            }
+                if (r1Fails >= 5) {
+                    triggerGameOver("5번의 오답으로 생존에 실패했습니다.");
+                    return;
+                }
 
-            if (r1Stage >= 10) {
-                btnText = '2라운드 안내'; mode = 'to_r2_intro';
-                htmlDesc += `<br><br><strong>1라운드 생존! 모은 덱으로 2라운드에 돌입합니다.</strong>`;
-            } else {
-                btnText = '다음 스테이지'; mode = 'next_r1';
-            }
+                if (r1Stage >= 10) {
+                    btnText = '2라운드 안내'; mode = 'to_r2_intro';
+                    htmlDesc += `<br><br><strong>1라운드 생존! 모은 덱으로 2라운드에 돌입합니다.</strong>`;
+                } else {
+                    btnText = '다음 스테이지'; mode = 'next_r1';
+                }
 
-            showModal(title, color, htmlDesc, btnText, mode);
+                showModal(title, color, htmlDesc, btnText, mode);
+            }
         }
 
-        // --- 3. 2라운드 ---
+        // --- 교환 시스템 ---
+        function showExchangeModal() {
+            document.getElementById('msg-modal').classList.remove('show');
+            document.getElementById('exchange-modal').classList.add('show');
+
+            document.getElementById('exchange-new-card').innerHTML = createCardHTML(pendingRewardAnimal);
+
+            const inv = document.getElementById('exchange-inventory');
+            inv.innerHTML = '';
+
+            currentRunSlots.forEach((animal, i) => {
+                const isLocked = i < selectedDecks.length; // 초기에 들고온 덱은 잠금
+                const slot = document.createElement('div');
+                slot.className = 'slot exchange-slot filled' + (isLocked ? ' locked' : '');
+                slot.innerHTML = `<div class="slot-box">${animal.icon}</div><div class="slot-name">${animal.name}</div>`;
+
+                if (!isLocked) {
+                    slot.onclick = () => {
+                        currentRunSlots[i] = pendingRewardAnimal; // 교체
+                        pendingRewardAnimal = null;
+                        document.getElementById('exchange-modal').classList.remove('show');
+                        proceedToNextR1Stage();
+                    };
+                }
+                inv.appendChild(slot);
+            });
+        }
+
+        function discardNewAnimal() {
+            pendingRewardAnimal = null;
+            document.getElementById('exchange-modal').classList.remove('show');
+            proceedToNextR1Stage();
+        }
+
+        function proceedToNextR1Stage() {
+            if (r1Stage >= 10) {
+                showModal('2라운드 안내', 'var(--accent)', '<br><br><strong>1라운드 생존! 모은 덱으로 2라운드에 돌입합니다.</strong>', '다음 스테이지', 'to_r2_intro');
+            } else {
+                r1Stage++;
+                loadR1Stage();
+            }
+        }
+
+        // --- 2라운드 ---
         function enterR2Stage() {
             showScreen('screen-ingame-r2');
             startRound2();
@@ -1117,6 +1392,7 @@
 
         function startRound2() {
             r2Stage = 1; r2Wins = 0; r2Fails = 0; r2UsedSlots = [];
+            r2WinningCards = [];
             loadR2Stage();
         }
 
@@ -1132,12 +1408,11 @@
 
                     slotEl.className = "slot filled" + (isUsed ? " used" : "") + (isSelected ? " selected" : "");
 
-                    // 툴팁 구조 추가
                     let tooltipHTML = `<div class="tooltip-content">
-                            <strong class="t-${animal.tier}">[${TIER_NAMES[animal.tier]}] ${animal.name}</strong><br>
-                            전투력: ${animal.power} | 유리: ${animal.habitats.join(',')}<br>
-                            타입: ${animal.type === 'water' ? '수생' : animal.type === 'land' ? '육상' : animal.type === 'air' ? '공중' : '수륙양용'}
-                        </div>`;
+                                <strong class="t-${animal.tier}">[${TIER_NAMES[animal.tier]}] ${animal.name}</strong><br>
+                                전투력: ${animal.power} | 유리: ${animal.habitats.join(',')}<br>
+                                타입: ${animal.type === 'water' ? '수생' : animal.type === 'land' ? '육상' : animal.type === 'air' ? '공중' : '수륙양용'}
+                            </div>`;
 
                     slotEl.innerHTML = `<div class="slot-box">${animal.icon}</div><div class="slot-name">${animal.name}</div>${tooltipHTML}`;
 
@@ -1163,14 +1438,16 @@
             document.getElementById('r2-env-display').style.backgroundColor = envData.color;
             document.getElementById('game-container').style.backgroundColor = envData.bgColor;
 
+            document.getElementById('r2-arena-stage').style.backgroundImage = `url('${envData.bgImg}')`;
+
             r2EnemyData = ANIMAL_DB[Math.floor(Math.random() * ANIMAL_DB.length)];
             const enemyCard = document.getElementById('r2-card-right');
             enemyCard.innerHTML = `<div style="position:absolute; top:8px; right:8px; background:var(--danger); color:#fff; padding:4px 8px; font-weight:900; z-index:2; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.5);">AI 적군</div>` + createCardHTML(r2EnemyData);
 
             const myCard = document.getElementById('r2-card-left');
             myCard.innerHTML = `하단 덱에서<br>선택 대기`;
-            myCard.style.border = "3px dashed #57606f";
-            myCard.style.background = "rgba(0,0,0,0.3)";
+            myCard.style.border = "3px dashed #fff";
+            myCard.style.background = "rgba(0,0,0,0.5)";
 
             renderR2Slots();
 
@@ -1181,7 +1458,7 @@
 
         function selectR2Card(slotIndex) {
             selectedR2Slot = slotIndex;
-            renderR2Slots(); // 선택 강조 효과 업데이트
+            renderR2Slots();
 
             const playerAnimal = currentRunSlots[slotIndex];
             const myCard = document.getElementById('r2-card-left');
@@ -1189,7 +1466,6 @@
             myCard.style.border = "4px solid var(--accent)";
             myCard.style.background = "linear-gradient(145deg, #2f3542, #1e272e)";
 
-            // 출격 버튼 표시
             document.getElementById('btn-r2-confirm').classList.remove('hidden');
         }
 
@@ -1200,9 +1476,8 @@
             const playerAnimal = currentRunSlots[selectedR2Slot];
             r2UsedSlots.push(selectedR2Slot);
             selectedR2Slot = null;
-            renderR2Slots(); // 사용됨 처리
+            renderR2Slots();
 
-            // 판정
             const specialCheck = checkSpecialVictory(playerAnimal, r2EnemyData, currentEnv);
             let htmlDesc = "";
             let isWin = false; let isDraw = false;
@@ -1227,7 +1502,9 @@
                 title = '무승부!'; color = 'var(--accent)'; r2Fails++;
                 htmlDesc += `<strong style="color:var(--accent)">승부를 가리지 못했습니다. (패배 허용 -1)</strong>`;
             } else if (isWin) {
-                title = '전투 승리!'; color = 'var(--success)'; r2Wins++;
+                title = '전투 승리!'; color = 'var(--success)';
+                r2Wins++;
+                r2WinningCards.push(playerAnimal);
                 htmlDesc += `<strong style="color:var(--success)">상대를 제압했습니다! (승수 +1)</strong>`;
             } else {
                 title = '전투 패배...'; color = 'var(--danger)'; r2Fails++;
@@ -1240,12 +1517,14 @@
             }
 
             let mode, btnText;
-            if (r2Wins >= 5) {
-                mode = 'end_win'; btnText = '최종 보상 받기';
-                htmlDesc += `<br><br><strong style="font-size:1.3em; color:var(--accent); text-shadow:0 0 10px rgba(255,165,2,0.5);">🎉 목표 5승 달성! 생존에 성공했습니다!</strong>`;
-            } else if (r2Stage >= 10) {
-                triggerGameOver("10스테이지 종료. 5승 달성에 실패했습니다.");
-                return;
+            if (r2Stage >= 10) {
+                if (r2Wins >= 5) {
+                    mode = 'end_win'; btnText = '최종 보상 받기';
+                    htmlDesc += `<br><br><strong style="font-size:1.3em; color:var(--accent); text-shadow:0 0 10px rgba(255,165,2,0.5);">🎉 10스테이지 종료! ${r2Wins}승으로 생존 성공!</strong>`;
+                } else {
+                    triggerGameOver(`10스테이지 종료. ${r2Wins}승으로 5승 달성에 실패했습니다.`);
+                    return;
+                }
             } else {
                 mode = 'next_r2'; btnText = '다음 스테이지';
             }
@@ -1253,7 +1532,7 @@
             showModal(title, color, htmlDesc, btnText, mode);
         }
 
-        // --- 4. 최종 보상 ---
+        // --- 7. 최종 보상 ---
         function showRewardScreen() {
             document.getElementById('game-container').style.backgroundColor = 'var(--bg-panel)';
             showScreen('screen-reward');
@@ -1262,7 +1541,9 @@
             const container = document.getElementById('reward-cards');
             container.innerHTML = '';
 
-            let pool = [...currentRunSlots].sort(() => 0.5 - Math.random()).slice(0, 5);
+            document.getElementById('reward-desc').innerText = `총 ${r2Wins}승 달성! 승리한 덱 중 하나를 영구 보관하세요.`;
+
+            let pool = [...r2WinningCards];
             if (pool.length === 0) pool = [ANIMAL_DB[0]];
 
             let isPicked = false;
@@ -1271,22 +1552,21 @@
                 const cardWrap = document.createElement('div');
                 cardWrap.className = 'reward-card';
                 cardWrap.innerHTML = `
-                        <div class="reward-card-front"></div>
-                        <div class="reward-card-back">
-                            ${animal.icon}<br>
-                            <div style="background:rgba(0,0,0,0.8); padding:8px; color:#fff; font-weight:bold; font-size:0.25em; width:100%; box-sizing:border-box;">${animal.name}</div>
-                        </div>
-                    `;
+                            <div class="reward-card-front"></div>
+                            <div class="reward-card-back">
+                                ${animal.icon}<br>
+                                <div style="background:rgba(0,0,0,0.8); padding:8px; color:#fff; font-weight:bold; font-size:0.25em; width:100%; box-sizing:border-box;">${animal.name}</div>
+                            </div>
+                        `;
                 cardWrap.onclick = () => {
                     if (isPicked) return;
                     isPicked = true;
                     cardWrap.classList.add('flipped');
-                    if (!myCollection.find(x => x.id === animal.id)) {
-                        myCollection.push(animal);
-                        localStorage.setItem('whoWins_collection_v6', JSON.stringify(myCollection));
-                    }
+
+                    addPermanentCard(animal);
+
                     setTimeout(() => {
-                        alert(`최종 생존 보상으로 [${animal.name}] 덱을 영구 획득했습니다!\n다음 생존 게임 진입 시 장착할 수 있습니다.`);
+                        alert(`최종 생존 보상으로 [${animal.name}] 덱을 획득했습니다!\n도감에서 확인할 수 있습니다.`);
                         document.getElementById('btn-return-main').classList.remove('hidden');
                     }, 800);
                 };
