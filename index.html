@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>누가 이겨? - The Ultimate Ecosystem</title>
     <style>
         :root {
@@ -26,32 +26,36 @@
 
         body {
             font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
-            background-color: var(--bg-main);
+            background-color: #000; /* 모바일 외부 배경 */
             color: var(--text-main);
             margin: 0;
             padding: 0;
             text-align: center;
             overflow: hidden;
             user-select: none;
+            display: flex;
+            justify-content: center;
         }
 
         .hidden {
             display: none !important;
         }
 
+        /* --- 모바일 세로 규격 제한 --- */
         #game-container {
-            max-width: 1000px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 480px;
             height: 100vh;
             position: relative;
             background-color: var(--bg-panel);
             box-shadow: 0 0 40px rgba(0,0,0,0.9);
             overflow-y: auto;
+            overflow-x: hidden;
             transition: background-color 0.8s ease;
         }
 
         .screen {
-            padding: 30px 20px 160px 20px;
+            padding: 20px 15px 160px 15px; /* 모바일에 맞춘 패딩 축소 */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -67,34 +71,37 @@
 
         h1 {
             color: var(--accent);
-            font-size: 3.5em;
+            font-size: 2.4em; /* 사이즈 축소 */
             font-weight: 900;
             margin-top: 10px;
         }
 
         p {
             color: var(--text-muted);
-            line-height: 1.6;
+            line-height: 1.5;
+            font-size: 0.9em;
         }
 
+        /* 버튼 모바일 최적화 */
         button {
             background: linear-gradient(135deg, #ff4757, #ff6b81);
             color: white;
             border: none;
-            padding: 15px 35px;
-            font-size: 1.2em;
+            padding: 14px 20px;
+            font-size: 1.1em;
             cursor: pointer;
             border-radius: 50px;
-            margin: 10px;
+            margin: 8px;
             font-weight: 800;
             transition: 0.3s;
             box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
             text-transform: uppercase;
+            width: 90%; /* 가로폭 채우기 */
+            max-width: 320px;
         }
 
-            button:hover {
-                transform: translateY(-3px) scale(1.05);
-                box-shadow: 0 8px 25px rgba(255, 71, 87, 0.6);
+            button:active {
+                transform: translateY(2px) scale(0.98);
             }
 
         .btn-secondary {
@@ -104,17 +111,19 @@
 
         .btn-draw {
             background: linear-gradient(135deg, #3742fa, #5352ed);
-            padding: 10px 20px;
-            font-size: 0.9em;
-            margin-top: 10px;
+            padding: 10px 15px;
+            font-size: 0.85em;
+            margin-top: 5px;
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(55, 66, 250, 0.4);
+            width: auto; /* 고정 크기 유지 */
         }
 
         .btn-confirm {
             background: linear-gradient(135deg, #2ed573, #7bed9f);
-            font-size: 1.4em;
-            padding: 15px 50px;
+            font-size: 1.3em;
+            padding: 15px 40px;
+            width: auto;
             animation: pulse 1.5s infinite;
         }
 
@@ -135,17 +144,17 @@
             }
         }
 
-        /* 도감 */
+        /* 도감 모바일 최적화 */
         .collection-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-            gap: 8px;
+            grid-template-columns: repeat(4, 1fr); /* 모바일용 4열 */
+            gap: 6px;
             width: 100%;
-            max-width: 900px;
             margin-bottom: 20px;
-            padding: 20px;
+            padding: 10px;
             background: rgba(0,0,0,0.4);
-            border-radius: 15px;
+            border-radius: 12px;
+            box-sizing: border-box;
         }
 
         .collection-slot {
@@ -153,14 +162,13 @@
             aspect-ratio: 1;
             background-color: #2f3542;
             border: 2px solid #57606f;
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 2em;
+            font-size: 1.5em;
             color: #747d8c;
-            transition: 0.2s;
             position: relative;
         }
 
@@ -169,50 +177,40 @@
                 border-color: var(--accent);
                 color: #fff;
                 box-shadow: 0 0 10px rgba(255,165,2,0.3);
-                cursor: pointer;
             }
 
                 .collection-slot.filled::after {
                     content: attr(data-name);
                     position: absolute;
-                    bottom: 4px;
+                    bottom: 2px;
                     font-size: 0.25em;
                     color: #dfe4ea;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    max-width: 90%;
+                    max-width: 95%;
                     font-weight: bold;
                 }
 
-                .collection-slot.filled:hover {
-                    transform: scale(1.1);
-                    z-index: 10;
-                    border-color: #fff;
-                }
-
-        /* 카드 UI */
+        /* 카드 UI 모바일 스케일 조정 */
         .deck-select-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(2, 1fr); /* 모바일용 2열 배치 */
+            gap: 10px;
             justify-content: center;
             width: 100%;
-            max-width: 900px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .card {
             background: linear-gradient(145deg, #2f3542, #1e272e);
             border: 3px solid #57606f;
-            border-radius: 16px;
-            cursor: pointer;
+            border-radius: 14px;
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            transition: 0.3s ease-out;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
         }
 
         .card-icon-area {
@@ -220,8 +218,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 5em;
-            padding-bottom: 90px;
+            font-size: 3.5em; /* 폰트 축소 */
+            padding-bottom: 70px; /* 정보 박스 높이 확보 */
             text-shadow: 0px 10px 20px rgba(0,0,0,0.8);
             background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
         }
@@ -231,27 +229,29 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            padding: 12px;
+            padding: 8px; /* 패딩 축소 */
             box-sizing: border-box;
             z-index: 1;
             text-align: left;
             background: rgba(0,0,0,0.85);
             border-top: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(5px);
         }
 
         .card .card-name {
-            font-size: 1.2em;
+            font-size: 1.05em; /* 축소 */
             font-weight: 900;
             color: #fff;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             letter-spacing: -0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .card .card-stats {
-            font-size: 0.8em;
+            font-size: 0.75em;
             color: #a4b0be;
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         .card .stat-habitat {
@@ -260,186 +260,175 @@
         }
 
         .deck-card {
-            height: 190px;
+            height: 160px;
         }
-
+            /* 높이 축소 */
             .deck-card.selected {
                 border-color: var(--accent);
-                box-shadow: 0 0 25px var(--accent);
-                transform: scale(1.05) translateY(-5px);
+                box-shadow: 0 0 20px var(--accent);
+                transform: scale(1.02) translateY(-2px);
             }
 
+        /* 전투 화면 모바일 최적화 */
         .combatant-card {
-            width: 240px;
-            height: 350px;
-            border-width: 4px;
+            width: 140px; /* 폭 대폭 축소 */
+            height: 210px; /* 높이 축소 */
+            border-width: 3px;
         }
 
             .combatant-card .card-icon-area {
-                font-size: 8em;
+                font-size: 5em; /* 이모지 크기 축소 */
+                padding-bottom: 75px;
             }
 
-        /* 9단계 알파벳 티어 스타일 (SSS ~ F) */
+        /* 티어 스타일 */
         .t-9 {
             color: #ff0000;
             font-weight: 900;
-            text-shadow: 0 0 15px #ff0000, 0 0 25px #ffd700;
-            letter-spacing: 2px;
+            text-shadow: 0 0 10px #ff0000, 0 0 15px #ffd700;
+            letter-spacing: 1px;
         }
-        /* SSS */
+
         .t-8 {
             color: #ff5252;
             font-weight: 900;
-            text-shadow: 0 0 10px #ff5252;
         }
-        /* SS */
+
         .t-7 {
             color: #ffb142;
             font-weight: 900;
-            text-shadow: 0 0 8px #ffb142;
         }
-        /* S */
+
         .t-6 {
             color: #706fd3;
             font-weight: 900;
         }
-        /* A */
+
         .t-5 {
             color: #34ace0;
             font-weight: bold;
         }
-        /* B */
+
         .t-4 {
             color: #33d9b2;
             font-weight: bold;
         }
-        /* C */
+
         .t-3 {
             color: #f7f1e3;
             font-weight: bold;
         }
-        /* D */
+
         .t-2 {
             color: #d1ccc0;
         }
-        /* E */
+
         .t-1 {
             color: #84817a;
         }
-        /* F */
 
-        /* 전투 화면 */
         .arena-header {
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 30px;
+            padding: 10px 15px; /* 패딩 축소 */
             box-sizing: border-box;
             background: rgba(0,0,0,0.8);
-            border-radius: 50px;
+            border-radius: 20px;
             margin-bottom: 10px;
             border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
 
         .round-info {
-            font-size: 1.6em;
+            font-size: 1.1em; /* 폰트 축소 */
             font-weight: 900;
             color: var(--accent);
         }
 
+        .status-bar {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-top: 0;
+            background: rgba(255,71,87,0.1);
+            border: 1px solid rgba(255,71,87,0.3);
+            color: #ff6b81;
+        }
+
         .versus-container {
             display: flex;
-            gap: 25px;
+            gap: 10px; /* 간격 대폭 축소 */
             align-items: center;
-            margin-top: 10px;
+            margin-top: 5px;
             width: 100%;
             justify-content: center;
             position: relative;
         }
 
         .vs-text {
-            font-size: 3.5em;
+            font-size: 1.8em; /* 사이즈 축소 */
             font-weight: 900;
             font-style: italic;
             color: var(--danger);
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-shadow: 0 0 20px rgba(255,71,87,0.5);
+            text-shadow: 0 0 10px rgba(255,71,87,0.5);
         }
 
         .env-info-center {
-            margin-top: 25px;
-            font-size: 1.6em;
+            margin-top: 15px;
+            font-size: 1.2em; /* 폰트 축소 */
             font-weight: 900;
-            padding: 12px 40px;
-            border-radius: 40px;
+            padding: 10px 30px;
+            border-radius: 30px;
             color: #fff;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-            display: inline-block;
-            transition: background-color 0.5s;
-            letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
             border: 2px solid rgba(255,255,255,0.2);
         }
 
-        .status-bar {
-            background: rgba(255,71,87,0.1);
-            border: 1px solid rgba(255,71,87,0.3);
-            padding: 8px 20px;
-            border-radius: 20px;
-            margin-top: 10px;
-            font-weight: bold;
-            color: #ff6b81;
-        }
-
-        /* 하단 슬롯 & 툴팁 */
+        /* 하단 슬롯 480px 대응 */
         .slot-container {
             width: 100%;
-            padding: 15px 20px;
+            padding: 10px 15px;
             background: rgba(15, 15, 19, 0.95);
-            position: fixed;
+            position: absolute; /* 모바일에선 absolute 추천 */
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            max-width: 1000px;
+            left: 0;
             box-sizing: border-box;
             border-top: 1px solid rgba(255,255,255,0.1);
             z-index: 10;
-            backdrop-filter: blur(10px);
         }
 
         .slots {
             display: flex;
-            justify-content: center;
-            gap: 12px;
+            justify-content: flex-start; /* 모바일에선 좌측 정렬 스크롤이 편함 */
+            gap: 8px;
             overflow-x: auto;
             padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .slot {
-            flex: 0 0 65px;
+            flex: 0 0 55px; /* 슬롯 크기 축소 */
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
-            cursor: pointer;
-            transition: 0.2s;
         }
 
         .slot-box {
-            width: 65px;
-            height: 65px;
+            width: 55px;
+            height: 55px;
             background: #2f3542;
             border: 2px dashed #57606f;
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5em;
-            position: relative;
+            font-size: 1.8em;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
 
@@ -447,7 +436,6 @@
             border-style: solid;
             border-color: var(--success);
             background: linear-gradient(135deg, #2f3542, #1e272e);
-            box-shadow: 0 0 10px rgba(46, 213, 115, 0.3);
         }
 
         .slot.locked .slot-box {
@@ -460,23 +448,22 @@
                 position: absolute;
                 font-size: 0.5em;
                 z-index: 1;
-                text-shadow: 2px 2px 4px #000;
             }
 
         .slot.selected .slot-box {
             border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent);
-            transform: translateY(-5px);
+            box-shadow: 0 0 10px var(--accent);
+            transform: translateY(-3px);
         }
 
         .slot-name {
-            font-size: 0.75em;
+            font-size: 0.65em;
             color: #a4b0be;
-            margin-top: 6px;
+            margin-top: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 65px;
+            max-width: 55px;
             font-weight: bold;
         }
 
@@ -486,11 +473,7 @@
             pointer-events: none;
         }
 
-        .slot:hover:not(.locked):not(.used) .slot-box {
-            border-color: #fff;
-        }
-
-        /* 툴팁 CSS */
+        /* 툴팁 모바일 조정 (모바일에선 터치시 보이도록) */
         .tooltip-content {
             visibility: hidden;
             opacity: 0;
@@ -499,64 +482,42 @@
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.95);
-            border: 2px solid var(--accent);
-            padding: 10px 15px;
-            border-radius: 8px;
+            border: 1px solid var(--accent);
+            padding: 8px 10px;
+            border-radius: 6px;
             width: max-content;
-            text-align: left;
             z-index: 100;
-            pointer-events: none;
             transition: 0.2s;
             color: #fff;
-            font-size: 0.9em;
-            line-height: 1.5;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
+            font-size: 0.75em;
+            margin-bottom: 5px;
         }
 
-            .tooltip-content::after {
-                content: '';
-                position: absolute;
-                top: 100%;
-                left: 50%;
-                margin-left: -5px;
-                border-width: 5px;
-                border-style: solid;
-                border-color: var(--accent) transparent transparent transparent;
-            }
-
-        .slot:hover .tooltip-content {
+        .slot:hover .tooltip-content, .slot:active .tooltip-content {
             visibility: visible;
             opacity: 1;
             bottom: calc(100% + 5px);
         }
 
-        /* 보상 화면 */
+        /* 보상 화면 모바일 최적화 */
         .reward-cards {
             display: flex;
-            gap: 20px;
+            flex-wrap: wrap; /* 여러장 모바일 줄바꿈 처리 */
+            gap: 15px;
             justify-content: center;
-            margin-top: 50px;
-            perspective: 1200px;
+            margin-top: 30px;
         }
 
         .reward-card {
-            width: 160px;
-            height: 230px;
+            width: 120px;
+            height: 180px;
             background: repeating-linear-gradient(45deg, #1e272e, #1e272e 10px, #2f3542 10px, #2f3542 20px);
-            border: 4px solid var(--accent);
-            border-radius: 16px;
-            cursor: pointer;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
+            border: 3px solid var(--accent);
+            border-radius: 12px;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
         }
-
-            .reward-card:hover {
-                box-shadow: 0 0 30px var(--accent);
-                transform: translateY(-10px);
-            }
 
             .reward-card.flipped {
                 transform: rotateY(180deg);
@@ -568,7 +529,7 @@
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            border-radius: 12px;
+            border-radius: 10px;
         }
 
         .reward-card-back {
@@ -578,18 +539,18 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 5em;
-            border: 4px solid #fff;
+            font-size: 4em;
+            border: 3px solid #fff;
         }
 
-        /* 모달 */
+        /* 모달 모바일 최적화 */
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0,0,0,0.9);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -597,7 +558,6 @@
             opacity: 0;
             pointer-events: none;
             transition: 0.3s;
-            backdrop-filter: blur(5px);
         }
 
             .modal.show {
@@ -607,62 +567,41 @@
 
         .modal-content {
             background: #1e272e;
-            padding: 40px;
-            border-radius: 24px;
-            text-align: center;
+            padding: 20px;
+            border-radius: 16px;
             border: 2px solid var(--accent);
-            box-shadow: 0 0 60px rgba(255,165,2,0.2);
-            max-width: 600px;
-            width: 90%;
-            position: relative;
-            overflow: hidden;
-            max-height: 90vh;
+            width: 88%; /* 모바일 폭 맞춤 */
+            max-width: 400px;
+            max-height: 85vh;
             overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        #msg-title {
+            font-size: 2em;
+            margin-top: 0;
         }
 
         .analysis-box {
-            background: rgba(0,0,0,0.4);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: left;
-            margin: 20px 0;
-            font-size: 1.1em;
-            line-height: 1.6;
-            color: #dfe4ea;
-            border: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9em;
+            padding: 12px;
+            margin: 15px 0;
         }
 
         .special-win-box {
-            background: rgba(162, 155, 254, 0.1);
-            border: 2px solid var(--special);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            margin: 20px 0;
-            color: #fff;
-            font-weight: 900;
-            font-size: 1.3em;
-            line-height: 1.5;
-            text-shadow: 2px 2px 4px #000;
-            box-shadow: inset 0 0 20px rgba(162, 155, 254, 0.2);
+            font-size: 1.1em;
+            padding: 15px;
+            margin: 15px 0;
         }
 
         .tier-table {
+            font-size: 0.8em;
+            margin-top: 10px;
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
         }
 
             .tier-table th, .tier-table td {
-                border: 1px solid #555;
-                padding: 10px;
-                text-align: left;
-            }
-
-            .tier-table th {
-                background: #2f3542;
-                color: var(--accent);
-                text-align: center;
+                padding: 6px;
             }
     </style>
 </head>
@@ -672,13 +611,13 @@
 
         <div id="screen-main" class="screen">
             <div style="margin-top: 50px;">
-                <span style="font-size: 1.3em; color: var(--accent); font-weight: 900; letter-spacing: 2px;">하드코어 생태계 서바이벌 v1.1</span>
+                <span style="font-size: 1.1em; color: var(--accent); font-weight: 900; letter-spacing: 1px;">하드코어 생태계 서바이벌 v1.1</span>
                 <h1>누가 이겨?</h1>
-                <p style="font-size: 1.1em; max-width: 600px;">단순한 스탯 싸움이 아닙니다. 장소에 따른 익사와 추락사!<br><strong style="color:var(--danger)">5번 틀리면 모든 것을 잃고 게임 오버됩니다.</strong><br>생존을 위한 궁극의 덱을 구성하세요.</p>
+                <p><strong style="color:var(--danger)">5번 틀리면 모든 것을 잃고 게임 오버.</strong><br>생존을 위한 궁극의 덱을 구성하세요.</p>
             </div>
-            <div style="margin-top: 40px; display: flex; flex-direction: column; gap: 12px;">
-                <button onclick="goToDeckSelect()" style="padding: 20px 40px; font-size: 1.4em;">게임 시작</button>
-                <button class="btn-secondary" onclick="showScreen('screen-collection')">내 생물 도감 (전체 보기)</button>
+            <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%; gap: 5px;">
+                <button onclick="goToDeckSelect()">게임 시작</button>
+                <button class="btn-secondary" onclick="showScreen('screen-collection')">내 생물 도감</button>
                 <button class="btn-secondary" style="background: #3742fa;" onclick="showTierModal()">티어표 확인</button>
                 <button class="btn-secondary" style="background: #2d3436; color: #636e72;" onclick="resetGame()">데이터 초기화</button>
             </div>
@@ -686,17 +625,17 @@
 
         <div id="screen-collection" class="screen hidden">
             <h2>위대한 생존자 도감 <span id="collection-count" style="color:var(--accent);">0</span> / 200</h2>
-            <p style="color:#aaa; font-size:0.9em;">티어(SSS순) 및 전투력 기준으로 자동 정렬됩니다.</p>
+            <p style="font-size:0.8em;">티어 및 전투력 순으로 정렬</p>
             <div class="collection-grid" id="collection-grid"></div>
             <button class="btn-secondary" onclick="showScreen('screen-main')">메인으로</button>
         </div>
 
         <div id="screen-deck-select" class="screen hidden">
-            <h2>전투 엔트리 선택 (최대 5개)</h2>
-            <p id="deck-select-msg" style="color:var(--danger); font-weight:bold;">보유한 덱이 없습니다. 맨몸으로 1라운드를 시작합니다!</p>
+            <h2>전투 엔트리 선택 (최대 5)</h2>
+            <p id="deck-select-msg" style="color:var(--danger); font-weight:bold; font-size: 0.9em;">보유 덱 없음! 맨몸으로 시작합니다.</p>
             <div class="deck-select-grid" id="deck-select-grid"></div>
-            <div style="font-size: 1.3em; margin-bottom: 20px; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 20px;">
-                선택됨: <span id="select-count" style="color: var(--accent); font-weight: 900; font-size: 1.2em;">0</span> / 5
+            <div style="font-size: 1.1em; margin-bottom: 15px; background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 20px;">
+                선택됨: <span id="select-count" style="color: var(--accent); font-weight: 900;">0</span> / 5
             </div>
             <button onclick="startRound1()">1라운드 진입</button>
             <button class="btn-secondary" onclick="showScreen('screen-main')">뒤로 가기</button>
@@ -704,8 +643,8 @@
 
         <div id="screen-ingame-r1" class="screen hidden">
             <div class="arena-header">
-                <div class="round-info">ROUND 1 - STAGE <span id="r1-stage-num">1</span>/10</div>
-                <div class="status-bar">오답 허용: <span id="r1-fails">0</span> / 5</div>
+                <div class="round-info">R1 - STAGE <span id="r1-stage-num">1</span></div>
+                <div class="status-bar">오답 허용: <span id="r1-fails">0</span>/5</div>
             </div>
 
             <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; width: 100%;">
@@ -713,7 +652,7 @@
                     <div class="card combatant-card" id="r1-card-left" onclick="guessWinner('left')"></div>
                     <div class="vs-text">
                         <div>VS</div>
-                        <button class="btn-draw" onclick="guessWinner('draw')">무승부 예측</button>
+                        <button class="btn-draw" onclick="guessWinner('draw')">무승부</button>
                     </div>
                     <div class="card combatant-card" id="r1-card-right" onclick="guessWinner('right')"></div>
                 </div>
@@ -721,85 +660,82 @@
             </div>
 
             <div class="slot-container">
-                <div style="font-size: 0.85em; margin-bottom: 8px; color:var(--text-muted); text-align:left; font-weight:bold;">보유 덱 (1R 사용 불가)</div>
+                <div style="font-size: 0.75em; margin-bottom: 5px; color:var(--text-muted); text-align:left; font-weight:bold;">보유 덱 (1R 사용 불가)</div>
                 <div class="slots" id="r1-inventory-slots"></div>
             </div>
         </div>
 
         <div id="screen-r2-intro" class="screen hidden">
-            <h1 style="color:var(--danger); font-size:4em;">ROUND 2</h1>
+            <h1 style="color:var(--danger); font-size:3em;">ROUND 2</h1>
             <h2>서바이벌 덱 배틀</h2>
             <div class="analysis-box" style="text-align:center;">
                 1라운드에서 모은 덱으로 적과 겨루게 됩니다.<br><br>
                 <strong style="color:var(--accent)">1. 상대의 덱과 장소를 확인하세요.</strong><br>
-                <strong style="color:var(--accent)">2. 상대 덱에 맞춰 이길 수 있는 최적의 나의 덱을 클릭하여 전장에 올리세요.</strong><br>
-                (다른 덱을 클릭하면 교체할 수 있습니다.)<br>
-                <strong style="color:var(--accent)">3. '출격 확인' 버튼을 눌러 전투를 개시하세요.</strong><br><br>
-                ※ 한 번 사용한 덱은 이번 게임에서 다시 쓸 수 없습니다.<br>
-                ※ 10판 중 5승을 거두면 최종 보상을 획득합니다.
+                <strong style="color:var(--accent)">2. 최적의 나의 덱을 선택하세요.</strong><br>
+                <strong style="color:var(--accent)">3. '출격 확인' 버튼을 누르세요.</strong><br><br>
+                ※ 한 번 사용한 덱은 소멸합니다.<br>
+                ※ 10판 중 5승 달성 시 최종 승리!
             </div>
-            <button onclick="enterR2Stage()" style="padding: 20px 50px; font-size: 1.5em; margin-top:20px;">전투 개시</button>
+            <button onclick="enterR2Stage()">전투 개시</button>
         </div>
 
         <div id="screen-ingame-r2" class="screen hidden">
             <div class="arena-header" style="border-color: var(--danger);">
-                <div class="round-info" style="color: var(--danger);">ROUND 2 - STAGE <span id="r2-stage-num">1</span>/10</div>
+                <div class="round-info" style="color: var(--danger);">R2 - STAGE <span id="r2-stage-num">1</span></div>
                 <div class="status-bar" style="border-color:var(--success); color:var(--success); background:rgba(46,213,115,0.1);">승수: <span id="r2-wins">0</span>/5</div>
-                <div class="status-bar">패배 허용: <span id="r2-fails">0</span> / 5</div>
+                <div class="status-bar">패배 허용: <span id="r2-fails">0</span>/5</div>
             </div>
 
             <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; width: 100%;">
-                <p style="color: #a4b0be; margin-top: 0; font-weight:bold;">상대 덱에 맞춰 이길 수 있는 나의 덱을 선택하세요.</p>
+                <p style="color: #a4b0be; margin-top: 0; font-weight:bold; font-size: 0.85em;">상대 덱에 맞춰 내 덱을 선택하세요.</p>
                 <div class="versus-container">
-                    <div class="card combatant-card" id="r2-card-left" style="border: 3px dashed #57606f; background: rgba(0,0,0,0.3); display:flex; justify-content:center; align-items:center; color:#57606f; font-size:1.3em; font-weight:bold; box-shadow:none;">
+                    <div class="card combatant-card" id="r2-card-left" style="border: 3px dashed #57606f; background: rgba(0,0,0,0.3); display:flex; justify-content:center; align-items:center; color:#57606f; font-size:1em; font-weight:bold; box-shadow:none; text-align:center;">
                         하단 덱에서<br>선택 대기
                     </div>
-                    <div class="vs-text">
-                        <div>VS</div>
-                    </div>
-                    <div class="card combatant-card" id="r2-card-right" style="border-color: var(--danger); box-shadow: 0 0 30px rgba(255,71,87,0.3);"></div>
+                    <div class="vs-text"><div>VS</div></div>
+                    <div class="card combatant-card" id="r2-card-right" style="border-color: var(--danger); box-shadow: 0 0 20px rgba(255,71,87,0.3);"></div>
                 </div>
-                <button id="btn-r2-confirm" class="btn-confirm hidden" onclick="confirmR2Card()" style="position:absolute; bottom:140px; z-index:20;">출격 확인</button>
+                <button id="btn-r2-confirm" class="btn-confirm hidden" onclick="confirmR2Card()" style="position:absolute; bottom:130px; z-index:20;">출격 확인</button>
                 <div class="env-info-center" id="r2-env-display">장소: 로딩중</div>
             </div>
 
             <div class="slot-container">
-                <div style="font-size: 0.85em; margin-bottom: 8px; color:var(--text-muted); text-align:left; font-weight:bold;">내 덱 (마우스를 올려 정보를 확인하세요)</div>
+                <div style="font-size: 0.75em; margin-bottom: 5px; color:var(--text-muted); text-align:left; font-weight:bold;">내 덱 (마우스를 올려 확인)</div>
                 <div class="slots" id="r2-inventory-slots"></div>
             </div>
         </div>
 
         <div id="screen-reward" class="screen hidden">
-            <h1 style="font-size: 4em; text-shadow: 0 0 30px var(--accent);">🏆 최종 승리!</h1>
-            <p style="font-size: 1.2em;">치열한 생태계에서 살아남았습니다.<br>카드를 하나 선택해 뒤집어 도감에 영구 기록하세요.</p>
+            <h1 style="font-size: 2.8em; text-shadow: 0 0 20px var(--accent);">🏆 최종 승리!</h1>
+            <p style="font-size: 1em;">카드를 하나 선택해 뒤집어 도감에 영구 기록하세요.</p>
             <div class="reward-cards" id="reward-cards"></div>
-            <button class="hidden" id="btn-return-main" onclick="showScreen('screen-main')" style="margin-top:50px;">메인으로 복귀</button>
+            <button class="hidden" id="btn-return-main" onclick="showScreen('screen-main')" style="margin-top:30px;">메인으로 복귀</button>
         </div>
 
         <div id="msg-modal" class="modal">
             <div class="modal-content">
-                <h1 id="msg-title" style="font-size: 2.5em; margin-bottom: 5px;">결과</h1>
+                <h1 id="msg-title">결과</h1>
                 <div id="msg-desc"></div>
-                <button onclick="modalAction()" id="msg-btn" style="margin-top: 20px;">확인</button>
+                <button onclick="modalAction()" id="msg-btn" style="margin-top: 15px;">확인</button>
             </div>
         </div>
 
         <div id="tier-modal" class="modal">
             <div class="modal-content">
-                <h1 style="color:var(--accent);">생태계 티어 등급표</h1>
+                <h1 style="color:var(--accent); font-size:1.5em;">생태계 티어표</h1>
                 <table class="tier-table">
                     <tr><th>등급</th><th>설명</th></tr>
-                    <tr><td class="t-9">SSS</td><td>규격 외의 거대/고대 포식자 (생태계 정점)</td></tr>
-                    <tr><td class="t-8">SS</td><td>각 환경의 최상위 포식자 (코끼리, 상어 등)</td></tr>
-                    <tr><td class="t-7">S</td><td>치명적인 대형 맹수 (사자, 악어 등)</td></tr>
-                    <tr><td class="t-6">A</td><td>위협적인 중대형 동물 (표범, 아나콘다 등)</td></tr>
-                    <tr><td class="t-5">B</td><td>특수한 능력을 지닌 포식자 (독수리, 치타 등)</td></tr>
-                    <tr><td class="t-4">C</td><td>생존력이 강한 중형 동물 (늑대, 캥거루 등)</td></tr>
-                    <tr><td class="t-3">D</td><td>일반적인 초식/중소형 동물 (말, 전갈 등)</td></tr>
-                    <tr><td class="t-2">E</td><td>소형 맹수 및 조류 (여우, 부엉이 등)</td></tr>
-                    <tr><td class="t-1">F</td><td>최하위 피식자 및 곤충 (참새, 달팽이, 잠자리 등)</td></tr>
+                    <tr><td class="t-9">SSS</td><td>거대/고대 포식자</td></tr>
+                    <tr><td class="t-8">SS</td><td>최상위 포식자</td></tr>
+                    <tr><td class="t-7">S</td><td>치명적인 대형 맹수</td></tr>
+                    <tr><td class="t-6">A</td><td>위협적인 중대형 동물</td></tr>
+                    <tr><td class="t-5">B</td><td>특수 능력 포식자</td></tr>
+                    <tr><td class="t-4">C</td><td>생존력 강한 중형 동물</td></tr>
+                    <tr><td class="t-3">D</td><td>일반 초식/중소형 동물</td></tr>
+                    <tr><td class="t-2">E</td><td>소형 맹수 및 조류</td></tr>
+                    <tr><td class="t-1">F</td><td>최하위 피식자/곤충</td></tr>
                 </table>
-                <button onclick="document.getElementById('tier-modal').classList.remove('show')" style="margin-top:20px;">닫기</button>
+                <button onclick="document.getElementById('tier-modal').classList.remove('show')" style="margin-top:15px;">닫기</button>
             </div>
         </div>
 
@@ -950,17 +886,17 @@
 
         function createCardHTML(animal) {
             return `
-                <div class="card-icon-area">${animal.icon}</div>
-                <div class="card-info-box">
-                    <div class="card-name">${animal.name}</div>
-                    <div class="card-stats">
-                        <span class="t-${animal.tier}">[${TIER_NAMES[animal.tier]} 등급]</span><br>
-                        전투력: <span style="color:#fff; font-weight:bold;">${animal.power}</span><br>
-                        유리: <span class="stat-habitat">${animal.habitats.join(', ')}</span><br>
-                        ${animal.type === 'water' ? '수생' : animal.type === 'land' ? '육상' : animal.type === 'air' ? '공중' : '수륙양용'}${animal.canSwim ? ' (수영O)' : ' (수영X)'}
+                    <div class="card-icon-area">${animal.icon}</div>
+                    <div class="card-info-box">
+                        <div class="card-name">${animal.name}</div>
+                        <div class="card-stats">
+                            <span class="t-${animal.tier}">[${TIER_NAMES[animal.tier]} 등급]</span><br>
+                            전투력: <span style="color:#fff; font-weight:bold;">${animal.power}</span><br>
+                            유리: <span class="stat-habitat">${animal.habitats.join(', ')}</span><br>
+                            ${animal.type === 'water' ? '수생' : animal.type === 'land' ? '육상' : animal.type === 'air' ? '공중' : '수륙양용'}${animal.canSwim ? ' (수영O)' : ' (수영X)'}
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
         }
 
         function showModal(title, titleColor, htmlDesc, btnText, mode) {
@@ -1198,10 +1134,10 @@
 
                     // 툴팁 구조 추가
                     let tooltipHTML = `<div class="tooltip-content">
-                        <strong class="t-${animal.tier}">[${TIER_NAMES[animal.tier]}] ${animal.name}</strong><br>
-                        전투력: ${animal.power} | 유리: ${animal.habitats.join(',')}<br>
-                        타입: ${animal.type === 'water' ? '수생' : animal.type === 'land' ? '육상' : animal.type === 'air' ? '공중' : '수륙양용'}
-                    </div>`;
+                            <strong class="t-${animal.tier}">[${TIER_NAMES[animal.tier]}] ${animal.name}</strong><br>
+                            전투력: ${animal.power} | 유리: ${animal.habitats.join(',')}<br>
+                            타입: ${animal.type === 'water' ? '수생' : animal.type === 'land' ? '육상' : animal.type === 'air' ? '공중' : '수륙양용'}
+                        </div>`;
 
                     slotEl.innerHTML = `<div class="slot-box">${animal.icon}</div><div class="slot-name">${animal.name}</div>${tooltipHTML}`;
 
@@ -1335,12 +1271,12 @@
                 const cardWrap = document.createElement('div');
                 cardWrap.className = 'reward-card';
                 cardWrap.innerHTML = `
-                    <div class="reward-card-front"></div>
-                    <div class="reward-card-back">
-                        ${animal.icon}<br>
-                        <div style="background:rgba(0,0,0,0.8); padding:8px; color:#fff; font-weight:bold; font-size:0.25em; width:100%; box-sizing:border-box;">${animal.name}</div>
-                    </div>
-                `;
+                        <div class="reward-card-front"></div>
+                        <div class="reward-card-back">
+                            ${animal.icon}<br>
+                            <div style="background:rgba(0,0,0,0.8); padding:8px; color:#fff; font-weight:bold; font-size:0.25em; width:100%; box-sizing:border-box;">${animal.name}</div>
+                        </div>
+                    `;
                 cardWrap.onclick = () => {
                     if (isPicked) return;
                     isPicked = true;
@@ -1358,6 +1294,5 @@
             });
         }
     </script>
-
 </body>
 </html>
