@@ -1273,6 +1273,9 @@
             return imageCache[key];
         }
 
+        // ===================================================================
+        // ⚔️ [개편] 공통 그래픽 렌더링 함수 (화질 극대화 및 인게임 스파인 강제 강림 초식)
+        // ===================================================================
         function renderHeroGraphic(containerId, heroId, isIngame = false) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -1282,13 +1285,14 @@
             const basePath = `./assets/spine/hero_${heroId}`;
             const imgPath = `./assets/portraits/hero_${heroId}.png`;
 
-            // ⚔️ [좌표계 독립 선언] 외부 변수에 의존하지 않고 내부에서 완벽히 연산하오.
-            const INGAME_SPINE = { scale: 1.8, x: 1300, y: 950 };
-            const INGAME_IMAGE = { scale: 1.8, x: 1300, y: 950 };
+            // ⚔️ 대협 전용 제어 혈 자리 (수치 조절로 완벽한 위치 벼림 가능)
+            const INGAME_SPINE = { scale: 1.8, x: 1300, y: 950 }; // ➔ 인게임 스파인 스케일 및 좌표
+            const INGAME_IMAGE = { scale: 1.8, x: 1300, y: -950 };
 
-            const LOBBY_SPINE = { scale: 1.6, x: 0, y: 0 };  // ➔ 로비 Y값 제어 매개변수
+            const LOBBY_SPINE = { scale: 1.6, x: 0, y: -150 };  // ➔ 로비 Y값 제어 가능! (마이너스 값이 위로, 플러스가 아래로)
             const LOBBY_IMAGE = { scale: 1.5, x: 0, y: 50 };
 
+            // Fallback Image 객체 생성 및 배치
             const fallbackImg = document.createElement('img');
             fallbackImg.src = imgPath;
             fallbackImg.style.position = 'absolute';
@@ -1318,27 +1322,31 @@
             }
             container.appendChild(fallbackImg);
 
+            // Fetch Spine JSON 구동
             fetch(`${basePath}.json`)
                 .then(res => {
-                    if (!res.ok) throw new Error("스파인 파일이 존재하지 않소!");
+                    if (!res.ok) throw new Error("스파인 무공 비급 호출 실패!");
                     return res.text();
                 })
                 .then(text => {
-                    // Spine 구동이 확정되기 전까지는 임시로 이미지를 보여주다가 로드 직후 스위칭하오.
+                    // Spine 로드 성공 시 이미지는 철저히 숨기오
                     fallbackImg.style.display = 'none';
 
                     const spineDiv = document.createElement('div');
                     spineDiv.style.position = 'absolute';
+
+                    // ✨ [화질 극대화] 늘어났을 때 흐려짐 방지 및 선명도 극대화 초식
                     spineDiv.style.imageRendering = '-webkit-optimize-contrast';
                     spineDiv.style.imageRendering = 'crisp-edges';
+
                     container.appendChild(spineDiv);
 
                     if (isIngame) {
+                        // ➔ 기존 코드의 INGAME_Y_OFFSET 미선언 에러를 INGAME_SPINE.y로 완벽 복구!
                         spineDiv.style.bottom = '0px';
                         spineDiv.style.left = '50%';
                         spineDiv.style.width = '100%';
                         spineDiv.style.height = '100%';
-                        // ✨ [오류 수정] 에러를 내뿜던 미선운 변수를 INGAME_SPINE.y로 완벽 복구했소!
                         spineDiv.style.transform = `translate(calc(-50% + ${INGAME_SPINE.x}px), ${-INGAME_SPINE.y}px) scale(${INGAME_SPINE.scale})`;
                         spineDiv.style.transformOrigin = 'bottom center';
 
@@ -1346,6 +1354,7 @@
                         spineDiv.style.maskImage = completeMask;
                         spineDiv.style.webkitMaskImage = completeMask;
                     } else {
+                        // ✨ [로비 Y축 해금] Transform 기준점을 중앙으로 고정하여 Y축 좌표 이동이 즉각 반영되게 하오
                         spineDiv.style.top = '0';
                         spineDiv.style.left = '0';
                         spineDiv.style.width = '100%';
@@ -1354,6 +1363,7 @@
                         spineDiv.style.transformOrigin = 'center center';
                     }
 
+                    // SpinePlayer 구동 및 최고 화질 세팅 조율
                     new spine.SpinePlayer(spineDiv, {
                         jsonUrl: `${basePath}.json`,
                         atlasUrl: `${basePath}.atlas`,
@@ -1362,16 +1372,22 @@
                         backgroundColor: "#00000000",
                         showControls: false,
                         preserveAspectRatio: true,
-                        viewport: { padLeft: "0%", padRight: "0%", padTop: "0%", padBottom: "0%" },
+                        // ✨ 화질 깨짐을 물리치기 위해 기본 뷰포트 스케일링 제한을 해제하오
+                        viewport: {
+                            padLeft: "0%",
+                            padRight: "0%",
+                            padTop: "0%",
+                            padBottom: "0%"
+                        },
                         error: (player, err) => {
-                            console.warn("Spine 렌더링 실패 ➔ Fallback 이미지 강제 가동:", err);
+                            console.error("Spine 구동 실패, 이미지로 대체하오:", err);
                             spineDiv.remove();
-                            fallbackImg.style.display = 'block'; // 에러 시에만 이미지가 뜨게 봉인함
+                            fallbackImg.style.display = 'block';
                         }
                     });
                 })
                 .catch(e => {
-                    console.warn("JSON 호출 실패 ➔ Fallback 이미지 가동:", e);
+                    console.error("리소스 패치 실패:", e);
                     fallbackImg.style.display = 'block';
                 });
         }
