@@ -1273,7 +1273,9 @@
             return imageCache[key];
         }
 
-     // 공통 그래픽 렌더링 함수 (로비 화면 스파인 확대 및 이미지 독립 제어 초식)
+        // ===================================================================
+        // ⚔️ [개편] 공통 그래픽 렌더링 함수 (화질 극대화 및 인게임 스파인 강제 강림 초식)
+        // ===================================================================
         function renderHeroGraphic(containerId, heroId, isIngame = false) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -1283,18 +1285,12 @@
             const basePath = `./assets/spine/hero_${heroId}`;
             const imgPath = `./assets/portraits/hero_${heroId}.png`;
 
-            // ==========================================================
-            // ⚔️ [대협 전용 인게임 / 로비 / 스파인 / 이미지 세부 조절 혈 자리] ⚔️
-            // ==========================================================
-            // 1. 인게임(전장) 화면 우측 하단 제어 수치
-            const INGAME_SPINE = { scale: 1.8, x: 1300, y: -950 };
+            // ⚔️ 대협 전용 제어 혈 자리 (수치 조절로 완벽한 위치 벼림 가능)
+            const INGAME_SPINE = { scale: 1.8, x: 1300, y: 950 }; // ➔ 인게임 스파인 스케일 및 좌표
             const INGAME_IMAGE = { scale: 1.8, x: 1300, y: -950 };
 
-            // 2. 로비 및 수호 관청 내부 독자 제어 수치 
-            // 대협의 요구대로 이미지는 배율을 1.0(그대로) 두고, 스파인만 거대하게 확대하오!
-            const LOBBY_SPINE  = { scale: 1.6, x: 0, y: 300 };  // ➔ 로비 스파인만 1.6배 확대 및 위치 보정!
-            const LOBBY_IMAGE  = { scale: 1.5, x: 0, y: 50 };   // ➔ 이미지 리소스는 축소된 원본 크기 유지!
-            // ==========================================================
+            const LOBBY_SPINE = { scale: 1.6, x: 0, y: -150 };  // ➔ 로비 Y값 제어 가능! (마이너스 값이 위로, 플러스가 아래로)
+            const LOBBY_IMAGE = { scale: 1.5, x: 0, y: 50 };
 
             // Fallback Image 객체 생성 및 배치
             const fallbackImg = document.createElement('img');
@@ -1303,10 +1299,6 @@
             fallbackImg.style.pointerEvents = 'none';
             fallbackImg.style.zIndex = '50';
             fallbackImg.style.display = 'none';
-            
-            // 용량을 줄여 작아진 리소스가 커져도 흐려지지 않게 도트화 가속 주입
-           // fallbackImg.style.imageRendering = 'pixelated';
-           // fallbackImg.style.imageRendering = 'crisp-edges';
             fallbackImg.style.objectFit = 'contain';
 
             if (isIngame) {
@@ -1321,7 +1313,6 @@
                 fallbackImg.style.maskImage = completeMask;
                 fallbackImg.style.webkitMaskImage = completeMask;
             } else {
-                // 로비 및 관청 팝업에서는 대협의 설계대로 원본 크기(1.0)를 유지하며 정중앙에 배치하오
                 fallbackImg.style.top = '0';
                 fallbackImg.style.left = '0';
                 fallbackImg.style.width = '100%';
@@ -1338,27 +1329,32 @@
                     return res.text();
                 })
                 .then(text => {
+                    // Spine 로드 성공 시 이미지는 철저히 숨기오
                     fallbackImg.style.display = 'none';
 
                     const spineDiv = document.createElement('div');
                     spineDiv.style.position = 'absolute';
-                    spineDiv.style.imageRendering = 'pixelated';
+
+                    // ✨ [화질 극대화] 늘어났을 때 흐려짐 방지 및 선명도 극대화 초식
+                    spineDiv.style.imageRendering = '-webkit-optimize-contrast';
                     spineDiv.style.imageRendering = 'crisp-edges';
+
                     container.appendChild(spineDiv);
 
                     if (isIngame) {
+                        // ➔ 기존 코드의 INGAME_Y_OFFSET 미선언 에러를 INGAME_SPINE.y로 완벽 복구!
                         spineDiv.style.bottom = '0px';
                         spineDiv.style.left = '50%';
                         spineDiv.style.width = '100%';
                         spineDiv.style.height = '100%';
-                        spineDiv.style.transform = `translate(calc(-50% + ${INGAME_SPINE.x}px), ${-INGAME_Y_OFFSET}px) scale(${INGAME_SPINE.scale})`;
+                        spineDiv.style.transform = `translate(calc(-50% + ${INGAME_SPINE.x}px), ${-INGAME_SPINE.y}px) scale(${INGAME_SPINE.scale})`;
                         spineDiv.style.transformOrigin = 'bottom center';
 
                         const completeMask = 'linear-gradient(to bottom, black 150px, transparent 150px)';
                         spineDiv.style.maskImage = completeMask;
                         spineDiv.style.webkitMaskImage = completeMask;
                     } else {
-                        // 🔥 [결계 돌파] 로비 화면에서 이미지 배율과 다르게 스파인 배율(LOBBY_SPINE)만 독자적으로 격상하오!
+                        // ✨ [로비 Y축 해금] Transform 기준점을 중앙으로 고정하여 Y축 좌표 이동이 즉각 반영되게 하오
                         spineDiv.style.top = '0';
                         spineDiv.style.left = '0';
                         spineDiv.style.width = '100%';
@@ -1367,21 +1363,31 @@
                         spineDiv.style.transformOrigin = 'center center';
                     }
 
+                    // SpinePlayer 구동 및 최고 화질 세팅 조율
                     new spine.SpinePlayer(spineDiv, {
                         jsonUrl: `${basePath}.json`,
-                        atlasUrl: `${basePath}.atlas`, // 확장자 규칙 유지
+                        atlasUrl: `${basePath}.atlas`,
                         animation: "idle",
                         alpha: true,
                         backgroundColor: "#00000000",
                         showControls: false,
                         preserveAspectRatio: true,
-                        error: () => {
+                        // ✨ 화질 깨짐을 물리치기 위해 기본 뷰포트 스케일링 제한을 해제하오
+                        viewport: {
+                            padLeft: "0%",
+                            padRight: "0%",
+                            padTop: "0%",
+                            padBottom: "0%"
+                        },
+                        error: (player, err) => {
+                            console.error("Spine 구동 실패, 이미지로 대체하오:", err);
                             spineDiv.remove();
                             fallbackImg.style.display = 'block';
                         }
                     });
                 })
                 .catch(e => {
+                    console.error("리소스 패치 실패:", e);
                     fallbackImg.style.display = 'block';
                 });
         }
