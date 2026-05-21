@@ -1314,8 +1314,11 @@
 
                     const spineDiv = document.createElement('div');
                     spineDiv.style.position = 'absolute';
-                    spineDiv.style.imageRendering = 'pixelated';
-                    spineDiv.style.imageRendering = 'crisp-edges';
+
+                    // 🛠️ [혈 자리 정화]: pixelated와 crisp-edges 스타일을 전면 삭제하시오!
+                    // 브라우저가 WebGL 환경에서 자동으로 부드러운 축소(Linear Filtering)를 수행하게 만드오.
+                    spineDiv.style.imageRendering = 'auto';
+
                     container.appendChild(spineDiv);
 
                     if (isIngame) {
