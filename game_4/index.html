@@ -1273,7 +1273,7 @@
             return imageCache[key];
         }
 
-        // 공통 그래픽 렌더링 함수 (Spine -> Img Fallback 정밀 개편 초식)
+     // 공통 그래픽 렌더링 함수 (로비 화면 스파인 확대 및 이미지 독립 제어 초식)
         function renderHeroGraphic(containerId, heroId, isIngame = false) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -1284,57 +1284,66 @@
             const imgPath = `./assets/portraits/hero_${heroId}.png`;
 
             // ==========================================================
-            // ⚔️ [대협 전용 인게임 영웅 정밀 조절 혈 자리 (이미지 & 스파인 공통)] ⚔️
+            // ⚔️ [대협 전용 인게임 / 로비 / 스파인 / 이미지 세부 조절 혈 자리] ⚔️
             // ==========================================================
-            const INGAME_SCALE = 1.8;     // 크기 (숫자가 커질수록 거대해짐)
-            const INGAME_X_OFFSET = 1300;  // 좌우 위치 (마이너스는 왼쪽으로)
-            const INGAME_Y_OFFSET = -950;   // 상하 위치 (플러스는 위로 솟구침)
+            // 1. 인게임(전장) 화면 우측 하단 제어 수치
+            const INGAME_SPINE = { scale: 1.8, x: 1300, y: -950 };
+            const INGAME_IMAGE = { scale: 1.8, x: 1300, y: -950 };
+
+            // 2. 로비 및 수호 관청 내부 독자 제어 수치 
+            // 대협의 요구대로 이미지는 배율을 1.0(그대로) 두고, 스파인만 거대하게 확대하오!
+            const LOBBY_SPINE  = { scale: 1.6, x: 0, y: 50 };  // ➔ 로비 스파인만 1.6배 확대 및 위치 보정!
+            const LOBBY_IMAGE  = { scale: 1.5, x: 0, y: 50 };   // ➔ 이미지 리소스는 축소된 원본 크기 유지!
             // ==========================================================
 
-            // Fallback Image 객체 사전 생성 (기본은 절대 숨김 처리하오)
+            // Fallback Image 객체 생성 및 배치
             const fallbackImg = document.createElement('img');
             fallbackImg.src = imgPath;
             fallbackImg.style.position = 'absolute';
             fallbackImg.style.pointerEvents = 'none';
             fallbackImg.style.zIndex = '50';
-            fallbackImg.style.display = 'none'; // 🔥 성급하게 보이게 하지 않고 꽁꽁 숨겨둡소
+            fallbackImg.style.display = 'none';
+            
+            // 용량을 줄여 작아진 리소스가 커져도 흐려지지 않게 도트화 가속 주입
+           // fallbackImg.style.imageRendering = 'pixelated';
+           // fallbackImg.style.imageRendering = 'crisp-edges';
+            fallbackImg.style.objectFit = 'contain';
 
             if (isIngame) {
                 fallbackImg.style.bottom = '0px';
                 fallbackImg.style.left = '50%';
                 fallbackImg.style.width = '100%';
                 fallbackImg.style.height = '100%';
-                fallbackImg.style.objectFit = 'contain';
-                fallbackImg.style.transform = `translate(calc(-50% + ${INGAME_X_OFFSET}px), ${-INGAME_Y_OFFSET}px) scale(${INGAME_SCALE})`;
+                fallbackImg.style.transform = `translate(calc(-50% + ${INGAME_IMAGE.x}px), ${-INGAME_IMAGE.y}px) scale(${INGAME_IMAGE.scale})`;
                 fallbackImg.style.transformOrigin = 'bottom center';
 
-                // [가상 뷰포트 절단 초식]
                 const completeMask = 'linear-gradient(to bottom, black 150px, transparent 150px)';
                 fallbackImg.style.maskImage = completeMask;
                 fallbackImg.style.webkitMaskImage = completeMask;
             } else {
+                // 로비 및 관청 팝업에서는 대협의 설계대로 원본 크기(1.0)를 유지하며 정중앙에 배치하오
                 fallbackImg.style.top = '0';
                 fallbackImg.style.left = '0';
                 fallbackImg.style.width = '100%';
-                fallbackImg.style.height = 'auto';
-                fallbackImg.style.bottom = 'auto';
-                fallbackImg.style.objectFit = 'contain';
-                fallbackImg.style.transform = 'translateY(0px)';
+                fallbackImg.style.height = '100%';
+                fallbackImg.style.transform = `translate(${LOBBY_IMAGE.x}px, ${LOBBY_IMAGE.y}px) scale(${LOBBY_IMAGE.scale})`;
+                fallbackImg.style.transformOrigin = 'center center';
             }
             container.appendChild(fallbackImg);
 
-            // Fetch Spine JSON - 비동기 무공 연마 개시
+            // Fetch Spine JSON 구동
             fetch(`${basePath}.json`)
                 .then(res => {
-                    if (!res.ok) throw new Error("스파인 파일이 존재하지 않소!");
+                    if (!res.ok) throw new Error("스파인 무공 비급 호출 실패!");
                     return res.text();
                 })
                 .then(text => {
-                    // 스파인 로드 성공 시 이미지는 완전히 봉인하오!
                     fallbackImg.style.display = 'none';
 
                     const spineDiv = document.createElement('div');
                     spineDiv.style.position = 'absolute';
+                    spineDiv.style.imageRendering = 'pixelated';
+                    spineDiv.style.imageRendering = 'crisp-edges';
                     container.appendChild(spineDiv);
 
                     if (isIngame) {
@@ -1342,36 +1351,37 @@
                         spineDiv.style.left = '50%';
                         spineDiv.style.width = '100%';
                         spineDiv.style.height = '100%';
-                        spineDiv.style.transform = `translate(calc(-50% + ${INGAME_X_OFFSET}px), ${-INGAME_Y_OFFSET}px) scale(${INGAME_SCALE})`;
+                        spineDiv.style.transform = `translate(calc(-50% + ${INGAME_SPINE.x}px), ${-INGAME_Y_OFFSET}px) scale(${INGAME_SPINE.scale})`;
                         spineDiv.style.transformOrigin = 'bottom center';
 
-                        // 🔥 [스파인 전용 인게임 절단 초식] 
-                        // 스파인 애니메이션도 일러스트와 동일하게 아랫부분이 UI를 침범하지 않도록 마스킹하오!
                         const completeMask = 'linear-gradient(to bottom, black 150px, transparent 150px)';
                         spineDiv.style.maskImage = completeMask;
                         spineDiv.style.webkitMaskImage = completeMask;
                     } else {
+                        // 🔥 [결계 돌파] 로비 화면에서 이미지 배율과 다르게 스파인 배율(LOBBY_SPINE)만 독자적으로 격상하오!
                         spineDiv.style.top = '0';
                         spineDiv.style.left = '0';
                         spineDiv.style.width = '100%';
                         spineDiv.style.height = '100%';
-                        spineDiv.style.transform = 'translateY(0px)';
+                        spineDiv.style.transform = `translate(${LOBBY_SPINE.x}px, ${LOBBY_SPINE.y}px) scale(${LOBBY_SPINE.scale})`;
+                        spineDiv.style.transformOrigin = 'center center';
                     }
 
-                    // 수호맹이 보장하는 60FPS Spine 구동구
                     new spine.SpinePlayer(spineDiv, {
                         jsonUrl: `${basePath}.json`,
-                        atlasUrl: `${basePath}.atlas`,
+                        atlasUrl: `${basePath}.atlas`, // 확장자 규칙 유지
                         animation: "idle",
                         alpha: true,
                         backgroundColor: "#00000000",
                         showControls: false,
-                        preserveAspectRatio: true
+                        preserveAspectRatio: true,
+                        error: () => {
+                            spineDiv.remove();
+                            fallbackImg.style.display = 'block';
+                        }
                     });
                 })
                 .catch(e => {
-                    // 🔥 [Fallback 패자부활 초식] 스파인 호출 실패 시에만 정적 이미지를 전장에 현현시키오!
-                    console.warn(`[경고] 스파인 파일 로드 실패하여 이미지로 대체하오: hero_${heroId}`);
                     fallbackImg.style.display = 'block';
                 });
         }
