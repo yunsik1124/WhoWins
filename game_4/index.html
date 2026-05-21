@@ -1264,8 +1264,8 @@
 
             // 2. 로비 및 수호 관청 내부 독자 제어 수치 
             // 대협의 요구대로 이미지는 배율을 1.0(그대로) 두고, 스파인만 거대하게 확대하오!
-            const LOBBY_SPINE = { scale: 1.6, x: 0, y: 50 };  // ➔ 로비 스파인만 1.6배 확대 및 위치 보정!
-            const LOBBY_IMAGE = { scale: 1.0, x: 0, y: 0 };   // ➔ 이미지 리소스는 축소된 원본 크기 유지!
+            const LOBBY_SPINE = { scale: 1.6, x: 0, y: 80 };  // ➔ 로비 스파인만 1.6배 확대 및 위치 보정!
+            const LOBBY_IMAGE = { scale: 1.5, x: 0, y: 50 };   // ➔ 이미지 리소스는 축소된 원본 크기 유지!
             // ==========================================================
 
             // Fallback Image 객체 생성 및 배치
@@ -1277,8 +1277,8 @@
             fallbackImg.style.display = 'none';
 
             // 용량을 줄여 작아진 리소스가 커져도 흐려지지 않게 도트화 가속 주입
-            fallbackImg.style.imageRendering = 'pixelated';
-            fallbackImg.style.imageRendering = 'crisp-edges';
+           // fallbackImg.style.imageRendering = 'pixelated';
+          //  fallbackImg.style.imageRendering = 'crisp-edges';
             fallbackImg.style.objectFit = 'contain';
 
             if (isIngame) {
