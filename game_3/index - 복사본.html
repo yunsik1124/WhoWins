@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Project Color-Shot Prototype v4.5 (Destruction & Save)</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            touch-action: none;
+            font-family: 'Malgun Gothic', sans-serif;
+        }
+
+        #game-container {
+            position: relative;
+            width: 360px;
+            height: 640px;
+            background-color: #e0e7ee;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            color: #333;
+            font-weight: bold;
+            background: rgba(255,255,255,0.7);
+            font-size: 13px;
+        }
+
+        .wind-indicator {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 5px;
+            color: #555;
+            text-shadow: 1px 1px 2px white;
+            font-weight: bold;
+        }
+
+        .popup {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            pointer-events: auto;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+            .popup button {
+                margin-top: 10px;
+                padding: 10px 20px;
+                font-size: 14px;
+                font-weight: bold;
+                border: none;
+                background-color: #5b8fb9;
+                color: white;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.2s;
+            }
+
+                .popup button:active {
+                    transform: scale(0.95);
+                }
+
+        #menuUI {
+            background: transparent;
+            justify-content: flex-start;
+            padding-top: 80px;
+        }
+
+            #menuUI h1 {
+                font-size: 36px;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+                text-align: center;
+                margin-bottom: 5px;
+                color: #fff;
+            }
+
+            #menuUI .nickname {
+                font-size: 14px;
+                color: #eee;
+                margin-bottom: 40px;
+                text-shadow: 1px 1px 2px black;
+            }
+
+        .menu-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 60%;
+        }
+
+        #shopPopup h2 {
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        .shop-list {
+            width: 100%;
+            max-height: 380px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .shop-item {
+            background: rgba(255,255,255,0.15);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            width: 85%;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+            .shop-item.locked {
+                opacity: 0.5;
+                background: rgba(100,100,100,0.2);
+                border: 1px dashed rgba(255,255,255,0.3);
+            }
+
+        .item-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .item-desc {
+            font-size: 12px;
+            color: #ddd;
+            margin-bottom: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .ranking-board {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 15px;
+            width: 80%;
+            margin: 15px 0;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+            .ranking-board h3 {
+                margin: 0 0 10px 0;
+                text-align: center;
+                color: #ffd700;
+                font-size: 18px;
+            }
+
+        .rank-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <canvas id="gameCanvas" width="360" height="640"></canvas>
+
+        <div class="ui-layer" id="inGameUI" style="display:none;">
+            <div class="top-bar">
+                <span id="uiNickname">유저명</span>
+                <span id="uiTurn">Turn: 1/10</span>
+                <span>
+                    <span id="uiScore" style="margin-right: 8px;">점수: 0</span>
+                    <span id="uiGold">💰 0</span>
+                </span>
+            </div>
+            <div class="wind-indicator" id="uiWind">🌬️ 풍속: 0</div>
+        </div>
+
+        <div class="popup" id="menuUI" style="display:flex;">
+            <h1>Color-Shot</h1>
+            <div class="nickname" id="menuNickname">로딩중...</div>
+            <div class="menu-btn-group">
+                <button onclick="startGame()" style="padding: 15px; font-size:18px;">게임 시작</button>
+                <button onclick="openShop()" style="background-color: #9b59b6; padding: 15px;">상점 (대포 변경/강화)</button>
+            </div>
+        </div>
+
+        <div class="popup" id="shopPopup">
+            <h2>대포 상점</h2>
+            <p id="shopGold" style="margin-bottom: 15px; font-weight:bold; color:#ffd700;">보유 재화: 💰 0</p>
+            <div class="shop-list" id="shopListContainer"></div>
+            <button onclick="closeShop()" style="background-color: #aaa; margin-top: 20px;">로비로 돌아가기</button>
+        </div>
+
+        <div class="popup" id="resultPopup">
+            <h2>게임 종료</h2>
+            <p id="resultScorePop" style="margin:5px 0; font-size: 18px;">이번 판 점수: 0</p>
+            <p id="resultGoldText" style="margin:5px 0 10px 0; color:#ffd700;">누적 보유 재화: 0</p>
+
+            <div class="ranking-board">
+                <h3>🏆 주간 TOP 5 랭킹</h3>
+                <div id="mockRanking"></div>
+                <p style="font-size:10px; color:#aaa; text-align:center; margin-top:10px;">* 데이터 서버 전송 완료</p>
+            </div>
+            <button onclick="returnToMenu()" style="padding:12px 30px;">로비로 돌아가기</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // --- 사운드 시스템 ---
+        const SOUNDS = {
+            bgm: new Audio('sound/bgm.mp3'),
+            shoot: new Audio('sound/shoot.mp3'),
+            hit: new Audio('sound/hit.mp3'),
+            gold: new Audio('sound/gold.mp3')
+        };
+        SOUNDS.bgm.loop = true; SOUNDS.bgm.volume = 0.4;
+
+        function playSound(type) {
+            try {
+                let snd = SOUNDS[type];
+                if (type !== 'bgm') { snd.pause(); snd.currentTime = 0; }
+                snd.play().catch(e => { });
+            } catch (e) { }
+        }
+
+        // --- 화면 흔들림 ---
+        const CAMERA = { shakeFrames: 0, shakeIntensity: 0 };
+        function triggerShake(intensity, frames) { CAMERA.shakeIntensity = intensity; CAMERA.shakeFrames = frames; }
+
+        const GAME = {
+            state: 'menu', turn: 1, maxTurns: 10, totalDamage: 0, gold: 0, nickname: "", wind: 0, cameraX: 0, worldWidth: 850, turnWaiting: false
+        };
+        const PHYSICS = { gravity: 0.05, windMulti: 0.0025 };
+        let floatingTexts = []; let projectiles = []; let windParticles = []; let hitParticles = [];
+
+        const CANNONS = {
+            normal: { id: 'normal', name: "노멀 대포", baseDmg: 100, radius: 8, color: "#2c3e50", unlockCost: 0 },
+            sniper: { id: 'sniper', name: "스나이퍼 대포", baseDmg: 120, radius: 5, color: "#c0392b", unlockCost: 500 },
+            buster: { id: 'buster', name: "버스터 대포", baseDmg: 80, radius: 12, color: "#2980b9", unlockCost: 1000 }
+        };
+
+        const player = {
+            x: 50, y: 550, angle: -45, power: 10, powerDir: 1, isDragging: false, equipped: 'normal',
+            cannons: { normal: { level: 1, unlocked: true }, sniper: { level: 1, unlocked: false }, buster: { level: 1, unlocked: false } }
+        };
+
+        let bZone = { x: 280, width: 40, dir: 1, speed: 0.4, minX: 200, maxX: 380, segments: [] };
+
+        let cZone = {
+            x: 500, y: 300, width: 25, height: 120, dir: 1, speed: 0.8, minY: 100, maxY: 480,
+            segments: [
+                { type: 'goldMult', text: '💰 x2', color: 'rgba(50, 255, 50, 0.5)', yOff: 0, h: 60 },
+                { type: 'qty4', text: 'x4', color: 'rgba(255, 215, 0, 0.6)', yOff: 60, h: 60 }
+            ]
+        };
+
+        // --- 부위 파괴 타겟 데이터 ---
+        let targetBlocks = [];
+        const weakPoint = { x: 630, y: 510, radius: 25 };
+
+        function initTarget() {
+            targetBlocks = [];
+            // 거대 바위 몸체 분할 (4x10 Grid)
+            for (let c = 0; c < 4; c++) {
+                for (let r = 0; r < 10; r++) {
+                    targetBlocks.push({ x: 680 + c * 20, y: 350 + r * 25, w: 20, h: 25, hp: 2 });
+                }
+            }
+            // 돌출부위 분할 (2x2 Grid)
+            for (let c = 0; c < 2; c++) {
+                for (let r = 0; r < 2; r++) {
+                    targetBlocks.push({ x: 640 + c * 20, y: 480 + r * 30, w: 20, h: 30, hp: 2 });
+                }
+            }
+        }
+
+        // --- 데이터 로컬/서버 저장 시스템 ---
+        const GAS_WEB_APP_URL = "YOUR_GAS_URL_HERE"; // 추후 발급받은 GAS 주소 입력
+
+        function loadLocalData() {
+            let savedName = localStorage.getItem("colorShot_nick");
+            if (!savedName) { savedName = generateNickname(); localStorage.setItem("colorShot_nick", savedName); }
+            GAME.nickname = savedName;
+
+            let sGold = localStorage.getItem("colorShot_gold");
+            if (sGold) GAME.gold = parseInt(sGold);
+
+            let sCannons = localStorage.getItem("colorShot_cannons");
+            if (sCannons) player.cannons = JSON.parse(sCannons);
+
+            let sEq = localStorage.getItem("colorShot_equipped");
+            if (sEq) player.equipped = sEq;
+        }
+
+        function saveLocalData() {
+            localStorage.setItem("colorShot_gold", GAME.gold);
+            localStorage.setItem("colorShot_cannons", JSON.stringify(player.cannons));
+            localStorage.setItem("colorShot_equipped", player.equipped);
+            updateUI(); // 재화 표기 등 갱신
+        }
+
+        function syncToServer() {
+            const data = {
+                userId: GAME.nickname,
+                gold: GAME.gold,
+                equipped: player.equipped,
+                cannons: JSON.stringify(player.cannons),
+                lastScore: GAME.totalDamage
+            };
+            // GAS 웹앱으로 비동기 백그라운드 전송 (CORS 제약 무시 모드)
+            fetch(GAS_WEB_APP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(() => console.log('서버 동기화 성공')).catch(e => console.log('서버 통신 중...'));
+        }
+
+        function generateNickname() {
+            const adjs = ["불타는", "신비한", "전설의", "고독한", "춤추는"]; const nouns = ["호랑이", "궁수", "마법사", "대포", "바람"];
+            return adjs[Math.floor(Math.random() * adjs.length)] + " " + nouns[Math.floor(Math.random() * nouns.length)];
+        }
+
+        function generateBZone() {
+            bZone.segments = []; bZone.segments.push({ id: 'block', text: 'BLOCK', color: 'rgba(80, 80, 80, 0.9)', y: 0, height: 80 });
+            let midTypes = [{ id: 'qty4', text: '개수 x4', color: 'rgba(255, 215, 0, 0.6)' }, { id: 'qty2', text: '개수 x2', color: 'rgba(0, 191, 255, 0.6)' }, { id: 'dmg4', text: '파워 x4', color: 'rgba(255, 100, 100, 0.6)' }, { id: 'dmg2', text: '파워 x2', color: 'rgba(255, 160, 160, 0.6)' }].sort(() => Math.random() - 0.5);
+            let currY = 80;
+            for (let i = 0; i < 4; i++) { bZone.segments.push({ ...midTypes[i], y: currY, height: 75 }); currY += 75; }
+            bZone.segments.push({ id: 'block', text: 'BLOCK', color: 'rgba(80, 80, 80, 0.9)', y: 380, height: 260 });
+        }
+
+        function initWindParticles() {
+            windParticles = []; let count = Math.abs(GAME.wind) * 8;
+            for (let i = 0; i < count; i++) { windParticles.push({ x: Math.random() * GAME.worldWidth, y: Math.random() * 640, speed: (Math.random() * 2 + 1), length: Math.random() * 15 + 5 }); }
+        }
+
+        function addFloatingText(x, y, text, color) { floatingTexts.push({ x, y, text, color, life: 60 }); }
+
+        function createHitParticles(x, y, mainColor) {
+            const colors = [mainColor, "#4a5a6a", "#8a2be2"];
+            for (let i = 0; i < 15; i++) {
+                hitParticles.push({
+                    x: x, y: y, vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8 - 2,
+                    life: 30 + Math.random() * 20, color: colors[Math.floor(Math.random() * colors.length)], size: Math.random() * 4 + 2
+                });
+            }
+        }
+
+        function renderShopUI() {
+            document.getElementById('shopGold').innerText = `보유 재화: 💰 ${GAME.gold}`;
+            const container = document.getElementById('shopListContainer'); container.innerHTML = '';
+            Object.keys(CANNONS).forEach(key => {
+                let cData = CANNONS[key]; let pData = player.cannons[key]; let isEquipped = (player.equipped === key); let cost = pData.level * 100;
+                let div = document.createElement('div'); div.className = `shop-item ${!pData.unlocked ? 'locked' : ''}`;
+                let title = pData.unlocked ? `${cData.name} (Lv.${pData.level})` : `🔒 ${cData.name}`;
+                if (isEquipped) title += " <span style='color:#2ecc71;'>[장착중]</span>";
+                let html = `<div class="item-name">${title}</div><div class="item-desc">기본 데미지: ${cData.baseDmg} / ${!pData.unlocked ? `해금비용: ${cData.unlockCost}G` : '해금완료'}</div><div class="btn-group">`;
+                if (!pData.unlocked) html += `<button onclick="unlockCannon('${key}', ${cData.unlockCost})">해금하기</button>`;
+                else {
+                    if (!isEquipped) html += `<button onclick="equipCannon('${key}')" style="background:#27ae60;">장착하기</button>`;
+                    if (pData.level < 10) html += `<button onclick="upgradeCannon('${key}')">강화 (${cost}G)</button>`;
+                    else html += `<button style="background:#555;" disabled>MAX LV</button>`;
+                }
+                html += `</div>`; div.innerHTML = html; container.appendChild(div);
+            });
+        }
+
+        function unlockCannon(key, cost) { if (GAME.gold >= cost) { GAME.gold -= cost; player.cannons[key].unlocked = true; saveLocalData(); renderShopUI(); } else alert("재화가 부족합니다!"); }
+        function equipCannon(key) { player.equipped = key; saveLocalData(); renderShopUI(); }
+        function upgradeCannon(key) { let cost = player.cannons[key].level * 100; if (GAME.gold >= cost) { GAME.gold -= cost; player.cannons[key].level += 1; saveLocalData(); renderShopUI(); } else alert("재화가 부족합니다!"); }
+        function openShop() { document.getElementById('menuUI').style.display = 'none'; document.getElementById('shopPopup').style.display = 'flex'; renderShopUI(); }
+        function closeShop() { document.getElementById('shopPopup').style.display = 'none'; document.getElementById('menuUI').style.display = 'flex'; }
+
+        let dragStartY = 0;
+        canvas.addEventListener('pointerdown', (e) => {
+            if (GAME.state !== 'aiming') return;
+            player.isDragging = true; dragStartY = e.clientY; player.power = 10; player.powerDir = 1;
+        });
+        canvas.addEventListener('pointermove', (e) => {
+            if (!player.isDragging) return;
+            let deltaY = dragStartY - e.clientY; player.angle = Math.max(-90, Math.min(0, -45 - (deltaY * 1.0)));
+        });
+        canvas.addEventListener('pointerup', () => {
+            if (!player.isDragging) return;
+            player.isDragging = false; fireProjectile();
+        });
+
+        function init() {
+            loadLocalData(); // 최초 진입 시 로컬 데이터 연동
+            document.getElementById('menuNickname').innerText = `접속 계정: ${GAME.nickname}`;
+            requestAnimationFrame(gameLoop);
+        }
+
+        function startGame() {
+            playSound('bgm');
+            document.getElementById('menuUI').style.display = 'none'; document.getElementById('inGameUI').style.display = 'block';
+            GAME.turn = 1; GAME.totalDamage = 0; GAME.cameraX = 0;
+            initTarget(); // 새 게임마다 타겟(바위) 복구
+            generateBZone();
+            initTurnEnvironment();
+        }
+
+        function initTurnEnvironment() {
+            projectiles = []; hitParticles = []; GAME.turnWaiting = false; GAME.state = 'aiming';
+            GAME.wind = Math.floor(Math.random() * 11) - 5;
+            let windText = GAME.wind === 0 ? "고요함" : (GAME.wind > 0 ? `우풍 ${GAME.wind}` : `좌풍 ${Math.abs(GAME.wind)}`);
+            document.getElementById('uiWind').innerText = `🌬️ 날씨: ${windText}`;
+            initWindParticles(); updateUI();
+        }
+
+        function fireProjectile() {
+            GAME.state = 'flying';
+            triggerShake(5, 8); playSound('shoot');
+
+            let rad = player.angle * Math.PI / 180; let cData = CANNONS[player.equipped];
+            let startX = player.x + Math.cos(rad) * 40; let startY = player.y + Math.sin(rad) * 40;
+            let speedMult = player.power * 0.45;
+
+            projectiles = [{
+                x: startX, y: startY, vx: Math.cos(rad) * speedMult, vy: Math.sin(rad) * speedMult,
+                active: true, radius: cData.radius, bMult: 1, bType: 'none', gMult: 1, passedBZone: false, passedCZone: false
+            }];
+        }
+
+        function endGame() {
+            GAME.state = 'result'; document.getElementById('inGameUI').style.display = 'none'; document.getElementById('resultPopup').style.display = 'flex';
+            document.getElementById('resultScorePop').innerText = `이번 판 점수: ${GAME.totalDamage}`; document.getElementById('resultGoldText').innerText = `누적 보유 재화: 💰 ${GAME.gold}`;
+
+            saveLocalData(); // 게임 종료 시 로컬 자동저장
+            syncToServer();  // 구글 GAS 서버로 동기화 전송
+
+            let list = [{ n: "전설의 마법사", s: GAME.totalDamage + 5000 }, { n: "불타는 호랑이", s: GAME.totalDamage + 1500 }, { n: GAME.nickname, s: GAME.totalDamage }, { n: "고독한 궁수", s: GAME.totalDamage > 500 ? GAME.totalDamage - 500 : 0 }, { n: "신비한 대포", s: 100 }];
+            list.sort((a, b) => b.s - a.s); let html = "";
+            list.forEach((item, idx) => {
+                let color = item.n === GAME.nickname ? "#ffd700" : "#ddd"; let fw = item.n === GAME.nickname ? "bold" : "normal";
+                html += `<div class="rank-item" style="color:${color}; font-weight:${fw};"><span>${idx + 1}위. ${item.n}</span><span>${item.s} 점</span></div>`;
+            });
+            document.getElementById('mockRanking').innerHTML = html;
+        }
+
+        function returnToMenu() { document.getElementById('resultPopup').style.display = 'none'; document.getElementById('menuUI').style.display = 'flex'; GAME.state = 'menu'; GAME.cameraX = 0; }
+        function updateUI() { document.getElementById('uiNickname').innerText = GAME.nickname; document.getElementById('uiTurn').innerText = `Turn: ${GAME.turn}/${GAME.maxTurns}`; document.getElementById('uiScore').innerText = `점수: ${GAME.totalDamage}`; document.getElementById('uiGold').innerText = `💰 ${GAME.gold}`; }
+
+        function gameLoop() {
+            updatePhysics(); drawScene(); requestAnimationFrame(gameLoop);
+        }
+
+        function updatePhysics() {
+            if (CAMERA.shakeFrames > 0) CAMERA.shakeFrames--;
+
+            bZone.x += bZone.speed * bZone.dir;
+            if (bZone.x < bZone.minX || bZone.x > bZone.maxX) bZone.dir *= -1;
+
+            cZone.y += cZone.speed * cZone.dir;
+            if (cZone.y < cZone.minY || cZone.y + cZone.height > cZone.maxY) cZone.dir *= -1;
+
+            floatingTexts.forEach(ft => { ft.y -= 1; ft.life--; }); floatingTexts = floatingTexts.filter(ft => ft.life > 0);
+            hitParticles.forEach(p => { p.vy += PHYSICS.gravity; p.x += p.vx; p.y += p.vy; p.life--; }); hitParticles = hitParticles.filter(p => p.life > 0);
+
+            if (player.isDragging) {
+                if (player.powerDir > 0) {
+                    player.power += 0.075;
+                    if (player.power >= 18) { player.power = 18; player.powerDir = 0; }
+                }
+            }
+
+            if (GAME.state === 'returning') {
+                GAME.cameraX -= 12;
+                if (GAME.cameraX <= 0) { GAME.cameraX = 0; GAME.turn++; if (GAME.turn > GAME.maxTurns) endGame(); else initTurnEnvironment(); }
+            }
+
+            if (GAME.state === 'flying') {
+                let activeCount = 0; let leaderX = 0;
+
+                for (let i = 0; i < projectiles.length; i++) {
+                    let p = projectiles[i];
+                    if (!p.active) continue;
+                    activeCount++;
+                    if (p.x > leaderX) leaderX = p.x;
+
+                    p.vy += PHYSICS.gravity; p.vx += (GAME.wind * PHYSICS.windMulti); p.x += p.vx; p.y += p.vy;
+
+                    if (p.y > canvas.height || p.x > GAME.worldWidth) { p.active = false; continue; }
+
+                    if (!p.passedBZone && p.x > bZone.x && p.x < bZone.x + bZone.width) {
+                        let hitSegment = bZone.segments.find(s => p.y >= s.y && p.y <= s.y + s.height);
+                        if (hitSegment) {
+                            p.passedBZone = true;
+                            if (hitSegment.id === 'block') {
+                                addFloatingText(bZone.x, p.y, "차단됨!", "#ccc");
+                                createHitParticles(p.x, p.y, "#ccc"); playSound('hit'); triggerShake(6, 10);
+                                p.active = false; continue;
+                            } else if (hitSegment.id.includes('qty')) {
+                                let cloneCount = hitSegment.id === 'qty4' ? 4 : 2;
+                                addFloatingText(bZone.x, p.y - 20, hitSegment.text, hitSegment.color);
+                                for (let j = 1; j < cloneCount; j++) { projectiles.push({ x: p.x, y: p.y, vx: p.vx + (Math.random() - 0.5) * 1.5, vy: p.vy + (Math.random() - 0.5) * 1.5, active: true, radius: p.radius, bMult: p.bMult, bType: p.bType, gMult: p.gMult, passedBZone: true, passedCZone: p.passedCZone }); }
+                            } else {
+                                p.bMult = parseInt(hitSegment.id.replace(/[^0-9]/g, '')); p.bType = 'dmg';
+                                addFloatingText(bZone.x, p.y - 20, hitSegment.text, hitSegment.color);
+                            }
+                        }
+                    }
+
+                    if (!p.passedCZone && p.x > cZone.x && p.x < cZone.x + cZone.width && p.y > cZone.y && p.y < cZone.y + cZone.height) {
+                        p.passedCZone = true;
+                        let relY = p.y - cZone.y;
+                        let hitSeg = cZone.segments.find(s => relY >= s.yOff && relY <= s.yOff + s.h);
+                        if (hitSeg) {
+                            if (hitSeg.type === 'goldMult') {
+                                p.gMult = 2; // 이번 폭탄의 골드 획득량 2배 적용
+                                playSound('gold'); addFloatingText(cZone.x, p.y - 20, `💰 x2`, "#0f0");
+                            }
+                            else if (hitSeg.type === 'qty4') {
+                                addFloatingText(cZone.x, p.y - 20, "C존 개수 x4", hitSeg.color);
+                                for (let j = 1; j < 4; j++) { projectiles.push({ x: p.x, y: p.y, vx: p.vx + (Math.random() - 0.5) * 2, vy: p.vy + (Math.random() - 0.5) * 2, active: true, radius: p.radius, bMult: p.bMult, bType: p.bType, gMult: p.gMult, passedBZone: true, passedCZone: true }); }
+                            }
+                        }
+                    }
+
+                    // 부위 파괴 물리 판정 로직
+                    let hitBlock = targetBlocks.find(b => p.x > b.x && p.x < b.x + b.w && p.y > b.y && p.y < b.y + b.h);
+                    let dist = Math.hypot(p.x - weakPoint.x, p.y - weakPoint.y);
+                    let isWeak = dist <= weakPoint.radius;
+
+                    if (hitBlock || isWeak) {
+                        p.active = false;
+                        let cData = CANNONS[player.equipped];
+                        triggerShake(isWeak ? 15 : 10, 15);
+                        playSound('hit'); createHitParticles(p.x, p.y, cData.color);
+
+                        // 블록 체력 감소 및 파괴 처리
+                        if (hitBlock) {
+                            hitBlock.hp -= 1;
+                            if (hitBlock.hp <= 0) {
+                                targetBlocks.splice(targetBlocks.indexOf(hitBlock), 1); // 배열에서 삭제(파괴)
+                            }
+                        }
+
+                        let mult = p.bType === 'dmg' ? p.bMult : 1; let pLevel = player.cannons[player.equipped].level;
+                        let currentBaseDamage = cData.baseDmg + (pLevel * 10);
+                        let finalDamage = Math.floor(currentBaseDamage * mult * (isWeak ? 1.5 : 1.0));
+
+                        GAME.totalDamage += finalDamage;
+                        let earnedGold = Math.floor(finalDamage / 10) * p.gMult;
+                        GAME.gold += earnedGold;
+                        saveLocalData(); // 파괴 및 점수 획득 시 즉각 저장
+
+                        addFloatingText(p.x, p.y - 15, isWeak ? `💥 Critical! ${finalDamage}` : `🎯 ${finalDamage}`, isWeak ? "#ff00ff" : "#ffff00");
+                    }
+                }
+
+                if (activeCount > 0) GAME.cameraX = Math.max(0, Math.min(leaderX - 180, GAME.worldWidth - canvas.width));
+                if (activeCount === 0 && !GAME.turnWaiting) { GAME.turnWaiting = true; setTimeout(() => { GAME.state = 'returning'; }, 1000); }
+            }
+        }
+
+        function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let sx = 0; let sy = 0;
+            if (CAMERA.shakeFrames > 0) {
+                sx = (Math.random() - 0.5) * CAMERA.shakeIntensity; sy = (Math.random() - 0.5) * CAMERA.shakeIntensity;
+            }
+
+            if (GAME.state === 'menu') GAME.cameraX = 0;
+            ctx.save(); ctx.translate(-GAME.cameraX + sx, sy);
+
+            ctx.fillStyle = "#e0e7ee"; ctx.fillRect(0, 0, GAME.worldWidth, canvas.height);
+
+            if (GAME.wind !== 0 && GAME.state !== 'menu') {
+                ctx.strokeStyle = "rgba(100,100,100,0.5)"; ctx.lineWidth = 1.5; ctx.beginPath();
+                windParticles.forEach(wp => {
+                    let dir = GAME.wind > 0 ? 1 : -1; wp.x += (wp.speed * dir);
+                    if (dir > 0 && wp.x > GAME.worldWidth) wp.x = 0; if (dir < 0 && wp.x < 0) wp.x = GAME.worldWidth;
+                    ctx.moveTo(wp.x, wp.y); ctx.lineTo(wp.x + (wp.length * dir), wp.y + 2);
+                });
+                ctx.stroke();
+            }
+
+            ctx.fillStyle = "#c5d3df";
+            ctx.beginPath(); ctx.moveTo(0, 550); ctx.quadraticCurveTo(150, 520, 300, 640); ctx.lineTo(0, 640); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(500, 640); ctx.quadraticCurveTo(650, 480, 850, 550); ctx.lineTo(850, 640); ctx.fill();
+
+            bZone.segments.forEach(s => {
+                ctx.fillStyle = s.color; ctx.fillRect(bZone.x, s.y, bZone.width, s.height);
+                ctx.fillStyle = "#fff"; ctx.font = "11px Arial"; ctx.fillText(s.text, bZone.x + 2, s.y + s.height / 2);
+                ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.strokeRect(bZone.x, s.y, bZone.width, s.height);
+            });
+
+            cZone.segments.forEach(s => {
+                ctx.fillStyle = s.color; ctx.fillRect(cZone.x, cZone.y + s.yOff, cZone.width, s.h);
+                ctx.fillStyle = "#fff"; ctx.font = "12px Arial";
+                ctx.fillText(s.text, cZone.x + 2, cZone.y + s.yOff + s.h / 2 + 5);
+                ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.strokeRect(cZone.x, cZone.y + s.yOff, cZone.width, s.h);
+            });
+
+            // 얇은 C존 인디케이터 (7px)
+            if (GAME.state === 'aiming') {
+                let vX = GAME.cameraX + canvas.width - 10;
+                ctx.fillStyle = "rgba(255, 255, 255, 0.1)"; ctx.fillRect(vX, cZone.minY, 7, 380);
+                cZone.segments.forEach(s => {
+                    ctx.fillStyle = s.color; ctx.globalAlpha = 0.8;
+                    ctx.fillRect(vX, cZone.y + s.yOff, 7, s.h);
+                    ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.setLineDash([2, 2]);
+                    ctx.strokeRect(vX, cZone.y + s.yOff, 7, s.h);
+                    ctx.setLineDash([]); ctx.globalAlpha = 1.0;
+                });
+            }
+
+            // 파괴되는 타겟(블록) 그리기
+            targetBlocks.forEach(b => {
+                ctx.fillStyle = "#4a5a6a"; ctx.fillRect(b.x, b.y, b.w, b.h);
+                ctx.strokeStyle = "#3a4a5a"; ctx.strokeRect(b.x, b.y, b.w, b.h); // 테트리스 느낌의 선
+
+                // HP가 1이면 금(Crack)이 간 효과 렌더링
+                if (b.hp === 1) {
+                    ctx.strokeStyle = "#1a1a1a"; ctx.beginPath();
+                    ctx.moveTo(b.x + 2, b.y + 2); ctx.lineTo(b.x + b.w / 2, b.y + b.h / 2); ctx.lineTo(b.x + b.w - 2, b.y + b.h / 2 + 5);
+                    ctx.stroke();
+                }
+            });
+
+            // 약점 그리기
+            ctx.fillStyle = "#8a2be2"; ctx.beginPath(); ctx.arc(weakPoint.x, weakPoint.y, weakPoint.radius, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = "#ff00ff"; ctx.lineWidth = 2; ctx.stroke();
+
+            let cData = CANNONS[player.equipped];
+            ctx.fillStyle = cData.color; ctx.beginPath(); ctx.arc(player.x, player.y, 18, 0, Math.PI * 2); ctx.fill();
+            ctx.save(); ctx.translate(player.x, player.y); ctx.rotate(player.angle * Math.PI / 180);
+            ctx.fillStyle = "#1a252f"; ctx.fillRect(0, -8, 35, 16); ctx.restore();
+
+            ctx.fillStyle = "#333"; ctx.font = "bold 12px Arial"; ctx.fillText(`${cData.name} (Lv.${player.cannons[player.equipped].level})`, player.x - 40, player.y + 35);
+
+            if (player.isDragging) {
+                ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fillRect(player.x - 60, player.y - 55, 120, 8);
+                let pRatio = (player.power - 10) / 8;
+                ctx.fillStyle = `rgb(${255 * pRatio}, ${255 * (1 - pRatio)}, 0)`; ctx.fillRect(player.x - 60, player.y - 55, 120 * pRatio, 8);
+            }
+
+            projectiles.forEach(p => {
+                if (p.active) {
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.9)"; ctx.shadowBlur = 10; ctx.shadowColor = cData.color;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+                }
+            });
+
+            hitParticles.forEach(p => {
+                ctx.fillStyle = p.color; ctx.globalAlpha = Math.max(0, p.life / 50);
+                ctx.fillRect(p.x, p.y, p.size, p.size); ctx.globalAlpha = 1.0;
+            });
+
+            floatingTexts.forEach(ft => {
+                ctx.fillStyle = ft.color; ctx.font = "bold 16px Arial"; ctx.shadowColor = "black"; ctx.shadowBlur = 3; ctx.globalAlpha = ft.life / 60;
+                ctx.fillText(ft.text, ft.x, ft.y); ctx.globalAlpha = 1.0; ctx.shadowBlur = 0;
+            });
+
+            ctx.restore();
+        }
+
+        window.onload = function () { init(); };
+    </script>
+</body>
+</html>
