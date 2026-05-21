@@ -1273,133 +1273,124 @@
             return imageCache[key];
         }
 
-        // ===================================================================
-        // ⚔️ [완벽 교정] 공통 그래픽 렌더링 함수 (인게임 강림 및 로비 Y축 해금 초식)
-        // ===================================================================
-        function renderHeroGraphic(containerId, heroId, isIngame = false) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            container.innerHTML = '';
-            container.style.position = 'relative';
+     // ===================================================================
+// ⚔️ [개편] 공통 그래픽 렌더링 함수 (화질 극대화 및 인게임 스파인 강제 강림 초식)
+// ===================================================================
+function renderHeroGraphic(containerId, heroId, isIngame = false) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+    container.style.position = 'relative';
 
-            // Spine 내부 캔버스 오버플로우 방지 및 영역 확보
-            container.style.overflow = 'hidden';
+    const basePath = `./assets/spine/hero_${heroId}`;
+    const imgPath = `./assets/portraits/hero_${heroId}.png`;
 
-            const basePath = `./assets/spine/hero_${heroId}`;
-            const imgPath = `./assets/portraits/hero_${heroId}.png`;
+    // ⚔️ 대협 전용 제어 혈 자리 (수치 조절로 완벽한 위치 벼림 가능)
+    const INGAME_SPINE = { scale: 1.8, x: 1300, y: 950 }; // ➔ 인게임 스파인 스케일 및 좌표
+    const INGAME_IMAGE = { scale: 1.8, x: 1300, y: -950 };
 
-            // ⚔️ 대협 전용 제어 혈 자리 (수치 조절로 완벽한 위치 벼림 가능)
-            const INGAME_SPINE = { scale: 1.8, x: 1300, y: 950 };
-            const INGAME_IMAGE = { scale: 1.8, x: 1300, y: 950 }; // Y값 음수 버그 교정 (스파인과 동기화)
+    const LOBBY_SPINE  = { scale: 1.6, x: 0, y: -150 };  // ➔ 로비 Y값 제어 가능! (마이너스 값이 위로, 플러스가 아래로)
+    const LOBBY_IMAGE  = { scale: 1.5, x: 0, y: 50 };
 
-            const LOBBY_SPINE = { scale: 1.6, x: 0, y: -150 };  // ➔ Y축 제어 완벽 작동!
-            const LOBBY_IMAGE = { scale: 1.5, x: 0, y: 50 };
+    // Fallback Image 객체 생성 및 배치
+    const fallbackImg = document.createElement('img');
+    fallbackImg.src = imgPath;
+    fallbackImg.style.position = 'absolute';
+    fallbackImg.style.pointerEvents = 'none';
+    fallbackImg.style.zIndex = '50';
+    fallbackImg.style.display = 'none';
+    fallbackImg.style.objectFit = 'contain';
 
-            // [1] Fallback Image 객체 생성 및 배치
-            const fallbackImg = document.createElement('img');
-            fallbackImg.src = imgPath;
-            fallbackImg.style.position = 'absolute';
-            fallbackImg.style.pointerEvents = 'none';
-            fallbackImg.style.zIndex = '50';
-            fallbackImg.style.display = 'none'; // 기본은 숨김, 실패 시 차오름
-            fallbackImg.style.objectFit = 'contain';
+    if (isIngame) {
+        fallbackImg.style.bottom = '0px';
+        fallbackImg.style.left = '50%';
+        fallbackImg.style.width = '100%';
+        fallbackImg.style.height = '100%';
+        fallbackImg.style.transform = `translate(calc(-50% + ${INGAME_IMAGE.x}px), ${-INGAME_IMAGE.y}px) scale(${INGAME_IMAGE.scale})`;
+        fallbackImg.style.transformOrigin = 'bottom center';
+        
+        const completeMask = 'linear-gradient(to bottom, black 150px, transparent 150px)';
+        fallbackImg.style.maskImage = completeMask;
+        fallbackImg.style.webkitMaskImage = completeMask;
+    } else {
+        fallbackImg.style.top = '0';
+        fallbackImg.style.left = '0';
+        fallbackImg.style.width = '100%';
+        fallbackImg.style.height = '100%';
+        fallbackImg.style.transform = `translate(${LOBBY_IMAGE.x}px, ${LOBBY_IMAGE.y}px) scale(${LOBBY_IMAGE.scale})`;
+        fallbackImg.style.transformOrigin = 'center center';
+    }
+    container.appendChild(fallbackImg);
+
+    // Fetch Spine JSON 구동
+    fetch(`${basePath}.json`)
+        .then(res => {
+            if (!res.ok) throw new Error("스파인 무공 비급 호출 실패!");
+            return res.text();
+        })
+        .then(text => {
+            // Spine 로드 성공 시 이미지는 철저히 숨기오
+            fallbackImg.style.display = 'none';
+
+            const spineDiv = document.createElement('div');
+            spineDiv.style.position = 'absolute';
+            
+            // ✨ [화질 극대화] 늘어났을 때 흐려짐 방지 및 선명도 극대화 초식
+            spineDiv.style.imageRendering = '-webkit-optimize-contrast'; 
+            spineDiv.style.imageRendering = 'crisp-edges';
+            
+            container.appendChild(spineDiv);
 
             if (isIngame) {
-                fallbackImg.style.bottom = '0px';
-                fallbackImg.style.left = '50%';
-                fallbackImg.style.width = '100%';
-                fallbackImg.style.height = '100%';
-                fallbackImg.style.transform = `translate(calc(-50% + ${INGAME_IMAGE.x}px), ${-INGAME_IMAGE.y}px) scale(${INGAME_IMAGE.scale})`;
-                fallbackImg.style.transformOrigin = 'bottom center';
+                // ➔ 기존 코드의 INGAME_Y_OFFSET 미선언 에러를 INGAME_SPINE.y로 완벽 복구!
+                spineDiv.style.bottom = '0px';
+                spineDiv.style.left = '50%';
+                spineDiv.style.width = '100%';
+                spineDiv.style.height = '100%';
+                spineDiv.style.transform = `translate(calc(-50% + ${INGAME_SPINE.x}px), ${-INGAME_SPINE.y}px) scale(${INGAME_SPINE.scale})`;
+                spineDiv.style.transformOrigin = 'bottom center';
 
                 const completeMask = 'linear-gradient(to bottom, black 150px, transparent 150px)';
-                fallbackImg.style.maskImage = completeMask;
-                fallbackImg.style.webkitMaskImage = completeMask;
+                spineDiv.style.maskImage = completeMask;
+                spineDiv.style.webkitMaskImage = completeMask;
             } else {
-                fallbackImg.style.top = '0';
-                fallbackImg.style.left = '0';
-                fallbackImg.style.width = '100%';
-                fallbackImg.style.height = '100%';
-                fallbackImg.style.transform = `translate(${LOBBY_IMAGE.x}px, ${LOBBY_IMAGE.y}px) scale(${LOBBY_IMAGE.scale})`;
-                fallbackImg.style.transformOrigin = 'center center';
+                // ✨ [로비 Y축 해금] Transform 기준점을 중앙으로 고정하여 Y축 좌표 이동이 즉각 반영되게 하오
+                spineDiv.style.top = '0';
+                spineDiv.style.left = '0';
+                spineDiv.style.width = '100%';
+                spineDiv.style.height = '100%';
+                spineDiv.style.transform = `translate(${LOBBY_SPINE.x}px, ${LOBBY_SPINE.y}px) scale(${LOBBY_SPINE.scale})`;
+                spineDiv.style.transformOrigin = 'center center';
             }
-            container.appendChild(fallbackImg);
 
-            // [2] Fetch Spine JSON 구동
-            fetch(`${basePath}.json`)
-                .then(res => {
-                    if (!res.ok) throw new Error("스파인 무공 비급 호출 실패!");
-                    return res.text();
-                })
-                .then(text => {
-                    // Spine 로드 성공 단계이므로 이미지는 철저히 은폐
-                    fallbackImg.style.display = 'none';
-
-                    const spineDiv = document.createElement('div');
-                    spineDiv.style.position = 'absolute';
-                    spineDiv.style.width = '100%';
-                    spineDiv.style.height = '100%';
-
-                    // ✨ [화질 극대화 초식]
-                    spineDiv.style.imageRendering = '-webkit-optimize-contrast';
-                    spineDiv.style.imageRendering = 'crisp-edges';
-
-                    container.appendChild(spineDiv);
-
-                    // 외부 변형 스타일이 SpinePlayer 내부 캔버스까지 관통하도록 설정
-                    if (isIngame) {
-                        spineDiv.style.bottom = '0px';
-                        spineDiv.style.left = '50%';
-                        spineDiv.style.transform = `translate(calc(-50% + ${INGAME_SPINE.x}px), ${-INGAME_SPINE.y}px) scale(${INGAME_SPINE.scale})`;
-                        spineDiv.style.transformOrigin = 'bottom center';
-
-                        const completeMask = 'linear-gradient(to bottom, black 150px, transparent 150px)';
-                        spineDiv.style.maskImage = completeMask;
-                        spineDiv.style.webkitMaskImage = completeMask;
-                    } else {
-                        // ✨ [로비 Y축 해금] 스타일 적용 유연화를 위해 최상단에 배치 후 transform 이식
-                        spineDiv.style.top = '0';
-                        spineDiv.style.left = '0';
-                        spineDiv.style.transform = `translate(${LOBBY_SPINE.x}px, ${LOBBY_SPINE.y}px) scale(${LOBBY_SPINE.scale})`;
-                        spineDiv.style.transformOrigin = 'center center';
-                    }
-
-                    // SpinePlayer 구동 (실제 렌더링 강제 보장)
-                    new spine.SpinePlayer(spineDiv, {
-                        jsonUrl: `${basePath}.json`,
-                        atlasUrl: `${basePath}.atlas`,
-                        animation: "idle",
-                        alpha: true,
-                        backgroundColor: "#00000000",
-                        showControls: false,
-                        preserveAspectRatio: true,
-                        // ✨ 내부 뷰포트 제한을 해제하고 컨테이너 크기에 강제 동기화
-                        viewport: {
-                            x: 0,
-                            y: 0,
-                            width: '100%',
-                            height: '100%',
-                            padLeft: "0%",
-                            padRight: "0%",
-                            padTop: "0%",
-                            padBottom: "0%"
-                        },
-                        success: (player) => {
-                            // 강제 리사이즈를 호출하여 브라우저 WebGL 스케일 깨짐 방지
-                            setTimeout(() => { if (player) player.resize(); }, 50);
-                        },
-                        error: (player, err) => {
-                            console.error("Spine 구동 실패, 이미지로 대체하오:", err);
-                            spineDiv.remove();
-                            fallbackImg.style.display = 'block';
-                        }
-                    });
-                })
-                .catch(e => {
-                    console.error("리소스 패치 실패:", e);
+            // SpinePlayer 구동 및 최고 화질 세팅 조율
+            new spine.SpinePlayer(spineDiv, {
+                jsonUrl: `${basePath}.json`,
+                atlasUrl: `${basePath}.atlas`,
+                animation: "idle",
+                alpha: true,
+                backgroundColor: "#00000000",
+                showControls: false,
+                preserveAspectRatio: true,
+                // ✨ 화질 깨짐을 물리치기 위해 기본 뷰포트 스케일링 제한을 해제하오
+                viewport: {
+                    padLeft: "0%",
+                    padRight: "0%",
+                    padTop: "0%",
+                    padBottom: "0%"
+                },
+                error: (player, err) => {
+                    console.error("Spine 구동 실패, 이미지로 대체하오:", err);
+                    spineDiv.remove();
                     fallbackImg.style.display = 'block';
-                });
-        }
+                }
+            });
+        })
+        .catch(e => {
+            console.error("리소스 패치 실패:", e);
+            fallbackImg.style.display = 'block';
+        });
+}
         function preloadAllAssets(callback) {
             let assetsToLoad = [];
             deck.forEach(c => {
