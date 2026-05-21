@@ -11,7 +11,6 @@
             --neon-blue: #66fcf1;
             --neon-pink: #ff007f;
             --text-main: #ffffff;
-            --text-muted: #a9b7c6;
             --edit-bg: #2c3e50;
         }
 
@@ -34,11 +33,11 @@
 
         header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         header h1 {
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 4px;
@@ -53,156 +52,90 @@
             opacity: 0.8;
         }
 
-        /* 안내 문구 배너 */
         .guide-banner {
-            background: rgba(102, 252, 241, 0.1);
-            border: 1px dashed var(--neon-blue);
-            padding: 1rem 2rem;
-            border-radius: 10px;
-            margin-bottom: 3rem;
+            background: rgba(102, 252, 241, 0.05);
+            border: 1px dashed rgba(102, 252, 241, 0.3);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2.5rem;
             text-align: center;
             max-width: 600px;
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 0.9rem;
+            color: #a9b7c6;
         }
 
-        .arcade-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
-            width: 100%;
-            max-width: 1400px;
-        }
-
-        .game-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(102, 252, 241, 0.2);
-            border-radius: 20px;
-            overflow: hidden;
+        .arcade-list {
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
-            position: relative;
+            gap: 1rem;
+            width: 100%;
+            max-width: 700px;
         }
 
-        .game-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--neon-pink);
-            box-shadow: 0 15px 35px rgba(255, 0, 127, 0.3);
-        }
-
-        .game-badge {
-            height: 130px;
-            background: #121212;
+        .game-row {
+            background: var(--card-bg);
+            border: 1px solid rgba(102, 252, 241, 0.15);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            position: relative;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .game-number {
-            font-size: 4rem;
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.05);
-            position: absolute;
-            right: 15px;
-            bottom: -5px;
+        .game-row:hover {
+            border-color: var(--neon-pink);
+            box-shadow: 0 5px 20px rgba(255, 0, 127, 0.2);
         }
 
-        .game-icon { font-size: 2.5rem; }
-
-        /* 🚀 핵심: 플레이 버튼 스타일 */
-        .play-btn {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: var(--neon-blue);
-            color: #000;
-            border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.2s;
-            z-index: 10;
-        }
-
-        .play-btn:hover {
-            background: var(--neon-pink);
+        .editable-title {
+            font-size: 1.2rem;
+            font-weight: 700;
             color: #fff;
-            transform: scale(1.05);
-        }
-
-        .game-details {
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        /* ✍️ 수정 가능한 요소들의 스타일 (마우스를 올리면 수정 가능하다는 표시를 줌) */
-        .editable-title, .editable-desc, .editable-tag {
-            transition: background-color 0.2s, outline 0.2s;
+            padding: 0.2rem 0.5rem;
             border-radius: 4px;
+            transition: background-color 0.2s, outline 0.2s;
+            flex-grow: 1;
+            margin-right: 1.5rem;
         }
 
-        .editable-title:hover, .editable-desc:hover, .editable-tag:hover {
+        .editable-title:hover {
             background-color: var(--edit-bg);
-            outline: 2px dashed var(--neon-blue);
+            outline: 1px dashed var(--neon-blue);
             cursor: text;
         }
 
-        /* 포커스 되었을 때 (입력 중일 때) */
-        .editable-title:focus, .editable-desc:focus, .editable-tag:focus {
+        .editable-title:focus {
             background-color: var(--edit-bg);
             outline: 2px solid var(--neon-pink);
             color: #fff;
         }
 
-        .game-title {
-            font-size: 1.35rem;
-            font-weight: 700;
-            margin-bottom: 0.6rem;
-            color: #fff;
-        }
-
-        .game-desc {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 1.5rem;
-            flex-grow: 1;
-            min-height: 45px; /* 내용이 비어도 클릭 가능하도록 최소 높이 지정 */
-        }
-
-        .tag-container {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .genre-tag {
-            background: rgba(102, 252, 241, 0.08);
-            border: 1px solid var(--neon-blue);
-            color: var(--neon-blue);
-            padding: 0.2rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
+        .play-btn {
+            background: var(--neon-blue);
+            color: #000;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
             font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            white-space: nowrap;
+        }
+
+        .play-btn:hover {
+            background: var(--neon-pink);
+            color: #fff;
+            transform: scale(1.03);
         }
 
         footer {
             margin-top: auto;
             padding: 4rem 0 1rem 0;
-            color: var(--text-muted);
+            color: #a9b7c6;
             font-size: 0.85rem;
-        }
-
-        @media (max-width: 768px) {
-            header h1 { font-size: 2.3rem; }
-            .arcade-grid { gap: 1.5rem; }
         }
     </style>
 </head>
@@ -210,97 +143,85 @@
 
     <header>
         <h1>My Web Arcade</h1>
-        <p>실시간 텍스트 커스텀 에디션</p>
+        <p>1열 미니멀 에디션</p>
     </header>
 
     <div class="guide-banner">
-        💡 <strong>[화면 수정 방법]</strong> 기레이아웃 내의 <strong>게임 제목, 설명, 태그</strong>를 마우스로 직접 클릭해 보세요! 글자를 마음대로 수정하고 다른 곳을 클릭하면 브라우저에 자동 저장됩니다. 게임 실행은 왼쪽 상단의 <strong>[PLAY 🎮]</strong> 버튼을 누르세요.
+        💡 <strong>게임 제목</strong>을 클릭하면 그 자리에서 이름을 바꿀 수 있습니다. (다른 곳 클릭 시 저장)
     </div>
 
-    <main class="arcade-grid" id="arcadeGrid">
-        </main>
+    <main class="arcade-list" id="arcadeList">
+    </main>
 
     <footer>
-        <p>© 2026 WEB GAME ARCADE STUDIO. 브라우저 저장소 연동 완료.</p>
+        <p>© 2026 WEB GAME ARCADE STUDIO. 시스템 정상 가동 중.</p>
     </footer>
 
     <script>
-        // 기본 데이터 세팅 (만약 저장된 게 없다면 이 값들로 시작합니다)
+        // 🚀 중요: 코드 수정 후 반영 안 될 때는 이 버전 번호를 아무 숫자(예: "1.2")로 올리면 즉시 강제 갱신됩니다!
+        const PAGE_VERSION = "1.1";
+
         const defaultGames = [
-            { id: "game_1", icon: "🚀", title: "Game 1: 슈팅 플래닛", desc: "여기를 클릭해서 설명을 수정해 보세요.", tag: "Shooting" },
-            { id: "game_2", icon: "🧱", title: "Game 2: 블록 매치 X", desc: "동일한 색상의 블록을 매칭하여 터트리는 퍼즐 게임.", tag: "Puzzle" },
-            { id: "game_3", icon: "🏃", title: "Game 3: 네온 러너", desc: "네온 그리드 위를 질주하는 무한 스피드 러닝 액션.", tag: "Action" },
-            { id: "game_4", icon: "🃏", title: "Game 4: 로그 카드 디펜스", desc: "카드를 조합하여 적들을 막아내는 타워 디펜스 게임.", tag: "Strategy" },
-            { id: "game_5", icon: "🗝️", title: "Game 5: 던전 시커", desc: "랜덤하게 생성되는 지하 미로를 탐험하는 로그라이트.", tag: "Roguelike" },
-            { id: "game_6", icon: "🏎️", title: "Game 6: 마이크로 레이서", desc: "탑다운 시점으로 드리프트하며 달리는 미니 레이싱.", tag: "Racing" },
-            { id: "game_7", icon: "🥑", title: "Game 7: 머지 프루츠", desc: "과일들을 같은 종류끼리 합쳐서 수박을 만들어내는 퍼즐.", tag: "Merge" },
-            { id: "game_8", icon: "⚔️", title: "Game 8: 원 버튼 타이밍", desc: "타이밍 게이지에 맞춰 적의 공격을 쳐내는 하드코어 액션.", tag: "Action" },
-            { id: "game_9", icon: "🧱", title: "Game 9: 브레이크 아웃", desc: "공을 튕겨 화면 상단의 모든 벽돌을 부수는 아케이드.", tag: "Arcade" },
-            { id: "game_10", icon: "🌌", title: "Game 10: 코스믹 클리커", desc: "화면을 클릭해 에너지를 모으는 방치형 클리커.", tag: "Idle" }
+            { id: "game_1", title: "Game 1: 누가이겨?" },
+            { id: "game_2", title: "Game 2: 두더지 게임" },
+            { id: "game_3", title: "Game 3: color shot" },
+            { id: "game_4", title: "Game 4: 강철의 난" },
+            { id: "game_5", title: "Game 5: 합치다 보니 신이 되었다." },
+            { id: "game_6", title: "Game 6: ." },
+            { id: "game_7", title: "Game 7: ." },
+            { id: "game_8", title: "Game 8: ." },
+            { id: "game_9", title: "Game 9: ." },
+            { id: "game_10", title: "Game 10: ." }
         ];
 
-        // 로컬 스토리지에서 데이터 불러오기 혹은 초기화
-        let savedGames = JSON.parse(localStorage.getItem('arcade_game_data'));
-        if (!savedGames) {
-            savedGames = defaultGames;
-            localStorage.setItem('arcade_game_data', JSON.stringify(savedGames));
+        // 버전 대조 후 초기화 처리 기믹
+        const currentVersion = localStorage.getItem('arcade_page_version');
+        if (currentVersion !== PAGE_VERSION) {
+            localStorage.removeItem('arcade_game_data_simple'); // 예전 데이터 완전 파괴
+            localStorage.setItem('arcade_page_version', PAGE_VERSION); // 새로운 버전 주입
         }
 
-        const gridContainer = document.getElementById('arcadeGrid');
+        let savedGames = JSON.parse(localStorage.getItem('arcade_game_data_simple'));
+        if (!savedGames) {
+            savedGames = defaultGames;
+            localStorage.setItem('arcade_game_data_simple', JSON.stringify(savedGames));
+        }
 
-    // 10개의 카드를 화면에 동적으로 생성하는 함수 (로컬/서버 동시 호환 버전)
+        const listContainer = document.getElementById('arcadeList');
+
         function renderArcade() {
-            gridContainer.innerHTML = '';
-            savedGames.forEach((game, index) => {
-                const card = document.createElement('div');
-                card.className = 'game-card';
-                
-                // 번호 두자리 포맷팅 (01, 02...)
-                const numStr = String(index + 1).padStart(2, '0');
+            listContainer.innerHTML = '';
+            savedGames.forEach((game) => {
+                const row = document.createElement('div');
+                row.className = 'game-row';
 
-                card.innerHTML = `
-                    <div class="game-badge">
-                        <button class="play-btn" onclick="location.href='${game.id}/index.html'">PLAY 🎮</button>
-                        <div class="game-icon">${game.icon}</div>
-                        <div class="game-number">${numStr}</div>
-                    </div>
-                    <div class="game-details">
-                        <h2 class="game-title editable-title" contenteditable="true" data-id="${game.id}" data-field="title">${game.title}</h2>
-                        <p class="game-desc editable-desc" contenteditable="true" data-id="${game.id}" data-field="desc">${game.desc}</p>
-                        <div class="tag-container">
-                            <span class="genre-tag editable-tag" contenteditable="true" data-id="${game.id}" data-field="tag">${game.tag}</span>
-                        </div>
-                    </div>
+                row.innerHTML = `
+                    <h2 class="game-title editable-title" contenteditable="true" data-id="${game.id}">${game.title}</h2>
+                    <button class="play-btn" onclick="location.href='${game.id}/index.html'">PLAY 🎮</button>
                 `;
-                gridContainer.appendChild(card);
+                listContainer.appendChild(row);
             });
 
-            // 이벤트 리스너 등록 (수정이 끝났을 때 자동 저장)
             bindEditEvents();
         }
 
-        // 유저가 수정한 내용을 실시간으로 갱신하고 저장하는 이벤트 매칭
         function bindEditEvents() {
-            const editables = document.querySelectorAll('[contenteditable="true"]');
+            const editables = document.querySelectorAll('.editable-title');
             
             editables.forEach(element => {
                 element.addEventListener('blur', (e) => {
                     const id = e.target.getAttribute('data-id');
-                    const field = e.target.getAttribute('data-field');
                     const newText = e.target.innerText.trim();
 
-                    // 데이터 배열에서 찾아 업데이트
                     const gameIndex = savedGames.findIndex(g => g.id === id);
                     if (gameIndex !== -1) {
-                        savedGames[gameIndex][field] = newText;
-                        // 로컬 스토리지에 최종 저장
-                        localStorage.setItem('arcade_game_data', JSON.stringify(savedGames));
+                        savedGames[gameIndex].title = newText;
+                        localStorage.setItem('arcade_game_data_simple', JSON.stringify(savedGames));
                     }
                 });
 
-                // 엔터키 치면 포커스 해제되면서 저장되도록 편의 기능 추가
                 element.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
+                    if (e.key === 'Enter') {
                         e.preventDefault();
                         e.target.blur();
                     }
@@ -308,7 +229,6 @@
             });
         }
 
-        // 최초 실행
         renderArcade();
     </script>
 </body>
