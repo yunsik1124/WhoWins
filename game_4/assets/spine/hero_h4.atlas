@@ -1,6 +1,6 @@
 hero_h4.png
 size:738,632
-filter:Linear,Linear
+filter:MipMapLinearLinear,Linear
 pma:true
 scale:0.5
 hero_h4_Layer1_1
