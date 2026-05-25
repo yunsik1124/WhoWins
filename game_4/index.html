@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>강철의 난: 무림수호맹 V13.31 - 사거리 정밀 교정판</title>
+    <title>강철의 난: 무림수호맹 V13.32 - 아키텍트 교정판</title>
     <script src="https://unpkg.com/@esotericsoftware/spine-player@4.1.28/dist/iife/spine-player.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/@esotericsoftware/spine-player@4.1.28/dist/spine-player.css">
     <style>
@@ -348,7 +348,6 @@
                     background: #e74c3c;
                 }
 
-        /* 💡 NEW: 중간보스 등장 말풍선 스타일 */
         #midBossSpeechBubble {
             position: absolute;
             top: -65px;
@@ -1626,12 +1625,12 @@
 
         function saveGame() {
             const data = { upgrades, heroes, equippedHero, currentMaxStage, metaCoins };
-            localStorage.setItem('murimGuardiansSaveV13_31', JSON.stringify(data));
+            localStorage.setItem('murimGuardiansSaveV13_32', JSON.stringify(data));
         }
 
         function loadGame() {
             try {
-                const saved = localStorage.getItem('murimGuardiansSaveV13_31') || localStorage.getItem('murimGuardiansSaveV13_30');
+                const saved = localStorage.getItem('murimGuardiansSaveV13_32') || localStorage.getItem('murimGuardiansSaveV13_31');
                 if (saved) {
                     const data = JSON.parse(saved);
                     if (data.upgrades) upgrades = data.upgrades;
@@ -1645,8 +1644,8 @@
 
         function hardResetData() {
             if (confirm("모든 데이터를 포기하고 처음부터 다시 하시겠소?")) {
+                localStorage.removeItem('murimGuardiansSaveV13_32');
                 localStorage.removeItem('murimGuardiansSaveV13_31');
-                localStorage.removeItem('murimGuardiansSaveV13_30');
                 location.reload();
             }
         }
@@ -1670,7 +1669,7 @@
         let maxWaves = 10; let waveDurations = []; let waveQuotas = [];
 
         function initDynamicWaves(stageNum) {
-            maxWaves = Math.min(10, 3 + (stageNum - 1) * 2);
+            maxWaves = Math.min(10, 3 + (stageNum - 1));
             waveDurations = []; waveQuotas = [];
             let totalDuration = 20000 + (stageNum * 1500);
             let totalEnemies = 100 + (stageNum * 35);
@@ -1738,7 +1737,7 @@
         function selectRegion(rIdx) {
             let maxRegion = Math.floor((currentMaxStage - 1) / 10);
             if (rIdx > maxRegion) { alert("아직 해금되지 않은 지역이오!"); return; }
-            let regionNames = ["화산 (華山)", "소림 (少林)", "무당 (武 당)", "개방 (丐幫)", "아미 (峨嵋)", "곤륜 (崑崙)", "마교 (魔敎)"];
+            let regionNames = ["화산 (華山)", "소림 (少林)", "무당 (武當)", "개방 (丐幫)", "아미 (峨嵋)", "곤륜 (崑崙)", "마교 (魔敎)"];
             document.getElementById('regionTitleDisplay').innerText = regionNames[rIdx]; renderStages(rIdx); showScreen('stageSelectScreen');
         }
 
@@ -1981,9 +1980,9 @@
                     const bx = deckStartX + (i * (slotWidth + 8));
                     if (mouseX >= bx && mouseX <= bx + slotWidth && mouseY >= slotY && mouseY <= slotY + 180) {
                         let charInfo = deck[i]; let isLocked = false;
-                        if (charInfo.id === 5 && currentStage < 5) isLocked = true;
-                        if (charInfo.id === 6 && currentStage < 7) isLocked = true;
-                        if (charInfo.id === 7 && currentStage < 9) isLocked = true;
+                        if (charInfo.id === 5 && currentMaxStage < 5) isLocked = true;
+                        if (charInfo.id === 6 && currentMaxStage < 7) isLocked = true;
+                        if (charInfo.id === 7 && currentMaxStage < 9) isLocked = true;
                         if (isLocked) { createFloatingText(bx + slotWidth / 2, slotY, "해금 조건을 충족하시오!", "#e74c3c", false); return; }
 
                         if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
@@ -2055,7 +2054,6 @@
             updateMousePos(e.clientX, e.clientY); handleInteract(e);
         });
 
-        // 모바일 터치 이벤트 버그 수정 - 중복 이벤트 리스너 통합 및 단일화
         container.addEventListener('touchstart', (e) => {
             if (e.target.closest('button') || e.target.closest('.hud-panel') || e.target.closest('#gameLogUI') || e.target.closest('#mercenaryUI') || e.target.closest('#upgradePopup') || e.target.closest('.screen') || e.target.closest('.map-node') || e.target.closest('.stage-node') || e.target.closest('.node') || e.target.closest('.popup-body')) { return; }
             e.preventDefault(); if (e.touches.length > 0) updateMousePos(e.touches[0].clientX, e.touches[0].clientY); handleInteract(e);
@@ -2155,15 +2153,15 @@
                                 waveTimer--; let spawnInterval = Math.max(15, Math.floor(50 - (currentWave * 3)));
                                 if (enemiesSpawned >= waveQuotas[currentWave] && enemies.length === 0) { waveTimer = 0; }
                                 if (currentWave === maxWaves - 1) {
-                                    if (frameCount % spawnInterval === 0 && enemiesSpawned < waveQuotas[maxWaves - 1] * 0.8) { const lane = lanes[Math.floor(Math.random() * lanes.length)]; let eJewel = Math.random() < 0.35; enemies.push({ type: 'normal', x: lane.startX, y: lane.y, lane: lane, hp: Math.floor(150 * stageMulti), maxHp: Math.floor(150 * stageMulti), slowTimer: 0, speed: 0.6, damage: Math.floor((15 + currentWave * 2) * stageMulti), color: '#e67e22', range: 55, isRanged: false, cd: 0, meleeCd: 0, hitAnim: 0, poisoned: false, reward: 20, hasJewel: eJewel, gaugeAmt: eJewel ? 15 : 0 }); enemiesSpawned++; }
+                                    if (frameCount % spawnInterval === 0 && enemiesSpawned < waveQuotas[maxWaves - 1] * 0.8) { const lane = lanes[Math.floor(Math.random() * lanes.length)]; let eJewel = Math.random() < 0.60; enemies.push({ type: 'normal', x: lane.startX, y: lane.y, lane: lane, hp: Math.floor(150 * stageMulti), maxHp: Math.floor(150 * stageMulti), slowTimer: 0, speed: 0.7, damage: Math.floor((15 + currentWave * 2) * stageMulti), color: '#e67e22', range: 55, isRanged: false, cd: 0, meleeCd: 0, hitAnim: 0, poisoned: false, reward: 20, hasJewel: eJewel, gaugeAmt: eJewel ? 15 : 0 }); enemiesSpawned++; }
                                     if (!bossSpawned && (waveTimer <= waveDurations[maxWaves - 1] * 0.2 || enemiesSpawned >= waveQuotas[maxWaves - 1] * 0.8)) { let lane = lanes[2]; enemies.push({ type: 'boss', x: lane.startX, y: lane.y, lane: lane, hp: Math.floor(5000 * stageMulti), maxHp: Math.floor(5000 * stageMulti), speed: 0.19, damage: Math.floor(100 * stageMulti), cd: 0, slowTimer: 0, hitAnim: 0, poisoned: false, reward: 500, hasJewel: true, gaugeAmt: 50 }); bossSpawned = true; showWaveWarning = 150; addLog("⚠️ 마신왕이 직접 전장에 강림하였소!", "gold"); }
                                     if (bossSpawned && enemies.length === 0) { waveState = 'stage_cleared'; waveWaitTimer = 120; }
                                 } else {
                                     if (frameCount % spawnInterval === 0 && enemiesSpawned < waveQuotas[currentWave]) {
                                         const lane = lanes[Math.floor(Math.random() * lanes.length)]; let tRand = Math.random(); let eHp, eSpeed, eDmg, eColor, eRange, eIsRanged, rew;
-                                        let baseEnemyHp = (currentWave === 0) ? 40 : 150 + (currentWave * 25); let eJewel = Math.random() < 0.35;
-                                        if (tRand < 0.33) { eHp = baseEnemyHp; eSpeed = 0.25; eDmg = 20 + (currentWave * 2); eColor = '#8b0000'; eRange = 55; eIsRanged = false; rew = 10; }
-                                        else if (tRand < 0.66) { eHp = baseEnemyHp / 2; eSpeed = 0.75; eDmg = 3 + (currentWave * 1); eColor = '#e67e22'; eRange = 55; eIsRanged = false; rew = 10; }
+                                        let baseEnemyHp = (currentWave === 0) ? 40 : 150 + (currentWave * 25); let eJewel = Math.random() < 0.60;
+                                        if (tRand < 0.33) { eHp = baseEnemyHp; eSpeed = 0.35; eDmg = 20 + (currentWave * 2); eColor = '#8b0000'; eRange = 55; eIsRanged = false; rew = 10; }
+                                        else if (tRand < 0.66) { eHp = baseEnemyHp / 2; eSpeed = 0.95; eDmg = 3 + (currentWave * 1); eColor = '#e67e22'; eRange = 55; eIsRanged = false; rew = 10; }
                                         else { eHp = baseEnemyHp * 0.8; eSpeed = 0.45; eDmg = 15 + (currentWave * 2); eColor = '#2980b9'; eRange = 400; eIsRanged = true; rew = 14; }
                                         let finalReward = Math.floor(rew + (currentWave * 5));
                                         enemies.push({ type: 'normal', x: lane.startX, y: lane.y, lane: lane, hp: Math.floor(eHp * stageMulti), maxHp: Math.floor(eHp * stageMulti), slowTimer: 0, speed: eSpeed, damage: Math.floor(eDmg * stageMulti), color: eColor, range: eRange, isRanged: eIsRanged, cd: 0, meleeCd: 0, hitAnim: 0, poisoned: false, reward: finalReward, hasJewel: eJewel, gaugeAmt: eJewel ? 15 : 0 }); enemiesSpawned++;
@@ -2370,7 +2368,19 @@
 
                                     if (e.isRanged && e.type !== 'boss') {
                                         if (e.type === 'midboss') {
-                                            if (e.cd <= 0) { let targets = fieldSlots.filter(fs => fs.char); if (targets.length > 0) { let t = targets[Math.floor(Math.random() * targets.length)]; projectiles.push({ type: 'midbossProj', x: e.x, y: e.y - 30, vx: vx, vy: vy, g: g, targetY: t.y - 20, tx: t.x, ty: t.y - 20, color: '#c0392b', damage: e.damage }); e.cd = 90; } } else { e.cd--; }
+                                            if (e.cd <= 0) {
+                                                let targets = fieldSlots.filter(fs => fs.char);
+                                                if (targets.length > 0) {
+                                                    let t = targets[Math.floor(Math.random() * targets.length)];
+                                                    let g = 0.86; let T = 45;
+                                                    let targetX = t.x; let targetY = t.y - 20;
+                                                    let startX = e.x; let startY = e.y - 30;
+                                                    let vx = (targetX - startX) / T;
+                                                    let vy = (targetY - startY - 0.5 * g * T * T) / T;
+                                                    projectiles.push({ type: 'midbossProj', x: startX, y: startY, vx: vx, vy: vy, g: g, targetY: targetY, tx: targetX, ty: targetY, color: '#c0392b', damage: e.damage });
+                                                }
+                                                e.cd = 90;
+                                            } else { e.cd--; }
                                         } else {
                                             let validTargets = fieldSlots.filter(fs => fs.char && fs.laneId === e.lane.id && e.x > fs.x && e.x - fs.x <= e.range);
                                             if (validTargets.length > 0) { validTargets.sort((a, b) => b.x - a.x); let targetSlot = validTargets[0]; if (e.cd <= 0) { projectiles.push({ type: 'enemyProj', startX: e.x, startY: e.y - 30, tx: targetSlot.x, ty: targetSlot.y - 20, progress: 0, color: e.color, damage: e.damage }); e.cd = 50; } else { e.cd--; } }
@@ -2397,7 +2407,7 @@
                                         } else { e.meleeCd = 0; }
                                     } else if (e.type === 'boss') {
                                         if (e.cd <= 0) { let targets = fieldSlots.filter(fs => fs.char); if (targets.length > 0) { let t = targets[Math.floor(Math.random() * targets.length)]; projectiles.push({ type: 'enemyProj', startX: e.x, startY: e.y - 50, tx: t.x, ty: t.y - 20, progress: 0, color: '#c0392b', damage: e.damage + 10 }); } e.cd = 62; } else { e.cd--; }
-                                        if (frameCount % 125 === 0) { const lane = lanes[Math.floor(Math.random() * lanes.length)]; let eJewel = Math.random() < 0.35; enemies.push({ type: 'normal', x: e.x + 50, y: lane.y, lane: lane, hp: Math.floor(100 * stageMulti), maxHp: Math.floor(100 * stageMulti), slowTimer: 0, speed: 0.84, damage: Math.floor(5 * stageMulti), color: '#e67e22', range: 55, isRanged: false, cd: 0, meleeCd: 0, hitAnim: 0, poisoned: false, reward: 14, hasJewel: eJewel, gaugeAmt: eJewel ? 15 : 0 }); }
+                                        if (frameCount % 125 === 0) { const lane = lanes[Math.floor(Math.random() * lanes.length)]; let eJewel = Math.random() < 0.60; enemies.push({ type: 'normal', x: e.x + 50, y: lane.y, lane: lane, hp: Math.floor(100 * stageMulti), maxHp: Math.floor(100 * stageMulti), slowTimer: 0, speed: 0.84, damage: Math.floor(5 * stageMulti), color: '#e67e22', range: 55, isRanged: false, cd: 0, meleeCd: 0, hitAnim: 0, poisoned: false, reward: 14, hasJewel: eJewel, gaugeAmt: eJewel ? 15 : 0 }); }
                                         fieldSlots.forEach(s => { if (s.char && s.laneId === e.lane.id && Math.abs(e.x - s.x) < 100) { if (invincibleFrames <= 0 && s.char.id !== 999) s.char.hp -= 2; if (s.char.hp <= 0 && invincibleFrames <= 0) { addLog(`${s.char.name}이(가) 마신왕의 기백에 눌려 전사했소!`, "#c0392b"); if (s.char.id === 999 || s.char.id > 7) { s.char = null; } else { s.char.state = 'dead'; s.char.timer = getBase('respawnReduc', 250); s.char.hp = getBase('hp', s.char.maxHp); s.char = null; } } } });
                                     }
                                 } if (!isRoulettePaused && e.hitAnim > 0) e.hitAnim--; renderEntities.push({ y: e.y, type: 'enemy', data: e });
@@ -2593,7 +2603,7 @@
                         for (let i = energyCores.length - 1; i >= 0; i--) {
                             let c = energyCores[i]; if (!isRoulettePaused) { c.progress += 0.04; }
                             let currentX = c.x + (c.tx - c.x) * c.progress; let currentY = c.y + (c.ty - c.y) * c.progress;
-                            ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 15; ctx.fillStyle = "#00d2d3"; ctx.beginPath(); ctx.arc(currentX, currentY, 12, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(currentX, currentY, 6, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+                            ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 15; ctx.fillStyle = "#00d2d3"; ctx.beginPath(); ctx.arc(currentX, currentY, 20, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(currentX, currentY, 10, 0, Math.PI * 2); ctx.fill(); ctx.restore();
                             if (c.progress >= 1 && !isRoulettePaused) { if (mercState === 'charging' && currentWave < maxWaves) { glitchGauge = Math.min(100, glitchGauge + c.amount); updateMercUI(); if (glitchGauge >= 100) activateMercenary(); } energyCores.splice(i, 1); }
                         }
 
@@ -2611,9 +2621,9 @@
                             let actualCost = getActualCost(char); ctx.save();
 
                             let isLocked = false; let lockReason = "";
-                            if (char.id === 5 && currentStage < 5) { isLocked = true; lockReason = "5관문 해금"; }
-                            if (char.id === 6 && currentStage < 7) { isLocked = true; lockReason = "7관문 해금"; }
-                            if (char.id === 7 && currentStage < 9) { isLocked = true; lockReason = "9관문 해금"; }
+                            if (char.id === 5 && currentMaxStage < 5) { isLocked = true; lockReason = "5관문 해금"; }
+                            if (char.id === 6 && currentMaxStage < 7) { isLocked = true; lockReason = "7관문 해금"; }
+                            if (char.id === 7 && currentMaxStage < 9) { isLocked = true; lockReason = "9관문 해금"; }
 
                             let img = getImage(char.id, 'char');
                             if (char.state === 'deployed') {
