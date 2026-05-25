@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -109,10 +108,9 @@
             overflow: hidden;
             position: relative;
             margin-bottom: 60px;
-            border: none; /* 👈 테두리 제거 */
-            background: transparent; /* 👈 어두운 박스 자체를 투명하게 제거 */
+            border: none;
+            background: transparent;
             padding: 20px;
-            /* box-shadow 제거로 잔상까지 완벽 박멸 */
         }
 
         .story-scroll {
@@ -350,32 +348,82 @@
                     background: #e74c3c;
                 }
 
+        /* 💡 NEW: 중간보스 등장 말풍선 스타일 */
+        #midBossSpeechBubble {
+            position: absolute;
+            top: -65px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f1c40f;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            animation: bounce 1s infinite;
+            pointer-events: none;
+            z-index: 101;
+            border: 3px solid #e67e22;
+        }
+
+            #midBossSpeechBubble::after {
+                content: '';
+                position: absolute;
+                bottom: -12px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-width: 12px 10px 0;
+                border-style: solid;
+                border-color: #f1c40f transparent transparent transparent;
+            }
+
+            #midBossSpeechBubble::before {
+                content: '';
+                position: absolute;
+                bottom: -16px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-width: 14px 12px 0;
+                border-style: solid;
+                border-color: #e67e22 transparent transparent transparent;
+                z-index: -1;
+            }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+
         #upgradePopup {
             display: none;
-            position: absolute; /* 💡 부모 컨테이너 기준 절대 좌표계 획득 */
-            /* 🎯 화면 중앙 정렬 정밀 흡착 */
+            position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            pointer-events: auto !important; /* 💡 하단 전장의 클릭 차단막 전개 */
-            /* 📏 화면 중앙 기준 고정 스펙 명세 */
-            width: 1800px; /* 1920 컨테이너 내부 안성맞춤 크기 */
+            pointer-events: auto !important;
+            width: 1800px;
             height: 960px;
-            background: #161616; /* 가시성 확보를 위한 묵직한 수묵 암흑색 */
+            background: #161616;
             border: 3px solid #f1c40f;
             border-radius: 12px;
             flex-direction: column;
             padding: 30px;
             box-sizing: border-box;
             box-shadow: 0 0 60px rgba(0,0,0,0.95);
-            z-index: 9999; /* 💡 전장의 모든 투사체와 영웅 위에 군림 */
-            margin: 0; /* 기존 margin: auto 파쇄 */
+            z-index: 9999;
+            margin: 0;
         }
 
-        /* 🎯 내부 스크롤 영역 터치 고립화 */
         .tree-section, .hero-section {
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch; /* 📱 iOS 환경에서 부드러운 가속 스크롤 보장 */
+            -webkit-overflow-scrolling: touch;
         }
 
         .popup-header {
@@ -1158,9 +1206,8 @@
                 box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
             }
 
-        /* 💡 인게임 영웅 스파인 이미지 Z-Order 최종 정밀 교정 */
         #ingameHeroGraphic {
-            z-index: 35 !important; /* 👈 !important를 붙여 HTML 본문의 9000 무공을 완벽히 파쇄하오 */
+            z-index: 35 !important;
             width: 420px;
             height: 180px;
             right: 30px;
@@ -1197,6 +1244,7 @@
             <button id="speedUpBtn">X1<br><span>500💰</span></button>
 
             <div id="midBossUI">
+                <div id="midBossSpeechBubble">중간보스 등장!</div>
                 <button id="midBossIconBtn" onclick="toggleMidBossPrompt()">💀</button>
                 <div id="midBossPrompt">
                     <div class="mid-boss-prompt-text"></div>
@@ -1236,7 +1284,7 @@
                         <div style="color:white; font-size:24px; font-weight:bold; background:rgba(0,0,0,0.5); padding:12px 20px; border-radius:8px;">
                             보유 영석: 💎 <span id="popupCoin" style="color:#00d2d3;">0</span>
                         </div>
-                        <button class="close-btn" style="background:#27ae60; padding:15px 40px; font-size:26px;" onclick="togglePopup(false); e.stopPropagation();">
+                        <button class="close-btn" style="background:#27ae60; padding:15px 40px; font-size:26px;" onclick="togglePopup(false); event.stopPropagation();">
                             전장 복귀 ↩
                         </button>
                     </div>
@@ -1306,8 +1354,6 @@
             <h2 id="regionTitleDisplay" style="font-size: 40px; margin-bottom: 20px;">지역 이름</h2>
             <div id="stageContainer"></div>
         </div>
-
-      
     </div>
 
     <script>
@@ -1502,6 +1548,7 @@
                 if (target) target.style.display = 'flex';
                 const heroGraphic = document.getElementById('ingameHeroGraphic');
                 if (heroGraphic) heroGraphic.innerHTML = '';
+                document.getElementById('gameContainer').style.backgroundImage = 'none';
             }
             if (screenId === 'heroSelectScreen') updateHeroCarousel();
             if (screenId === 'regionSelectScreen') updateMapNodes();
@@ -1544,7 +1591,6 @@
 
         let equippedHero = 'h4'; let heroIndex = 4;
 
-        /* [정밀 수정] 정파검사 사거리 210으로 원복 (판정 로직에서 상하좌우 1칸 정밀 제어로 버그 원천 봉쇄) */
         let deck = [
             { id: 1, name: '정파검사', role: '근거리공격', cost: 40, attackType: 'melee', range: 180, damage: 35, color: '#27ae60', maxCd: 19, hp: 200, maxHp: 200, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 8 },
             { id: 2, name: '소림곤승', role: '탱커', cost: 50, attackType: 'melee', range: 165, damage: 25, color: '#f39c12', maxCd: 38, hp: 1200, maxHp: 1200, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 4 },
@@ -1692,7 +1738,7 @@
         function selectRegion(rIdx) {
             let maxRegion = Math.floor((currentMaxStage - 1) / 10);
             if (rIdx > maxRegion) { alert("아직 해금되지 않은 지역이오!"); return; }
-            let regionNames = ["화산 (華山)", "소림 (少林)", "무당 (武當)", "개방 (丐幫)", "아미 (峨嵋)", "곤륜 (崑崙)", "마교 (魔敎)"];
+            let regionNames = ["화산 (華山)", "소림 (少林)", "무당 (武 당)", "개방 (丐幫)", "아미 (峨嵋)", "곤륜 (崑崙)", "마교 (魔敎)"];
             document.getElementById('regionTitleDisplay').innerText = regionNames[rIdx]; renderStages(rIdx); showScreen('stageSelectScreen');
         }
 
@@ -1924,7 +1970,7 @@
         }
 
         function handleInteract(e) {
-            if (gameState === 'gameover') { if (mouseX >= W / 2 - 180 && mouseX <= W / 2 + 180 && mouseY >= H / 2 + 90 && mouseY <= H / 2 + 180) { showScreen('titleScreen'); } return; }
+            if (gameState === 'gameover') { if (mouseX >= W / 2 - 180 && mouseX <= W / 2 + 180 && mouseY >= H / 2 + 90 && mouseY <= H / 2 + 180) { document.getElementById('gameContainer').style.backgroundImage = 'none'; showScreen('titleScreen'); } return; }
             if (gameState !== 'playing' || mercState === 'spinning') return;
 
             if (isHeroTargeting) { let clickedLaneId = -1; for (let r = 0; r < rows; r++) { if (Math.abs(mouseY - lanes[r].y) < rowHeight / 2) { clickedLaneId = r; break; } } if (clickedLaneId !== -1) triggerHeroSkill('h2', clickedLaneId); isHeroTargeting = false; return; }
@@ -2009,13 +2055,9 @@
             updateMousePos(e.clientX, e.clientY); handleInteract(e);
         });
 
+        // 모바일 터치 이벤트 버그 수정 - 중복 이벤트 리스너 통합 및 단일화
         container.addEventListener('touchstart', (e) => {
-            if (e.target.closest('button') || e.target.closest('.hud-panel') || e.target.closest('#gameLogUI') || e.target.closest('#mercenaryUI') || e.target.closest('#upgradePopup') || e.target.closest('.screen') || e.target.closest('.map-node') || e.target.closest('.stage-node')) { return; }
-            e.preventDefault(); if (e.touches.length > 0) updateMousePos(e.touches[0].clientX, e.touches[0].clientY); handleInteract(e);
-        }, { passive: false });
-
-        container.addEventListener('touchstart', (e) => {
-            if (e.target.closest('button') || e.target.closest('.hud-panel') || e.target.closest('#gameLogUI') || e.target.closest('#mercenaryUI') || e.target.closest('.node') || e.target.closest('.popup-body') || e.target.closest('.screen') || e.target.closest('.map-node') || e.target.closest('.stage-node')) { return; }
+            if (e.target.closest('button') || e.target.closest('.hud-panel') || e.target.closest('#gameLogUI') || e.target.closest('#mercenaryUI') || e.target.closest('#upgradePopup') || e.target.closest('.screen') || e.target.closest('.map-node') || e.target.closest('.stage-node') || e.target.closest('.node') || e.target.closest('.popup-body')) { return; }
             e.preventDefault(); if (e.touches.length > 0) updateMousePos(e.touches[0].clientX, e.touches[0].clientY); handleInteract(e);
         }, { passive: false });
 
@@ -2029,7 +2071,7 @@
         }
 
         function goToNextStage() { document.getElementById('victoryOverlay').style.display = 'none'; currentStage += 1; startBattle(currentStage); }
-        function goToLobby() { document.getElementById('victoryOverlay').style.display = 'none'; showScreen('heroSelectScreen'); }
+        function goToLobby() { document.getElementById('victoryOverlay').style.display = 'none'; document.getElementById('gameContainer').style.backgroundImage = 'none'; showScreen('heroSelectScreen'); }
         function applyLifesteal(char, dmg) { if (!char || char.id === 999 || char.hp <= 0) return; let lsRate = getBase('lifesteal', 0); if (lsRate > 0) { let healAmt = dmg * lsRate; char.hp = Math.min(getBase('hp', char.maxHp), char.hp + healAmt); createFloatingText(char.x, char.y - 30, `+${Math.floor(healAmt)}`, "lime", false); } }
 
         function gameLoop(timestamp) {
@@ -2114,7 +2156,7 @@
                                 if (enemiesSpawned >= waveQuotas[currentWave] && enemies.length === 0) { waveTimer = 0; }
                                 if (currentWave === maxWaves - 1) {
                                     if (frameCount % spawnInterval === 0 && enemiesSpawned < waveQuotas[maxWaves - 1] * 0.8) { const lane = lanes[Math.floor(Math.random() * lanes.length)]; let eJewel = Math.random() < 0.35; enemies.push({ type: 'normal', x: lane.startX, y: lane.y, lane: lane, hp: Math.floor(150 * stageMulti), maxHp: Math.floor(150 * stageMulti), slowTimer: 0, speed: 0.6, damage: Math.floor((15 + currentWave * 2) * stageMulti), color: '#e67e22', range: 55, isRanged: false, cd: 0, meleeCd: 0, hitAnim: 0, poisoned: false, reward: 20, hasJewel: eJewel, gaugeAmt: eJewel ? 15 : 0 }); enemiesSpawned++; }
-                                    if (!bossSpawned && (waveTimer <= waveDurations[maxWaves - 1] * 0.2 || enemiesSpawned >= waveQuotas[maxWaves - 1] * 0.8)) { let lane = lanes[2]; enemies.push({ type: 'boss', x: lane.startX, y: lane.y, lane: lane, hp: Math.floor(5000 * stageMulti), maxHp: Math.floor(5000 * stageMulti), speed: 0.19, cd: 0, slowTimer: 0, hitAnim: 0, poisoned: false, reward: 500, hasJewel: true, gaugeAmt: 50 }); bossSpawned = true; showWaveWarning = 150; addLog("⚠️ 마신왕이 직접 전장에 강림하였소!", "gold"); }
+                                    if (!bossSpawned && (waveTimer <= waveDurations[maxWaves - 1] * 0.2 || enemiesSpawned >= waveQuotas[maxWaves - 1] * 0.8)) { let lane = lanes[2]; enemies.push({ type: 'boss', x: lane.startX, y: lane.y, lane: lane, hp: Math.floor(5000 * stageMulti), maxHp: Math.floor(5000 * stageMulti), speed: 0.19, damage: Math.floor(100 * stageMulti), cd: 0, slowTimer: 0, hitAnim: 0, poisoned: false, reward: 500, hasJewel: true, gaugeAmt: 50 }); bossSpawned = true; showWaveWarning = 150; addLog("⚠️ 마신왕이 직접 전장에 강림하였소!", "gold"); }
                                     if (bossSpawned && enemies.length === 0) { waveState = 'stage_cleared'; waveWaitTimer = 120; }
                                 } else {
                                     if (frameCount % spawnInterval === 0 && enemiesSpawned < waveQuotas[currentWave]) {
@@ -2160,7 +2202,6 @@
                                 if (s.zone !== 'unbuildable') {
                                     let charData = (selectedInvenIdx === 'merc') ? pendingMerc : deck[selectedInvenIdx]; let range = charData.range; let fillColor = charData.attackType === 'heal' ? "rgba(46, 204, 113, 0.3)" : "rgba(231, 76, 60, 0.3)"; let strokeColor = charData.attackType === 'heal' ? "rgba(46, 204, 113, 0.9)" : "rgba(231, 76, 60, 0.9)"; ctx.fillStyle = fillColor; ctx.strokeStyle = strokeColor; ctx.lineWidth = 3;
                                     if (charData.id === 11) { ctx.fillRect(s.x - range, s.y - rowHeight - 35, range * 2, (rowHeight * 2) + 70); ctx.strokeRect(s.x - range, s.y - rowHeight - 35, range * 2, (rowHeight * 2) + 70); }
-                                    /* [개선 3 - 정교화] 정파검사 배치 시 상하좌우 1칸 형태의 십자-마름모 가이드 렌더링 */
                                     else if (charData.id === 1) { ctx.beginPath(); ctx.ellipse(s.x, s.y, charData.range, charData.range * 0.6, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
                                     else if (charData.role === '탱커') { ctx.beginPath(); ctx.ellipse(s.x, s.y, 165, 99, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
                                     else if (charData.attackType === 'heal' || charData.attackType === 'melee') { ctx.beginPath(); ctx.ellipse(s.x, s.y, range, range * 0.75, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
@@ -2194,12 +2235,8 @@
                                     } else {
                                         let enemiesInRange = enemies.filter(e => {
                                             if (s.char.role === '탱커') return Math.abs(e.lane.id - s.laneId) <= 1 && Math.abs(e.x - s.x) <= s.char.range;
-                                            /* [개선 3 - 판정 수정] 정파검사(ID: 1) 일 때 상하좌우 반경 딱 1칸 범위의 마신만 타격하도록 조건 한정 */
                                             else if (s.char.id === 1) {
-                                                // 💡 내 위치(s.x, s.y)와 적 위치(e.x, e.y)의 실제 픽셀 거리를 연산하오.
                                                 let realDist = Math.hypot(e.x - s.x, e.y - s.y);
-
-                                                // 고정된 라인 제한을 과감히 깨부수고, 설정한 range(예: 400) 안에 들어온 적은 상하좌우 불문 포착하오!
                                                 return realDist <= s.char.range;
                                             }
                                             else if (s.char.attackType === 'melee') return Math.hypot(e.x - s.x, e.y - s.y) <= s.char.range;
@@ -2214,7 +2251,7 @@
                                             if (s.char.attackType === 'ranged') {
                                                 if (s.char.cd <= 0) {
                                                     let isMiss = s.char.projType !== 'pierce' && Math.random() > s.char.accuracy; let isCrit = !isMiss && Math.random() < getBase('critRate', 0); let targetX = target.x; let targetY = target.y - 20;
-                                                    let projStartX = s.x + ((s.char.projOffsetX || 0) * shootDir); let projStartY = s.y - 95 + (s.char.projOffsetY || 0); //직선원딜 발사체 높이
+                                                    let projStartX = s.x + ((s.char.projOffsetX || 0) * shootDir); let projStartY = s.y - 95 + (s.char.projOffsetY || 0);
                                                     s.char.strikeAnim = s.char.attackFrameDuration || 10;
                                                     if (s.char.projType === 'pierce') { targetX = s.x + (s.char.range * shootDir); projectiles.push({ type: s.char.projType, startX: projStartX, startY: projStartY, tx: targetX, ty: projStartY, progress: 0, char: s.char, isCrit: isCrit, baseDmg: finalBaseDmg, laneId: s.laneId, hitTargets: [], color: s.char.color, charId: s.char.id }); }
                                                     else {
@@ -2223,24 +2260,23 @@
                                                             let distY = targetY - projStartY;
                                                             let distX = targetX - projStartX;
 
-                                                            // 🎯 캐릭터별 초기 기본값 분리 혈 자리
-                                                            let T = 50;   // 기본 비행 프레임 시간 (낮을수록 빠름)
-                                                            let g = 0.86; // 기본 중력 수치 (낮을수록 높게 날아감)
+                                                            let T = 50;
+                                                            let g = 0.86;
 
                                                             switch (s.char.id) {
-                                                                case 3: // 🏹 정파궁수
+                                                                case 3:
                                                                     T = 50;
-                                                                    g = 0.86; // 이 숫자를 낮추면 정파궁수의 화살만 높게 납오!
+                                                                    g = 0.86;
                                                                     break;
-                                                                case 6: // 💣 사파벽력탄
+                                                                case 6:
                                                                     T = 50;
-                                                                    g = 0.86; // 이 숫자를 낮추면 벽력탄만 고각 포격을 하오!
+                                                                    g = 0.86;
                                                                     break;
-                                                                case 11: // 🧎 용병 개방거지
+                                                                case 11:
                                                                     T = 35;
                                                                     g = 1.5;
                                                                     break;
-                                                                case 12: // 💥 용병 벽력탄왕
+                                                                case 12:
                                                                     T = 45;
                                                                     g = 0.86;
                                                                     break;
@@ -2263,7 +2299,6 @@
                                                                 startX: projStartX,
                                                                 startY: projStartY,
                                                                 tx: targetX,
-                                                                // 🎯 [수평 결착] 적의 피격 고도를 내 발사 시작 고도(projStartY)와 자로 잰 듯 일치시킵오!
                                                                 ty: projStartY,
                                                                 progress: 0,
                                                                 char: s.char,
@@ -2283,7 +2318,6 @@
                                                     let isCrit = Math.random() < getBase('critRate', 0);
                                                     let finalDmg = isCrit ? Math.floor(finalBaseDmg * getBase('critDmg', 0)) : finalBaseDmg;
 
-                                                    // 1. 일반 근접 딜러 및 엘리트 역할군 처리
                                                     if (s.char.role.includes('근거리') || s.char.role.includes('엘리트')) {
                                                         s.char.strikeAnim = s.char.attackFrameDuration || 4;
                                                         let dist = Math.hypot(target.x - s.x, target.y - s.y);
@@ -2298,22 +2332,17 @@
                                                         if (isCrit) shakeFrames = 3;
                                                     }
 
-                                                    // ====================================================================
-                                                    // 🔥 [혈 자리 개착] 소림곤승(탱커) 공격 개시 시, 누락되었던 애니메이션 트리거 주입!
-                                                    // ====================================================================
                                                     if (s.char.role === '탱커') {
-                                                        s.char.strikeAnim = s.char.attackFrameDuration || 4; // 공격 이미지(ingame_2) 활성화 프레임
-                                                        s.char.jumpAnim = 10; // 후속 대미지 판정을 위한 타이머 카운트다운 시작
-                                                        s.char.pendingStrike = { target: target, dmg: finalDmg, isCrit: isCrit }; // 대미지 예약 데이터 주입
+                                                        s.char.strikeAnim = s.char.attackFrameDuration || 4;
+                                                        s.char.jumpAnim = 10;
+                                                        s.char.pendingStrike = { target: target, dmg: finalDmg, isCrit: isCrit };
 
-                                                        // 회전 및 돌진 방향 벡터 연산 추가 (이미지가 앞으로 전진하도록 유도)
                                                         let dist = Math.hypot(target.x - s.x, target.y - s.y);
                                                         s.char.strikeDirX = dist > 0 ? (target.x - s.x) / dist : shootDir;
                                                         s.char.strikeDirY = dist > 0 ? (target.y - s.y) / dist : 0;
                                                         s.char.lungeDist = Math.min(s.char.range, Math.max(0, dist - 40));
                                                     }
 
-                                                    // 쿨타임을 원본 스펙(actualMaxCd)으로 즉시 강제 갱신 주입하오
                                                     s.char.cd = actualMaxCd;
                                                     ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
                                                     ctx.beginPath();
@@ -2341,7 +2370,7 @@
 
                                     if (e.isRanged && e.type !== 'boss') {
                                         if (e.type === 'midboss') {
-                                            if (e.cd <= 0) { let targets = fieldSlots.filter(fs => fs.char); if (targets.length > 0) { let t = targets[Math.floor(Math.random() * targets.length)]; let distY = (t.y - 20) - (e.y - 30); let distX = t.x - e.x; let T = 60; let g = 0.5; let vx = distX / T; let vy = (distY - 0.5 * g * T * T) / T; projectiles.push({ type: 'midbossProj', x: e.x, y: e.y - 30, vx: vx, vy: vy, g: g, targetY: t.y - 20, tx: t.x, ty: t.y - 20, color: '#c0392b', damage: e.damage }); e.cd = 90; } } else { e.cd--; }
+                                            if (e.cd <= 0) { let targets = fieldSlots.filter(fs => fs.char); if (targets.length > 0) { let t = targets[Math.floor(Math.random() * targets.length)]; projectiles.push({ type: 'midbossProj', x: e.x, y: e.y - 30, vx: vx, vy: vy, g: g, targetY: t.y - 20, tx: t.x, ty: t.y - 20, color: '#c0392b', damage: e.damage }); e.cd = 90; } } else { e.cd--; }
                                         } else {
                                             let validTargets = fieldSlots.filter(fs => fs.char && fs.laneId === e.lane.id && e.x > fs.x && e.x - fs.x <= e.range);
                                             if (validTargets.length > 0) { validTargets.sort((a, b) => b.x - a.x); let targetSlot = validTargets[0]; if (e.cd <= 0) { projectiles.push({ type: 'enemyProj', startX: e.x, startY: e.y - 30, tx: targetSlot.x, ty: targetSlot.y - 20, progress: 0, color: e.color, damage: e.damage }); e.cd = 50; } else { e.cd--; } }
@@ -2350,7 +2379,6 @@
                                     if (e.type !== 'boss' && e.type !== 'midboss') {
                                         let overlapSlots = fieldSlots.filter(fs => {
                                             if (!fs.char) return false;
-                                            /* [개선 3 - 블로킹 수정] 적이 밀고 들어올 때도 정파검사는 상하좌우 1칸 상태에서만 블로킹을 걸도록 정밀 제어 */
                                             if (fs.char.id === 1) {
                                                 let laneDiff = Math.abs(e.lane.id - fs.laneId);
                                                 let distPx = Math.abs(e.x - fs.x);
@@ -2403,7 +2431,6 @@
 
                                 let currJump = s.char.jumpAnim + 1;
 
-                                // 소림곤승(탱커) 점프 및 착지 시점 연산
                                 if (currJump > 1 && currJump <= 10) {
                                     let progress = currJump / 10;
                                     let arc = Math.sin(progress * Math.PI);
@@ -2413,7 +2440,6 @@
                                     else if (currJump > 8) { scaleX = 0.8; scaleY = 1.2; }
                                 }
 
-                                // 근접 딜러들의 돌진 모션 연산 (기존 로직 보존)
                                 let duration = s.char.attackFrameDuration || 10;
                                 let currStrike = s.char.strikeAnim + 1;
                                 if (s.char.attackType === 'melee' && s.char.role !== '탱커' && currStrike > 1 && currStrike <= duration) {
@@ -2434,23 +2460,18 @@
                                     ctx.strokeStyle = "gold"; ctx.lineWidth = 3; let defaultW = 100; let defaultH = 140; ctx.strokeRect(- (defaultW / 2) - 5, -defaultH + 5, defaultW + 10, defaultH + 10);
                                 }
 
-                                // 🎯 [하강 시작점 포착 제어] 점프 끝에서 내려올 때 2번 변환 후 착지 + 10프레임 유지!
                                 let imgType = 'ingame_1';
                                 if (s.char.role === '탱커') {
-                                    // 1단계: 상승 중(jumpAnim 6~10)일 때는 확실하게 1번 대기 이미지 유지 및 타이머 리셋
                                     if (s.char.jumpAnim > 5) {
                                         s.char.tankStrikeTimer = 0;
                                         imgType = 'ingame_1';
                                     }
-                                    // 2단계: 정점을 찍고 내려오기 시작할 때(jumpAnim 0~5) 자체 유지 타이머 가동!
                                     else if (s.char.jumpAnim >= 0 && s.char.jumpAnim <= 5) {
                                         if (s.char.tankStrikeTimer === undefined || s.char.tankStrikeTimer === 0) {
                                             s.char.tankStrikeTimer = 1;
                                         }
                                     }
 
-                                    // 3단계: 하강하기 시작한 시점부터 '착지 후 10프레임'을 온전히 계산하오.
-                                    // 공중 하강(5프레임) + 대협이 명하신 착지 후 10프레임 = 총 15프레임 동안 2번 유지!
                                     if (s.char.tankStrikeTimer > 0 && s.char.tankStrikeTimer <= 15) {
                                         imgType = 'ingame_2';
                                         if (!isRoulettePaused) s.char.tankStrikeTimer++;
