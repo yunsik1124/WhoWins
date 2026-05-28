@@ -1621,11 +1621,11 @@
         let deck = [
             { id: 1, name: '정파검사', role: '근거리공격', cost: 40, attackType: 'melee', range: 180, damage: 35, color: '#27ae60', maxCd: 19, hp: 200, maxHp: 200, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 8 },
             { id: 2, name: '소림곤승', role: '탱커', cost: 50, attackType: 'melee', range: 165, damage: 25, color: '#f39c12', maxCd: 38, hp: 1200, maxHp: 1200, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 4 },
-            { id: 3, name: '정파궁수', role: '곡선원거리', cost: 100, attackType: 'ranged', projType: 'parabola', range: 580, damage: 25, color: '#3498db', maxCd: 25, hp: 60, maxHp: 60, accuracy: 0.8, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0 },
-            { id: 4, name: '당문암기', role: '직선독원거리', cost: 120, attackType: 'ranged', projType: 'straight', range: 1015, damage: 15, color: '#8e44ad', maxCd: 21, hp: 70, maxHp: 70, poison: true, friendlyFire: true, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0 },
-            { id: 5, name: '사파혈비도', role: '직선관통', cost: 160, attackType: 'ranged', projType: 'pierce', range: 870, damage: 25, color: '#9b59b6', maxCd: 50, hp: 120, maxHp: 120, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0 },
-            { id: 6, name: '사파벽력탄', role: '곡선광역', cost: 200, attackType: 'ranged', projType: 'parabola', range: 600, damage: 150, color: '#e74c3c', maxCd: 58, hp: 80, maxHp: 80, accuracy: 0.6, aoe: true, aoeRadius: 180, friendlyFire: true, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0 },
-            { id: 7, name: '묘강독선', role: '광역힐러', cost: 200, attackType: 'heal', range: 300, healAmount: 50, color: '#2ecc71', maxCd: 33, hp: 80, maxHp: 80, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0 }
+            { id: 3, name: '정파궁수', role: '곡선원거리', cost: 100, attackType: 'ranged', projType: 'parabola', range: 580, damage: 25, color: '#3498db', maxCd: 20, hp: 60, maxHp: 60, accuracy: 0.8, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0 },
+            { id: 4, name: '당문암기', role: '직선독원거리', cost: 120, attackType: 'ranged', projType: 'straight', range: 1015, damage: 15, color: '#8e44ad', maxCd: 18, hp: 100, maxHp: 100, poison: true, friendlyFire: true, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0 },
+            { id: 5, name: '사파혈비도', role: '직선관통', cost: 160, attackType: 'ranged', projType: 'pierce', range: 870, damage: 30, color: '#9b59b6', maxCd: 25, hp: 120, maxHp: 120, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0 },
+            { id: 6, name: '사파벽력탄', role: '곡선광역', cost: 200, attackType: 'ranged', projType: 'parabola', range: 600, damage: 150, color: '#e74c3c', maxCd: 58, hp: 100, maxHp: 100, accuracy: 0.6, aoe: true, aoeRadius: 180, friendlyFire: true, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0 },
+            { id: 7, name: '묘강독선', role: '광역힐러', cost: 200, attackType: 'heal', range: 300, healAmount: 50, color: '#2ecc71', maxCd: 33, hp: 100, maxHp: 100, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0 }
         ];
         deck.sort((a, b) => a.cost - b.cost);
 
@@ -1688,7 +1688,7 @@
             }
         }
 
-        let gameState = 'title'; let glitchGauge = 0; let mercState = 'charging';
+        let gameState = 'title'; let glitchGauge = 0; let mercState = 'charging'; let enemyOffsetY = 15; // 적군 Y축 하향 보정치
         let pendingMerc = null; let mercSpinFrames = 0; let mercFinalIcons = [0, 0, 0, 0];
         let mercFinalTier = 0; let mercRewardType = 'merc'; let mercBuffAtk = 0; let mercBuffSpd = 0; let activeBuffsLog = [];
         let midBossTriggeredWaves = []; let pendingMidBossMulti = 1; let pendingMidBossReward = 0;
@@ -2165,9 +2165,9 @@
                                 let btn = document.getElementById('mercBtn'); let traitBox = document.getElementById('mercTraitInfo'); let tier = mercFinalTier;
                                 if (mercRewardType === 'merc') {
                                     if (tier === 1) pendingMerc = { id: 11, name: '개방거지', role: '곡선원거리', cost: 0, attackType: 'ranged', projType: 'parabola', range: 1000, damage: 15, color: '#8d6e63', cd: 0, maxCd: 35, hp: 50, maxHp: 50, state: 'ready', timer: 0, accuracy: 0.7, aoe: false, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 8 };
-                                    else if (tier === 2) pendingMerc = { id: 9, name: '아미의선', role: '광역힐러', cost: 0, attackType: 'heal', range: 215, healAmount: 35, color: '#ff9ff3', cd: 0, maxCd: 38, hp: 70, maxHp: 70, state: 'ready', timer: 0, showRangeTimer: 0, renderOffsetX: 0, jumpAnim: 0, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 10 };
-                                    else if (tier === 3) pendingMerc = Math.random() > 0.5 ? { id: 8, name: '북해빙궁주', role: '결빙빔', cost: 0, attackType: 'ranged', projType: 'beam', range: 1000, damage: 30, color: '#00cec9', cd: 0, maxCd: 45, hp: 60, maxHp: 60, state: 'ready', timer: 0, accuracy: 1.0, aoe: false, slow: true, friendlyFire: true, ingameScale: 1.0, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 15 } : { id: 10, name: '마교혈투', role: '엘리트근접', cost: 0, attackType: 'melee', range: 220, damage: 80, color: '#c0392b', cd: 0, maxCd: 12, hp: 250, maxHp: 250, state: 'ready', timer: 0, knockback: false, showRangeTimer: 0, renderOffsetX: 0, jumpAnim: 0, lungeDist: 0, strikeDirX: 1, strikeDirY: 0, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 7 };
-                                    else pendingMerc = { id: 12, name: '벽력탄왕', role: '대폭발', cost: 0, attackType: 'ranged', projType: 'parabola', range: 750, damage: 200, color: '#ff3f34', cd: 0, maxCd: 58, hp: 80, maxHp: 80, state: 'ready', timer: 0, accuracy: 0.7, aoe: true, aoeRadius: 240, friendlyFire: true, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 15 };
+                                    else if (tier === 2) pendingMerc = { id: 9, name: '아미의선', role: '광역힐러', cost: 0, attackType: 'heal', range: 215, healAmount: 35, color: '#ff9ff3', cd: 0, maxCd: 38, hp: 90, maxHp: 90, state: 'ready', timer: 0, showRangeTimer: 0, renderOffsetX: 0, jumpAnim: 0, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 10 };
+                                    else if (tier === 3) pendingMerc = Math.random() > 0.5 ? { id: 8, name: '북해빙궁주', role: '결빙빔', cost: 0, attackType: 'ranged', projType: 'beam', range: 1000, damage: 40, color: '#00cec9', cd: 0, maxCd: 30, hp: 100, maxHp: 100, state: 'ready', timer: 0, accuracy: 1.0, aoe: false, slow: true, friendlyFire: true, ingameScale: 1.0, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 15 } : { id: 10, name: '마교혈투', role: '엘리트근접', cost: 0, attackType: 'melee', range: 220, damage: 80, color: '#c0392b', cd: 0, maxCd: 12, hp: 250, maxHp: 250, state: 'ready', timer: 0, knockback: false, showRangeTimer: 0, renderOffsetX: 0, jumpAnim: 0, lungeDist: 0, strikeDirX: 1, strikeDirY: 0, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 7 };
+                                    else pendingMerc = { id: 12, name: '벽력탄왕', role: '대폭발', cost: 0, attackType: 'ranged', projType: 'parabola', range: 750, damage: 200, color: '#ff3f34', cd: 0, maxCd: 58, hp: 200, maxHp: 200, state: 'ready', timer: 0, accuracy: 0.7, aoe: true, aoeRadius: 240, friendlyFire: true, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 15 };
                                     let dName = pendingMerc.name; btn.style.display = "flex"; btn.style.flexDirection = "column"; btn.style.justifyContent = "center"; btn.style.alignItems = "center"; btn.style.backgroundColor = "transparent"; btn.style.backgroundImage = `url('./assets/portraits/char_${pendingMerc.id}.png')`; btn.innerHTML = `<div style="width:100%; height:100%; background:rgba(0,0,0,0.2); border-radius:8px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; padding-bottom:5px; box-sizing:border-box;"><span style="font-size:20px; color:white; font-weight:bold; text-shadow: 2px 2px 4px #000; text-align:center; line-height:1.2;">${dName}</span></div>`;
                                     traitBox.style.display = 'block'; traitBox.innerHTML = `${pendingMerc.role}`;
                                 } else {
@@ -2198,7 +2198,7 @@
                                 if (enemiesSpawned >= waveQuotas[currentWave] && enemies.length === 0) { waveTimer = 0; }
                                 if (currentWave === maxWaves - 1) {
                                     if (frameCount % spawnInterval === 0 && enemiesSpawned < waveQuotas[maxWaves - 1] * 0.8) { const lane = lanes[Math.floor(Math.random() * lanes.length)]; let eJewel = Math.random() < 0.60; enemies.push({ type: 'normal', x: lane.startX, y: lane.y, lane: lane, hp: Math.floor(150 * stageMulti), maxHp: Math.floor(150 * stageMulti), slowTimer: 0, speed: 0.7, damage: Math.floor((15 + currentWave * 2) * stageMulti), color: '#e67e22', range: 55, isRanged: false, cd: 0, meleeCd: 0, hitAnim: 0, poisoned: false, reward: 20, hasJewel: eJewel, gaugeAmt: eJewel ? 15 : 0, spawnFrame: 60 }); enemiesSpawned++; }
-                                    if (!bossSpawned && (waveTimer <= waveDurations[maxWaves - 1] * 0.2 || enemiesSpawned >= waveQuotas[maxWaves - 1] * 0.8)) { let lane = lanes[2]; enemies.push({ type: 'boss', x: lane.startX, y: lane.y, lane: lane, hp: Math.floor(5000 * stageMulti), maxHp: Math.floor(5000 * stageMulti), speed: 0.19, damage: Math.floor(100 * stageMulti), cd: 0, slowTimer: 0, hitAnim: 0, poisoned: false, reward: 500, hasJewel: true, gaugeAmt: 50, spawnFrame: 60 }); bossSpawned = true; showWaveWarning = 150; addLog("⚠️ 마신왕이 직접 전장에 강림하였소!", "gold"); }
+                                    if (!bossSpawned && (waveTimer <= waveDurations[maxWaves - 1] * 0.2 || enemiesSpawned >= waveQuotas[maxWaves - 1] * 0.8)) { let lane = lanes[2]; enemies.push({ type: 'boss', x: lane.startX, y: lane.y, lane: lane, hp: Math.floor(5000 * stageMulti), maxHp: Math.floor(5000 * stageMulti), speed: 0.19, damage: Math.floor(60 * stageMulti), cd: 0, slowTimer: 0, hitAnim: 0, poisoned: false, reward: 500, hasJewel: true, gaugeAmt: 50, spawnFrame: 60 }); bossSpawned = true; showWaveWarning = 150; addLog("⚠️ 마신왕이 직접 전장에 강림하였소!", "gold"); }
                                     if (bossSpawned && enemies.length === 0) { waveState = 'stage_cleared'; waveWaitTimer = 120; }
                                 } else {
                                     if (frameCount % spawnInterval === 0 && enemiesSpawned < waveQuotas[currentWave]) {
@@ -2597,11 +2597,7 @@
                                 }
                             } else {
                                 // ---- 마신 (적) 커스텀 스킨 렌더링 로직 ----
-                                let e = ent.data;
-                                let currHit = e.hitAnim + 1;
-                                let enemyOffsetX = 0;
-                                // 🎯 원근 정렬을 위해 적들의 Y축 기준점을 살짝 내리는 보정치(기혈 조율)
-                                let enemyOffsetY = 15;
+                                let e = ent.data; let currHit = e.hitAnim + 1; let enemyOffsetX = 0;
 
                                 if (e.spawnFrame > 0) {
                                     if (!isRoulettePaused) e.spawnFrame--;
@@ -2670,7 +2666,7 @@
                                     drawText("중간보스", e.x + enemyOffsetX, e.y - 240 + enemyOffsetY, 22, "red");
                                 }
                                 else {
-                                    let baseHeight = 240;
+                                    let baseHeight = 220;
                                     let laneScale = e.lane.scale;
                                     let eh = baseHeight * laneScale * GLOBAL_UNIT_SCALE;
                                     let ew = eh * (160 / 180);
@@ -2691,7 +2687,6 @@
                                         ctx.fillRect(e.x - (ew / 2) + enemyOffsetX, e.y - eh + enemyOffsetY, ew, eh);
                                     }
 
-                                    // HP 바 정렬
                                     ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
                                     ctx.fillRect(e.x - (ew * 0.25) + enemyOffsetX, e.y - eh - 7 + enemyOffsetY, ew * 0.5, 6);
                                     ctx.fillStyle = "lime";
@@ -2700,8 +2695,18 @@
 
                                 if (e.hasJewel) {
                                     ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 10;
-                                    let jewelOffset = (e.type === 'boss') ? 200 : ((e.type === 'midboss') ? 200 : 160);
-                                    drawText("💎", e.x + enemyOffsetX, e.y - jewelOffset + enemyOffsetY, 24);
+                                    let baseHeight = 240;
+                                    let laneScale = e.lane.scale;
+                                    let eh = baseHeight * laneScale * GLOBAL_UNIT_SCALE;
+                                    let dynamicJewelY = e.y + enemyOffsetY - eh;
+                                    if (e.type === 'boss') {
+                                        dynamicJewelY -= 40;
+                                    } else if (e.type === 'midboss') {
+                                        dynamicJewelY -= 30;
+                                    } else {
+                                        dynamicJewelY -= 20;
+                                    }
+                                    drawText("💎", e.x + enemyOffsetX, dynamicJewelY, 24);
                                     ctx.restore();
                                 }
                                 ctx.globalAlpha = 1.0;
