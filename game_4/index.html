@@ -1481,6 +1481,8 @@
         function preloadAllAssets(callback) {
             let assetsToLoad = [];
             assetsToLoad.push({ id: 'portal', type: 'tile', src: './assets/tiles/portal.png' });
+
+            // 1. 수호 고수(슬롯 장착용 캐릭터 및 투사체) 자산 적재
             deck.forEach(c => {
                 assetsToLoad.push({ id: c.id, type: 'char', src: `./assets/portraits/char_${c.id}.png` });
                 assetsToLoad.push({ id: c.id, type: 'ingame_1', src: `./assets/ingame/ingame_1_${c.id}.png` });
@@ -1488,11 +1490,12 @@
                 assetsToLoad.push({ id: c.id, type: 'proj', src: `./assets/projectiles/proj_${c.id}.png` });
             });
 
+            // 2. 전설적 히어로 일러스트 자산 적재
             heroes.forEach(h => {
                 assetsToLoad.push({ id: h.id, type: 'hero', src: `./assets/portraits/hero_${h.id}.png` });
-                assetsToLoad.push({ id: `${h.id}_spine`, type: 'spine_cache', src: `./assets/spine/hero_${h.id}.png` });
             });
 
+            // 3. 해금형 고급 유닛 및 용병 자산 적재
             [8, 9, 10, 11, 12].forEach(id => {
                 assetsToLoad.push({ id: id, type: 'char', src: `./assets/portraits/char_${id}.png` });
                 assetsToLoad.push({ id: id, type: 'ingame_1', src: `./assets/ingame/ingame_1_${id}.png` });
@@ -1500,6 +1503,7 @@
                 assetsToLoad.push({ id: id, type: 'proj', src: `./assets/projectiles/proj_${id}.png` });
             });
 
+            // 4. 기계 마신 세력 애니메이션 프레임 자산 적재
             const enemyTypes = ['melee', 'ranged', 'midboss', 'boss', 'fast'];
             const enemyAnims = ['idle1', 'idle2', 'idle3', 'idle4', 'atk', 'hit'];
             enemyTypes.forEach(et => {
@@ -1508,20 +1512,21 @@
                 });
             });
 
+            // 5. 전장 비경(배경 및 UI 지형 박스) 통합 적재 배열
+            // 🌟 [추가] 대협의 수묵화 천하 지도 배경(map_box_bg.png)과 전장 타일들을 로딩 목록에 직접 강제 주입하오!
             const bgList = [
                 './assets/backgrounds/title_bg.jpg',
-                './assets/backgrounds/map_box_bg.png'
+                './assets/backgrounds/map_box_bg.png',
+                './assets/tiles/zone_unbuildable.png',
+                './assets/tiles/tile_normal.png'
             ];
             for (let i = 0; i <= 7; i++) {
                 bgList.push(`./assets/backgrounds/bg_region_${i}.jpg`);
             }
-            bgList.forEach(bgSrc => {
-                assetsToLoad.push({ id: bgSrc, type: 'bg_cache', src: bgSrc });
+            bgList.forEach((bgSrc, idx) => {
+                // imageCache에 깨끗하게 매핑하기 위해 고유 ID 부여
+                assetsToLoad.push({ id: `bg_asset_${idx}`, type: 'bg_direct', src: bgSrc });
             });
-
-            // 💡 렌더링에 필요한 이미지 타일 로드 (설치 불가 구역 및 일반 구역)
-            assetsToLoad.push({ id: 'zone_unbuildable', type: 'tile', src: './assets/tiles/zone_unbuildable.png' });
-            assetsToLoad.push({ id: 'tile_normal', type: 'tile', src: './assets/tiles/tile_normal.png' });
 
             let loadedCount = 0;
             const totalAssets = assetsToLoad.length;
@@ -1537,7 +1542,12 @@
                     if (e.type === 'error') console.warn(`[자산 누락 경고] 프리로드 이미지 누락 무시함: ${asset.src}`);
                     loadedCount++;
 
-                    if (asset.type !== 'bg_cache' && asset.type !== 'spine_cache') {
+                    // 캐시에 안전하게 이미지 객체를 바인딩하는 무공 분기점
+                    if (asset.type === 'bg_direct') {
+                        // 타일 이미지들의 경우 바로 호출할 수 있도록 예외 매핑
+                        if (asset.src.includes('zone_unbuildable')) imageCache['tile_zone_unbuildable'] = img;
+                        if (asset.src.includes('tile_normal')) imageCache['tile_normal'] = img;
+                    } else {
                         const key = asset.type + '_' + asset.id;
                         imageCache[key] = img;
                     }
