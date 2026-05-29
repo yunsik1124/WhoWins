@@ -2100,6 +2100,7 @@
                     const bx = deckStartX + (i * (slotWidth + 8));
                     if (mouseX >= bx && mouseX <= bx + slotWidth && mouseY >= slotY && mouseY <= slotY + 180) {
                         let charInfo = deck[i]; let isLocked = false;
+                        if (charInfo.id === 4 && currentMaxStage < 2) isLocked = true;
                         if (charInfo.id === 5 && currentMaxStage < 5) isLocked = true;
                         if (charInfo.id === 6 && currentMaxStage < 7) isLocked = true;
                         if (charInfo.id === 7 && currentMaxStage < 9) isLocked = true;
@@ -3069,6 +3070,7 @@
                             let actualCost = getActualCost(char); ctx.save();
 
                             let isLocked = false; let lockReason = "";
+                            if (char.id === 4 && currentMaxStage < 2) { isLocked = true; lockReason = "2관문 해금"; }
                             if (char.id === 5 && currentMaxStage < 5) { isLocked = true; lockReason = "5관문 해금"; }
                             if (char.id === 6 && currentMaxStage < 7) { isLocked = true; lockReason = "7관문 해금"; }
                             if (char.id === 7 && currentMaxStage < 9) { isLocked = true; lockReason = "9관문 해금"; }
