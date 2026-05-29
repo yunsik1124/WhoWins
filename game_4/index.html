@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>강철의 난: 무림수호맹 V13.33 - 마신 스킨 아키텍처 적용판</title>
+    <title>강철의 난: 무림수호맹 V13.34 - 타일 에셋 확장 아키텍처 적용판</title>
     <script src="https://unpkg.com/@esotericsoftware/spine-player@4.1.28/dist/iife/spine-player.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/@esotericsoftware/spine-player@4.1.28/dist/spine-player.css">
     <style>
         :root {
             --title-dim: 0.3;
-            --hero-dim: 0.6;
-            --region-dim: 0.7;
+            --hero-dim: 0.8;
+            --region-dim: 0.8;
             --stage-dim: 0.8;
         }
 
@@ -91,15 +91,15 @@
         }
 
         #heroSelectScreen {
-            background: linear-gradient(rgba(0,0,0,var(--hero-dim)), rgba(0,0,0,var(--hero-dim))), url('./assets/backgrounds/lobby_bg.jpg') no-repeat center/cover;
+            background: linear-gradient(rgba(0,0,0,var(--hero-dim)), rgba(0,0,0,var(--hero-dim))), url('./assets/backgrounds/title_bg.jpg') no-repeat center/cover;
         }
 
         #regionSelectScreen {
-            background: linear-gradient(rgba(0,0,0,var(--region-dim)), rgba(0,0,0,var(--region-dim))), url('./assets/backgrounds/lobby_bg.jpg') no-repeat center/cover;
+            background: linear-gradient(rgba(0,0,0,var(--region-dim)), rgba(0,0,0,var(--region-dim))), url('./assets/backgrounds/title_bg.jpg') no-repeat center/cover;
         }
 
         #stageSelectScreen {
-            background: linear-gradient(rgba(0,0,0,var(--stage-dim)), rgba(0,0,0,var(--stage-dim))), url('./assets/backgrounds/lobby_bg.jpg') no-repeat center/cover;
+            background: linear-gradient(rgba(0,0,0,var(--stage-dim)), rgba(0,0,0,var(--stage-dim))), url('./assets/backgrounds/title_bg.jpg') no-repeat center/cover;
         }
 
         .story-container {
@@ -107,7 +107,7 @@
             height: 350px;
             overflow: hidden;
             position: relative;
-            margin-bottom: 60px;
+            margin-bottom:-200px;
             border: none;
             background: transparent;
             padding: 20px;
@@ -118,7 +118,7 @@
             bottom: -100%;
             width: calc(100% - 40px);
             text-align: center;
-            color: #bdc3c7;
+            color: #ffffff;
             font-size: 28px;
             line-height: 1.8;
             text-shadow: 2px 2px 4px #000;
@@ -846,12 +846,14 @@
         #mapArea {
             width: 1500px;
             height: 850px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><rect width="100%" height="100%" fill="%23222"/><path d="M250,250 Q500,60 750,250 T1250,375 L1375,750 L125,750 Z" fill="%23333" stroke="%23555" stroke-width="6"/></svg>') no-repeat center;
-            background-size: cover;
+            /* 💡 준비하신 배경 이미지 경로와 파일명으로 교체하오 */
+            background: url('./assets/backgrounds/map_box_bg.png') no-repeat center;
+            background-size: 100% 100%; /* 박스 크기에 완전히 맞추는 명세 */
             position: relative;
-            border: 5px solid #555;
+            /* 둥근 테두리 및 효과를 이미지에 맞춰 살리거나 제거할 수 있소 */
+            border: 3px solid #f1c40f; /* 테두리를 문파의 금빛으로 제련 가능 */
             border-radius: 25px;
-            box-shadow: inset 0 0 60px #000;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
         }
 
         .map-node {
@@ -1338,13 +1340,19 @@
             <div class="top-bar" onclick="showScreen('heroSelectScreen')">◀ 영웅 선택으로</div>
             <h2 style="font-size: 40px; margin-bottom: 20px;">천하 판도 (지역 선택)</h2>
             <div id="mapArea">
-                <div class="map-node" style="left: 20%; top: 30%;" onclick="selectRegion(0)"><div class="map-label">1. 화산 (華山)</div></div>
-                <div class="map-node locked" style="left: 40%; top: 45%;" onclick="selectRegion(1)"><div class="map-label">2. 소림 (少林)</div></div>
-                <div class="map-node locked" style="left: 60%; top: 25%;" onclick="selectRegion(2)"><div class="map-label">3. 무당 (武當)</div></div>
-                <div class="map-node locked" style="left: 75%; top: 50%;" onclick="selectRegion(3)"><div class="map-label">4. 개방 (丐幫)</div></div>
-                <div class="map-node locked" style="left: 50%; top: 75%;" onclick="selectRegion(4)"><div class="map-label">5. 아미 (峨嵋)</div></div>
-                <div class="map-node locked" style="left: 15%; top: 60%;" onclick="selectRegion(5)"><div class="map-label">6. 곤륜 (崑崙)</div></div>
-                <div class="map-node locked" style="left: 85%; top: 20%;" onclick="selectRegion(6)"><div class="map-label">7. 마교 (魔敎)</div></div>
+                <div class="map-node" style="left: 23%; top: 22%;" onclick="selectRegion(0)"><div class="map-label">1. 화산 (華山)</div></div>
+
+                <div class="map-node locked" style="left: 45%; top: 40%;" onclick="selectRegion(1)"><div class="map-label">2. 소림 (少林)</div></div>
+
+                <div class="map-node locked" style="left: 60%; top: 48%;" onclick="selectRegion(2)"><div class="map-label">3. 무당 (武當)</div></div>
+
+                <div class="map-node locked" style="left: 76%; top: 46%;" onclick="selectRegion(3)"><div class="map-label">4. 개방 (丐幫)</div></div>
+
+                <div class="map-node locked" style="left: 53%; top: 76%;" onclick="selectRegion(4)"><div class="map-label">5. 아미 (峨嵋)</div></div>
+
+                <div class="map-node locked" style="left: 18%; top: 62%;" onclick="selectRegion(5)"><div class="map-label">6. 곤륜 (崑崙)</div></div>
+
+                <div class="map-node locked" style="left: 74%; top: 24%;" onclick="selectRegion(6)"><div class="map-label">7. 마교 (魔敎)</div></div>
             </div>
         </div>
 
@@ -1371,8 +1379,8 @@
                 else if (type === 'ingame_2') { img.src = `./assets/ingame/ingame_2_${id}.png`; }
                 else if (type === 'proj') { img.src = `./assets/projectiles/proj_${id}.png`; }
                 else if (type === 'hero') { img.src = `./assets/portraits/hero_${id}.png`; }
-                else if (type === 'ingame') { img.src = `./assets/ingame/ingame_1_${id}.png`; }
                 else if (type === 'enemy') { img.src = `./assets/enemies/${id}.png`; }
+                else if (type === 'tile') { img.src = `./assets/tiles/${id}.png`; }
                 imageCache[key] = img;
             }
             return imageCache[key];
@@ -1472,7 +1480,7 @@
 
         function preloadAllAssets(callback) {
             let assetsToLoad = [];
-
+            assetsToLoad.push({ id: 'portal', type: 'tile', src: './assets/tiles/portal.png' });
             deck.forEach(c => {
                 assetsToLoad.push({ id: c.id, type: 'char', src: `./assets/portraits/char_${c.id}.png` });
                 assetsToLoad.push({ id: c.id, type: 'ingame_1', src: `./assets/ingame/ingame_1_${c.id}.png` });
@@ -1502,7 +1510,7 @@
 
             const bgList = [
                 './assets/backgrounds/title_bg.jpg',
-                './assets/backgrounds/lobby_bg.jpg'
+                './assets/backgrounds/map_box_bg.png'
             ];
             for (let i = 0; i <= 7; i++) {
                 bgList.push(`./assets/backgrounds/bg_region_${i}.jpg`);
@@ -1510,6 +1518,10 @@
             bgList.forEach(bgSrc => {
                 assetsToLoad.push({ id: bgSrc, type: 'bg_cache', src: bgSrc });
             });
+
+            // 💡 렌더링에 필요한 이미지 타일 로드 (설치 불가 구역 및 일반 구역)
+            assetsToLoad.push({ id: 'zone_unbuildable', type: 'tile', src: './assets/tiles/zone_unbuildable.png' });
+            assetsToLoad.push({ id: 'tile_normal', type: 'tile', src: './assets/tiles/tile_normal.png' });
 
             let loadedCount = 0;
             const totalAssets = assetsToLoad.length;
@@ -1634,20 +1646,14 @@
         const rowHeight = 99; const colWidth = 165; const skewX = 40;
         const lanes = []; const fieldSlots = [];
 
+        // 모든 타일을 'normal'로 초기화
         for (let r = 0; r < rows; r++) {
             let currentY = startY + r * rowHeight;
             let currentBaseX = startX + r * skewX;
             let portalX = 1700 + r * skewX;
             lanes.push({ id: r, y: currentY, startX: portalX, endX: currentBaseX - 30, scale: 0.88 + (r * 0.055), color: `rgba(52, 152, 219, 0.${2 + r})` });
             for (let c = 0; c < cols; c++) {
-                let zoneType = 'normal';
-                let randZ = Math.random();
-                if (randZ < 0.05) zoneType = 'unbuildable';
-                else if (randZ < 0.1) {
-                    let bTypes = ['buff_hp', 'buff_atkSpd', 'buff_atk'];
-                    zoneType = bTypes[Math.floor(Math.random() * bTypes.length)];
-                }
-                fieldSlots.push({ id: `R${r}C${c}`, x: currentBaseX + c * colWidth, y: currentY, char: null, laneId: r, zone: zoneType });
+                fieldSlots.push({ id: `R${r}C${c}`, x: currentBaseX + c * colWidth, y: currentY, char: null, laneId: r, zone: 'normal' });
             }
         }
 
@@ -1657,12 +1663,12 @@
 
         function saveGame() {
             const data = { upgrades, heroes, equippedHero, currentMaxStage, metaCoins };
-            localStorage.setItem('murimGuardiansSaveV13_33', JSON.stringify(data));
+            localStorage.setItem('murimGuardiansSaveV13_34', JSON.stringify(data));
         }
 
         function loadGame() {
             try {
-                const saved = localStorage.getItem('murimGuardiansSaveV13_33') || localStorage.getItem('murimGuardiansSaveV13_32');
+                const saved = localStorage.getItem('murimGuardiansSaveV13_34') || localStorage.getItem('murimGuardiansSaveV13_33');
                 if (saved) {
                     const data = JSON.parse(saved);
                     if (data.upgrades) upgrades = data.upgrades;
@@ -1676,8 +1682,8 @@
 
         function hardResetData() {
             if (confirm("모든 데이터를 포기하고 처음부터 다시 하시겠소?")) {
+                localStorage.removeItem('murimGuardiansSaveV13_34');
                 localStorage.removeItem('murimGuardiansSaveV13_33');
-                localStorage.removeItem('murimGuardiansSaveV13_32');
                 location.reload();
             }
         }
@@ -1687,6 +1693,26 @@
                 togglePopup(false); startBattle(currentStage);
             }
         }
+
+        let wakeLock = null;
+        async function requestWakeLock() {
+            if ('wakeLock' in navigator) {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log("화면 꺼짐 방지(Wake Lock)가 활성화되었소.");
+                    wakeLock.addEventListener('release', () => {
+                        console.log('Wake Lock이 해제되었소.');
+                    });
+                } catch (err) {
+                    console.warn(`Wake Lock 활성화 실패: ${err.name}, ${err.message}`);
+                }
+            }
+        }
+        document.addEventListener('visibilitychange', async () => {
+            if (wakeLock !== null && document.visibilityState === 'visible') {
+                await requestWakeLock();
+            }
+        });
 
         let gameState = 'title'; let glitchGauge = 0; let mercState = 'charging'; let enemyOffsetY = 15;
         let pendingMerc = null; let mercSpinFrames = 0; let mercFinalIcons = [0, 0, 0, 0];
@@ -1699,6 +1725,8 @@
         let waveState = 'stage_intro'; let waveWaitTimer = 90; let bossSpawned = false;
         let enemies = []; let projectiles = []; let floatingTexts = []; let energyCores = []; let logHistory = [];
         let maxWaves = 10; let waveDurations = []; let waveQuotas = [];
+
+
 
         function initDynamicWaves(stageNum) {
             maxWaves = Math.min(10, 3 + (stageNum - 1));
@@ -1835,6 +1863,8 @@
         }
 
         function startBattle(stageNum) {
+            requestWakeLock(); // 🌟 [추가됨] 전투 시작 시 화면 꺼짐 방지 발동!
+
             currentStage = stageNum; initDynamicWaves(currentStage);
             gameState = 'playing'; battleCoins = 500; gameSpeed = 1;
             let spdBtn = document.getElementById('speedUpBtn');
@@ -1862,7 +1892,29 @@
             glitchGauge = 0; clearMercSlots(); updateMercUI();
             mercBuffAtk = 0; mercBuffSpd = 0; activeBuffsLog = []; renderBuffIcons();
             deck.forEach(c => { c.state = 'ready'; c.timer = 0; c.hp = getBase('hp', c.maxHp); c.cd = 0; c.jumpAnim = 0; c.strikeAnim = 0; c.facingDir = 1; });
-            fieldSlots.forEach(s => { s.char = null; });
+
+            // 모든 구역을 'normal'로 리셋
+            fieldSlots.forEach(s => { s.char = null; s.zone = 'normal'; });
+
+            // 💡 관문(스테이지) 진척도에 따른 설치 불가 구역 동적 스케일링 (완화된 밸런스)
+            let unbuildableCount = 0;
+            if (currentStage <= 3) {
+                unbuildableCount = 2;       // 1~3 관문: 2개
+            } else if (currentStage <= 7) {
+                unbuildableCount = 3;       // 4~7 관문: 3개
+            } else if (currentStage <= 9) {
+                unbuildableCount = 4;       // 8~9 관문: 4개
+            } else {
+                unbuildableCount = 5;       // 10 관문 이상: 5개
+            }
+
+            let availableIndices = Array.from({ length: fieldSlots.length }, (_, i) => i);
+            for (let i = 0; i < unbuildableCount; i++) {
+                let randIdx = Math.floor(Math.random() * availableIndices.length);
+                let slotIdx = availableIndices.splice(randIdx, 1)[0];
+                fieldSlots[slotIdx].zone = 'unbuildable';
+            }
+
             heroSlot.cd = 0; heroSlot.activeTimer = 0;
 
             renderHeroGraphic('ingameHeroGraphic', equippedHero, true);
@@ -2020,11 +2072,21 @@
         }
 
         function handleInteract(e) {
-            if (gameState === 'gameover') { if (mouseX >= W / 2 - 180 && mouseX <= W / 2 + 180 && mouseY >= H / 2 + 90 && mouseY <= H / 2 + 180) { document.getElementById('gameContainer').style.backgroundImage = 'none'; showScreen('titleScreen'); } return; }
+            if (gameState === 'gameover') {
+                if (mouseX >= W / 2 - 180 && mouseX <= W / 2 + 180 && mouseY >= H / 2 + 90 && mouseY <= H / 2 + 180) { document.getElementById('gameContainer').style.backgroundImage = 'none'; showScreen('titleScreen'); }
+                return;
+            }
             if (gameState !== 'playing' || mercState === 'spinning') return;
 
-            if (isHeroTargeting) { let clickedLaneId = -1; for (let r = 0; r < rows; r++) { if (Math.abs(mouseY - lanes[r].y) < rowHeight / 2) { clickedLaneId = r; break; } } if (clickedLaneId !== -1) triggerHeroSkill('h2', clickedLaneId); isHeroTargeting = false; return; }
+            if (isHeroTargeting) {
+                let clickedLaneId = -1;
+                for (let r = 0; r < rows; r++) { if (Math.abs(mouseY - lanes[r].y) < rowHeight / 2) { clickedLaneId = r; break; } }
+                if (clickedLaneId !== -1) triggerHeroSkill('h2', clickedLaneId);
+                isHeroTargeting = false;
+                return;
+            }
 
+            // 1. 하단 슬롯 클릭 처리 구역 (기존 동일)
             if (mouseY > 880) {
                 const slotWidth = 150; const deckStartX = 280; const slotY = 890;
                 for (let i = 0; i < deck.length; i++) {
@@ -2064,45 +2126,58 @@
                 return;
             }
 
-            for (let i = 0; i < fieldSlots.length; i++) {
-                const s = fieldSlots[i];
-                if (Math.hypot(mouseX - s.x, mouseY - s.y) < 72) {
+            // 🌟 2. 전장 타일 클릭 구역 [진짜 해결책]
+            // 롤오버될 때와 100% 똑같은 공식으로, 클릭한 좌표에서 '가장 가까운 타일'을 직접 찾아냅니다.
+            let targetSlot = null;
+            let minHoverDist = 80; // 80 반경 내에서만 동작
 
-                    // 💡 [사거리 정찰] 이미 고수가 있다면 삭제 대신 1.5초(90프레임) 동안 사정거리를 붉게 보여주오!
-                    if (s.char) {
+            for (let i = 0; i < fieldSlots.length; i++) {
+                let d = Math.hypot(mouseX - fieldSlots[i].x, mouseY - fieldSlots[i].y);
+                if (d < minHoverDist) {
+                    minHoverDist = d; // 반경이 겹치는 경계선이라도, '더 가까운' 타일을 덮어씀
+                    targetSlot = fieldSlots[i];
+                }
+            }
+
+            // 찾아낸 가장 가까운 타일(롤오버 타일과 100% 동일)에 유닛을 배치하오.
+            if (targetSlot) {
+                const s = targetSlot;
+
+                if (s.char) {
+                    if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
+                    s.char.showRangeTimer = 90;
+                    selectedInvenIdx = -1;
+                    return;
+                }
+
+                if (selectedInvenIdx !== -1) {
+                    if (s.zone === 'unbuildable') {
                         if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
-                        s.char.showRangeTimer = 90;
-                        selectedInvenIdx = -1; // 선택 중이던 덱 인덱스는 해제하여 배치를 안전하게 취소함
-                        return;
+                        createFloatingText(s.x, s.y, "배치 불가 지역!", "#e74c3c", false); selectedInvenIdx = -1; return;
                     }
 
-                    if (selectedInvenIdx !== -1) {
-                        if (s.zone === 'unbuildable') {
-                            if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
-                            createFloatingText(s.x, s.y, "배치 불가 지역!", "#e74c3c", false); selectedInvenIdx = -1; return;
-                        }
-
-                        if (selectedInvenIdx === 'merc') {
-                            s.char = JSON.parse(JSON.stringify(pendingMerc));
+                    if (selectedInvenIdx === 'merc') {
+                        s.char = JSON.parse(JSON.stringify(pendingMerc));
+                        s.char.state = 'deployed'; s.char.cd = 0; s.char.showRangeTimer = 75; s.char.strikeAnim = 0; s.char.jumpAnim = 0;
+                        s.char.facingDir = 1;
+                        s.char.hp = getBase('hp', s.char.maxHp);
+                        s.char.painImmuneTimer = 0; s.char.frostEnhanceTimer = 0; s.char.bleedTimer = 0;
+                        addLog(`[용병] ${s.char.name} 용병을 성공적으로 투입했소.`, "#0abde3"); selectedInvenIdx = -1; clearMercSlots();
+                    } else {
+                        let c = deck[selectedInvenIdx]; let finalCost = getActualCost(c);
+                        if (battleCoins >= finalCost) {
+                            battleCoins -= finalCost; updateUI(); s.char = c;
                             s.char.state = 'deployed'; s.char.cd = 0; s.char.showRangeTimer = 75; s.char.strikeAnim = 0; s.char.jumpAnim = 0;
                             s.char.facingDir = 1;
                             s.char.hp = getBase('hp', s.char.maxHp);
                             s.char.painImmuneTimer = 0; s.char.frostEnhanceTimer = 0; s.char.bleedTimer = 0;
-                            addLog(`[용병] ${s.char.name} 용병을 성공적으로 투입했소.`, "#0abde3"); selectedInvenIdx = -1; clearMercSlots();
-                        } else {
-                            let c = deck[selectedInvenIdx]; let finalCost = getActualCost(c);
-                            if (battleCoins >= finalCost) {
-                                battleCoins -= finalCost; updateUI(); s.char = c;
-                                s.char.state = 'deployed'; s.char.cd = 0; s.char.showRangeTimer = 75; s.char.strikeAnim = 0; s.char.jumpAnim = 0;
-                                s.char.facingDir = 1;
-                                s.char.hp = getBase('hp', s.char.maxHp);
-                                s.char.painImmuneTimer = 0; s.char.frostEnhanceTimer = 0; s.char.bleedTimer = 0;
-                                addLog(`[배치] ${c.name} 고수를 전선에 배치했소. (-${finalCost}💰)`, "#2ecc71"); selectedInvenIdx = -1;
-                            } else { createFloatingText(s.x, s.y, "전투 코인 부족!", "#e74c3c", false); }
-                        }
-                    } return;
+                            addLog(`[배치] ${c.name} 고수를 전선에 배치했소. (-${finalCost}💰)`, "#2ecc71"); selectedInvenIdx = -1;
+                        } else { createFloatingText(s.x, s.y, "전투 코인 부족!", "#e74c3c", false); }
+                    }
                 }
+                return;
             }
+
             if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
             selectedInvenIdx = -1;
         }
@@ -2160,8 +2235,41 @@
                         if (laneEffect.timer > 0) { let lane = lanes[laneEffect.laneId]; ctx.fillStyle = "rgba(230, 126, 34, " + (laneEffect.timer / 75 * 0.5) + ")"; ctx.fillRect(0, lane.y - 40, W, 80); if (!isRoulettePaused) laneEffect.timer--; }
 
                         lanes.forEach(lane => {
-                            ctx.strokeStyle = "rgba(255, 255, 255, 0.5)"; ctx.lineWidth = 2; ctx.setLineDash([15, 15]); ctx.style = "stroke-dasharray: 15, 15;"; ctx.beginPath(); ctx.moveTo(lane.startX, lane.y); ctx.lineTo(lane.endX, lane.y); ctx.stroke(); ctx.setLineDash([]);
-                            let portalRadius = 50 + Math.sin(frameCount * 0.1) * 5; ctx.fillStyle = "rgba(142, 68, 173, 0.8)"; ctx.beginPath(); ctx.ellipse(lane.startX, lane.y, 25, portalRadius, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "black"; ctx.beginPath(); ctx.ellipse(lane.startX, lane.y, 15, portalRadius - 15, 0, 0, Math.PI * 2); ctx.fill();
+                            let visualY = lane.y - 90;
+                            // 💡 [X축 이동] 우측으로 50px 이동시키는 시각적 변수 선언
+                            let visualX = lane.startX + 30;
+
+                            // 💡 포탈 이미지 로드 확인
+                            let portalImg = getImage('portal', 'tile');
+
+                            if (portalImg && portalImg.complete && portalImg.naturalWidth > 0) {
+                                ctx.save();
+                                // 1. 포탈의 중심축으로 캔버스 이동 (visualX 반영)
+                                ctx.translate(visualX, visualY);
+
+                                // 2. 가로폭을 좁혀서 2.5D 원근감 부여 (가로 35%, 세로 100%)
+                                ctx.scale(0.35, 1.0);
+
+                                // 3. 시계 방향으로 아주 천천히 회전 (frameCount 활용)
+                                ctx.rotate(frameCount * 0.005);
+
+                                // 4. 이미지 렌더링 (정중앙 정렬)
+                                let pw = 240; // 렌더링할 포탈의 크기
+                                ctx.drawImage(portalImg, -pw / 2, -pw / 2, pw, pw);
+
+                                ctx.restore();
+                            } else {
+                                // 💡 이미지가 없을 때의 기존 캔버스 그리기 (Fallback에도 visualX 반영)
+                                let portalRadius = 50 + Math.sin(frameCount * 0.1) * 5;
+                                ctx.fillStyle = "rgba(142, 68, 173, 0.8)";
+                                ctx.beginPath();
+                                ctx.ellipse(visualX, visualY, 25, portalRadius, 0, 0, Math.PI * 2);
+                                ctx.fill();
+                                ctx.fillStyle = "black";
+                                ctx.beginPath();
+                                ctx.ellipse(visualX, visualY, 15, portalRadius - 15, 0, 0, Math.PI * 2);
+                                ctx.fill();
+                            }
                         });
 
                         if (mercState === 'spinning') {
@@ -2233,7 +2341,7 @@
 
                         let renderEntities = [];
 
-                        let closestSlot = null; let minHoverDist = 72;
+                        let closestSlot = null; let minHoverDist = 80;
                         fieldSlots.forEach(s => {
                             let d = Math.hypot(mouseX - s.x, mouseY - s.y);
                             if (d < minHoverDist) { minHoverDist = d; closestSlot = s; }
@@ -2241,39 +2349,76 @@
 
                         fieldSlots.forEach(s => {
                             let isHovered = (s === closestSlot);
-                            ctx.fillStyle = "rgba(0,0,0,0.15)"; ctx.beginPath(); ctx.ellipse(s.x, s.y, 72, 42, 0, 0, Math.PI * 2); ctx.fill();
 
-                            if (s.zone === 'unbuildable') { ctx.fillStyle = "rgba(100, 100, 100, 0.4)"; ctx.beginPath(); ctx.ellipse(s.x, s.y, 72, 42, 0, 0, Math.PI * 2); ctx.fill(); drawText("설치불가", s.x, s.y, 20, "rgba(231, 76, 60, 0.8)"); }
-                            else if (s.zone.startsWith('buff')) {
-                                let bColor = s.zone === 'buff_hp' ? "rgba(46, 204, 113, 0.25)" : (s.zone === 'buff_atkSpd' ? "rgba(52, 152, 219, 0.25)" : "rgba(231, 76, 60, 0.25)");
-                                let bTextCol = s.zone === 'buff_hp' ? "rgba(46, 204, 113, 0.8)" : (s.zone === 'buff_atkSpd' ? "rgba(52, 152, 219, 0.8)" : "rgba(231, 76, 60, 0.8)");
-                                let bLabel = s.zone === 'buff_hp' ? "회복" : (s.zone === 'buff_atkSpd' ? "신속" : "분노");
-                                ctx.fillStyle = bColor; ctx.beginPath(); ctx.ellipse(s.x, s.y, 72, 42, 0, 0, Math.PI * 2); ctx.fill();
-                                drawText(bLabel, s.x, s.y - 5, 20, bTextCol);
-                                if (s.zone === 'buff_hp' && s.char && frameCount % 60 === 0 && !isRoulettePaused) {
-                                    let mh = (s.char.id === 999) ? s.char.maxHp : getBase('hp', s.char.maxHp);
-                                    if (s.char.hp < mh) { s.char.hp = Math.min(mh, s.char.hp + 20); createFloatingText(s.x, s.y - 30, "+20", "#2ecc71", false); }
+                            // 💡 일반 타일 에셋 렌더링 로직 (Fallback 포함)
+                            let normalImg = getImage('tile_normal', 'tile');
+                            if (normalImg && normalImg.complete && normalImg.naturalWidth > 0) {
+                                let tw = 160, th = 100;
+                                ctx.drawImage(normalImg, s.x - (tw / 2), s.y - (th / 2), tw, th);
+                            } else {
+                                ctx.fillStyle = "rgba(0,0,0,0.15)";
+                                ctx.beginPath(); ctx.ellipse(s.x, s.y, 72, 42, 0, 0, Math.PI * 2); ctx.fill();
+                            }
+
+                            // 💡 설치불가 구역 에셋 렌더링 로직
+                            if (s.zone === 'unbuildable') {
+                                let tileImg = getImage('zone_unbuildable', 'tile');
+                                if (tileImg && tileImg.complete && tileImg.naturalWidth > 0) {
+                                    let tw = 160, th = 100;
+                                    ctx.drawImage(tileImg, s.x - (tw / 2), s.y - (th / 2), tw, th);
+                                } else {
+                                    ctx.fillStyle = "rgba(100, 100, 100, 0.4)";
+                                    ctx.beginPath(); ctx.ellipse(s.x, s.y, 72, 42, 0, 0, Math.PI * 2); ctx.fill();
+                                    drawText("설치불가", s.x, s.y, 20, "rgba(231, 76, 60, 0.8)");
                                 }
                             }
 
-                            if (selectedInvenIdx !== -1 && !s.char && s.zone !== 'unbuildable') { ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 15; ctx.strokeStyle = "rgba(0, 210, 211, 0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, 72, 42, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); }
+                            if (selectedInvenIdx !== -1 && !s.char && s.zone !== 'unbuildable') {
+                                ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 15; ctx.strokeStyle = "rgba(0, 210, 211, 0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, 80, 50, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); // 👈 80, 50으로 수정
+                            }
                             if (isHovered && selectedInvenIdx === -1) {
-                                if (!s.char && s.zone !== 'unbuildable') { ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 15; ctx.strokeStyle = "rgba(0, 210, 211, 0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, 72, 42, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); }
-                                else if (s.char) { ctx.save(); ctx.shadowColor = "#e74c3c"; ctx.shadowBlur = 15; ctx.strokeStyle = "rgba(231, 76, 60, 0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, 72, 42, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); }
-                            }
-
-                            if (selectedInvenIdx !== -1 && !s.char && isHovered && !isHeroTargeting && !isRoulettePaused) {
-                                ctx.strokeStyle = (s.zone === 'unbuildable') ? "red" : "lime"; ctx.lineWidth = 4; ctx.stroke();
-                                if (s.zone !== 'unbuildable') {
-                                    let charData = (selectedInvenIdx === 'merc') ? pendingMerc : deck[selectedInvenIdx]; let range = charData.range; let fillColor = charData.attackType === 'heal' ? "rgba(46, 204, 113, 0.3)" : "rgba(231, 76, 60, 0.3)"; let strokeColor = charData.attackType === 'heal' ? "rgba(46, 204, 113, 0.9)" : "rgba(231, 76, 60, 0.9)"; ctx.fillStyle = fillColor; ctx.strokeStyle = strokeColor; ctx.lineWidth = 3;
-                                    if (charData.id === 11) { ctx.fillRect(s.x - range, s.y - rowHeight - 35, range * 2, (rowHeight * 2) + 70); ctx.strokeRect(s.x - range, s.y - rowHeight - 35, range * 2, (rowHeight * 2) + 70); }
-                                    else if (charData.id === 1) { ctx.beginPath(); ctx.ellipse(s.x, s.y, charData.range, charData.range * 0.6, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
-                                    else if (charData.role === '탱커') { ctx.beginPath(); ctx.ellipse(s.x, s.y, 165, 99, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
-                                    else if (charData.attackType === 'heal' || charData.attackType === 'melee') { ctx.beginPath(); ctx.ellipse(s.x, s.y, range, range * 0.75, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
-                                    else { ctx.fillRect(s.x - range, s.y - 35, range * 2, 70); ctx.strokeRect(s.x - range, s.y - 35, range * 2, 70); }
+                                if (!s.char && s.zone !== 'unbuildable') {
+                                    ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 15; ctx.strokeStyle = "rgba(0, 210, 211, 0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, 80, 50, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); // 👈 80, 50으로 수정
+                                } else if (s.char) {
+                                    ctx.save(); ctx.shadowColor = "#e74c3c"; ctx.shadowBlur = 15; ctx.strokeStyle = "rgba(231, 76, 60, 0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, 80, 50, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); // 👈 80, 50으로 수정
                                 }
                             }
+                            if (selectedInvenIdx !== -1 && !s.char && isHovered && !isHeroTargeting && !isRoulettePaused) {
+                                ctx.strokeStyle = (s.zone === 'unbuildable') ? "red" : "lime";
+                                ctx.lineWidth = 4;
+                                ctx.beginPath();
+                                ctx.ellipse(s.x, s.y, 80, 50, 0, 0, Math.PI * 2); // 80, 50 규격 적용된 타일 윤곽선
+                                ctx.stroke();
 
+                                if (s.zone !== 'unbuildable') {
+                                    let charData = (selectedInvenIdx === 'merc') ? pendingMerc : deck[selectedInvenIdx];
+                                    let range = charData.range;
+                                    let fillColor = charData.attackType === 'heal' ? "rgba(46, 204, 113, 0.3)" : "rgba(231, 76, 60, 0.3)";
+                                    let strokeColor = charData.attackType === 'heal' ? "rgba(46, 204, 113, 0.9)" : "rgba(231, 76, 60, 0.9)";
+
+                                    ctx.fillStyle = fillColor;
+                                    ctx.strokeStyle = strokeColor;
+                                    ctx.lineWidth = 3;
+
+                                    if (charData.id === 11) {
+                                        ctx.fillRect(s.x - range, s.y - rowHeight - 35, range * 2, (rowHeight * 2) + 70);
+                                        ctx.strokeRect(s.x - range, s.y - rowHeight - 35, range * 2, (rowHeight * 2) + 70);
+                                    }
+                                    else if (charData.id === 1) {
+                                        ctx.beginPath(); ctx.ellipse(s.x, s.y, colWidth + 20, rowHeight + 10, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                                    }
+                                    else if (charData.role === '탱커') {
+                                        ctx.beginPath(); ctx.ellipse(s.x, s.y, 165, 99, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                                    }
+                                    else if (charData.attackType === 'heal' || charData.attackType === 'melee') {
+                                        ctx.beginPath(); ctx.ellipse(s.x, s.y, range, range * 0.75, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                                    }
+                                    else {
+                                        ctx.fillRect(s.x - range, s.y - 35, range * 2, 70);
+                                        ctx.strokeRect(s.x - range, s.y - 35, range * 2, 70);
+                                    }
+                                }
+                            }
                             if (s.char) {
                                 if (!isRoulettePaused) {
                                     if (s.char.id !== 999 && timeStopFrames <= 0 && frameCount % 60 === 0) {
@@ -2321,7 +2466,6 @@
                                     } if (s.char.showRangeTimer > 0) s.char.showRangeTimer--;
 
                                     let cdReduce = (s.char.id === 999 || s.char.id > 7) ? 0 : getBase('atkSpeed', 0);
-                                    if (s.zone === 'buff_atkSpd') cdReduce += 0.20;
                                     let actualMaxCd = Math.max(3, Math.floor(s.char.maxCd * (1 - cdReduce)));
 
                                     if (h0BuffTimer > 0) actualMaxCd = Math.max(2, Math.floor(actualMaxCd / 2));
@@ -2361,7 +2505,6 @@
                                             let target = enemiesInRange[0]; let dmgStat = s.char.attackType === 'melee' ? 'atkMelee' : 'atkRanged';
 
                                             let finalBaseDmg = (s.char.id === 999 || s.char.id > 7) ? s.char.damage : getBase(dmgStat, s.char.damage);
-                                            if (s.zone === 'buff_atk') finalBaseDmg = Math.floor(finalBaseDmg * 1.20);
 
                                             let shootDir = target.x > s.x ? 1 : -1;
                                             s.char.facingDir = shootDir;
@@ -2435,19 +2578,16 @@
                                                         alliesInLine.forEach(fs => {
                                                             if (!fs.char || fs.char.id === 999) return;
                                                             if (s.char.id === 4) {
-                                                                // 🎯 당문암기: 고통면역 활성화, 나머지 초기화
                                                                 fs.char.painImmuneTimer = 600;
                                                                 fs.char.frostEnhanceTimer = 0;
                                                                 fs.char.bleedTimer = 0;
                                                             }
                                                             else if (s.char.id === 8) {
-                                                                // ❄️ 북해빙궁주: 빙결강화 활성화, 나머지 초기화
                                                                 fs.char.frostEnhanceTimer = 600;
                                                                 fs.char.painImmuneTimer = 0;
                                                                 fs.char.bleedTimer = 0;
                                                             }
                                                             else if (s.char.id === 5) {
-                                                                // 🩸 사파혈비도: 출혈습득 활성화, 나머지 초기화
                                                                 fs.char.bleedTimer = 600;
                                                                 fs.char.painImmuneTimer = 0;
                                                                 fs.char.frostEnhanceTimer = 0;
@@ -2629,7 +2769,6 @@
                                 let facingX = s.char.facingDir || 1;
                                 ctx.scale(scaleX * facingX, scaleY);
 
-                                // 💡 시너지 버프에 따른 아군 글로우 렌더링
                                 if (s.char.painImmuneTimer > 0) { ctx.shadowColor = "gold"; ctx.shadowBlur = 20; }
                                 else if (s.char.frostEnhanceTimer > 0) { ctx.shadowColor = "#00cec9"; ctx.shadowBlur = 20; }
                                 else if (s.char.bleedTimer > 0) { ctx.shadowColor = "red"; ctx.shadowBlur = 20; }
@@ -2677,7 +2816,6 @@
                                 ctx.scale(facingX, 1);
                                 drawText(s.char.name, 0, -targetH - 10 + (s.char.fontOffsetY || 0), 22 * laneScale, "#fff");
 
-                                // 💡 10초 타이머가 도는 동안만 캐릭터 머리 위에 특성 이름 상시 렌더링!
                                 let buffY = -targetH - 40;
                                 if (s.char.painImmuneTimer > 0) { drawText("[고통면역]", 0, buffY, 20 * laneScale, "gold"); buffY -= 22 * laneScale; }
                                 if (s.char.frostEnhanceTimer > 0) { drawText("[빙결강화]", 0, buffY, 20 * laneScale, "#00cec9"); buffY -= 22 * laneScale; }
@@ -2702,7 +2840,6 @@
                                     else { ctx.fillRect(s.x - s.char.range, s.y - 35, s.char.range * 2, 70); }
                                 }
                             } else {
-                                // ---- 마신 (적) 커스텀 스킨 및 상태이상 렌더링 로직 ----
                                 let e = ent.data; let currHit = e.hitAnim + 1; let enemyOffsetX = 0;
 
                                 if (e.spawnFrame > 0) {
@@ -2738,8 +2875,7 @@
                                 let eImg = getImage(`${enemyCategory}_${animState}`, 'enemy');
                                 let hasImg = (eImg && eImg.complete && eImg.naturalWidth > 0);
 
-                                // 💡 적의 상태이상 글로우 색상 결정
-                                let glowColor = "#00d2d3"; // 보스/중간보스의 기본 색상
+                                let glowColor = "#00d2d3";
                                 if (e.slowTimer > 0) glowColor = "blue";
                                 else if (e.poisoned) glowColor = "purple";
                                 else if (e.isBleeding) glowColor = "red";
