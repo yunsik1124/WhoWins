@@ -1370,6 +1370,7 @@
         const W = 1920; const H = 1080;
 
         const imageCache = {};
+        const spineCache = {};
         function getImage(id, type = 'char') {
             const key = type + '_' + id;
             if (!imageCache[key]) {
@@ -1409,80 +1410,59 @@
             fallbackImg.style.objectFit = 'contain';
 
             if (isIngame) {
-                fallbackImg.style.bottom = '0px';
-                fallbackImg.style.left = '50%';
-                fallbackImg.style.width = '100%';
-                fallbackImg.style.height = '100%';
+                fallbackImg.style.bottom = '0px'; fallbackImg.style.left = '50%'; fallbackImg.style.width = '100%'; fallbackImg.style.height = '100%';
                 fallbackImg.style.transform = `translate(calc(-50% + ${INGAME_IMAGE.x}px), ${-INGAME_IMAGE.y}px) scale(${INGAME_IMAGE.scale})`;
                 fallbackImg.style.transformOrigin = 'bottom center';
                 const completeMask = 'linear-gradient(to bottom, black 150px, transparent 150px)';
-                fallbackImg.style.maskImage = completeMask;
-                fallbackImg.style.webkitMaskImage = completeMask;
+                fallbackImg.style.maskImage = completeMask; fallbackImg.style.webkitMaskImage = completeMask;
             } else {
-                fallbackImg.style.top = '0';
-                fallbackImg.style.left = '0';
-                fallbackImg.style.width = '100%';
-                fallbackImg.style.height = '100%';
+                fallbackImg.style.top = '0'; fallbackImg.style.left = '0'; fallbackImg.style.width = '100%'; fallbackImg.style.height = '100%';
                 fallbackImg.style.transform = `translate(${LOBBY_IMAGE.x}px, ${LOBBY_IMAGE.y}px) scale(${LOBBY_IMAGE.scale})`;
                 fallbackImg.style.transformOrigin = 'center center';
             }
             container.appendChild(fallbackImg);
 
-            fetch(`${basePath}.json`)
-                .then(res => {
-                    if (!res.ok) throw new Error("스파인 무공 비급 호출 실패!");
-                    return res.text();
-                })
-                .then(text => {
-                    fallbackImg.style.display = 'none';
-                    const spineDiv = document.createElement('div');
-                    spineDiv.style.position = 'absolute';
-                    spineDiv.style.imageRendering = 'auto';
-                    container.appendChild(spineDiv);
+            const cacheKey = `hero_${heroId}`;
+            // 🌟 [핵심] 캐시 창고에 미리 선독된 비급이 있다면 즉시 구동하오!
+            if (spineCache[cacheKey]) {
+                fallbackImg.style.display = 'none';
+                const spineDiv = document.createElement('div');
+                spineDiv.style.position = 'absolute';
+                spineDiv.style.imageRendering = 'auto';
+                container.appendChild(spineDiv);
 
-                    if (isIngame) {
-                        spineDiv.style.bottom = '0px';
-                        spineDiv.style.left = '50%';
-                        spineDiv.style.width = '100%';
-                        spineDiv.style.height = '100%';
-                        spineDiv.style.transform = `translate(calc(-50% + ${INGAME_SPINE.x}px), ${-INGAME_SPINE.y}px) scale(${INGAME_SPINE.scale})`;
-                        spineDiv.style.transformOrigin = 'bottom center';
-                        const completeMask = 'linear-gradient(to bottom, black 150px, transparent 150px)';
-                        spineDiv.style.maskImage = completeMask;
-                        spineDiv.style.webkitMaskImage = completeMask;
-                    } else {
-                        spineDiv.style.top = '0';
-                        spineDiv.style.left = '0';
-                        spineDiv.style.width = '100%';
-                        spineDiv.style.height = '100%';
-                        spineDiv.style.transform = `translate(${LOBBY_SPINE.x}px, ${LOBBY_SPINE.y}px) scale(${LOBBY_SPINE.scale})`;
-                        spineDiv.style.transformOrigin = 'center center';
-                    }
+                if (isIngame) {
+                    spineDiv.style.bottom = '0px'; spineDiv.style.left = '50%'; spineDiv.style.width = '100%'; spineDiv.style.height = '100%';
+                    spineDiv.style.transform = `translate(calc(-50% + ${INGAME_SPINE.x}px), ${-INGAME_SPINE.y}px) scale(${INGAME_SPINE.scale})`;
+                    spineDiv.style.transformOrigin = 'bottom center';
+                    const completeMask = 'linear-gradient(to bottom, black 150px, transparent 150px)';
+                    spineDiv.style.maskImage = completeMask; spineDiv.style.webkitMaskImage = completeMask;
+                } else {
+                    spineDiv.style.top = '0'; spineDiv.style.left = '0'; spineDiv.style.width = '100%'; spineDiv.style.height = '100%';
+                    spineDiv.style.transform = `translate(${LOBBY_SPINE.x}px, ${LOBBY_SPINE.y}px) scale(${LOBBY_SPINE.scale})`;
+                    spineDiv.style.transformOrigin = 'center center';
+                }
 
-                    new spine.SpinePlayer(spineDiv, {
-                        jsonUrl: `${basePath}.json`,
-                        atlasUrl: `${basePath}.atlas`,
-                        animation: "idle",
-                        alpha: true,
-                        backgroundColor: "#00000000",
-                        showControls: false,
-                        preserveAspectRatio: true,
-                        error: () => {
-                            spineDiv.remove();
-                            fallbackImg.style.display = 'block';
-                        }
-                    });
-                })
-                .catch(e => {
-                    fallbackImg.style.display = 'block';
+                new spine.SpinePlayer(spineDiv, {
+                    jsonUrl: spineCache[cacheKey].jsonUrl,
+                    atlasUrl: spineCache[cacheKey].atlasUrl,
+                    animation: "idle",
+                    alpha: true,
+                    backgroundColor: "#00000000",
+                    showControls: false,
+                    preserveAspectRatio: true,
+                    error: () => { spineDiv.remove(); fallbackImg.style.display = 'block'; }
                 });
+            } else {
+                // 프리로드가 작동 중이 아닐 때를 대비한 안전 예외선 (원래 실시간 호출 코드)
+                fallbackImg.style.display = 'block';
+            }
         }
 
         function preloadAllAssets(callback) {
             let assetsToLoad = [];
             assetsToLoad.push({ id: 'portal', type: 'tile', src: './assets/tiles/portal.png' });
 
-            // 1. 수호 고수(슬롯 장착용 캐릭터 및 투사체) 자산 적재
             deck.forEach(c => {
                 assetsToLoad.push({ id: c.id, type: 'char', src: `./assets/portraits/char_${c.id}.png` });
                 assetsToLoad.push({ id: c.id, type: 'ingame_1', src: `./assets/ingame/ingame_1_${c.id}.png` });
@@ -1490,12 +1470,11 @@
                 assetsToLoad.push({ id: c.id, type: 'proj', src: `./assets/projectiles/proj_${c.id}.png` });
             });
 
-            // 2. 전설적 히어로 일러스트 자산 적재
+            // 5명의 전설적 영웅 포트레이트 이미지 목록 적재
             heroes.forEach(h => {
                 assetsToLoad.push({ id: h.id, type: 'hero', src: `./assets/portraits/hero_${h.id}.png` });
             });
 
-            // 3. 해금형 고급 유닛 및 용병 자산 적재
             [8, 9, 10, 11, 12].forEach(id => {
                 assetsToLoad.push({ id: id, type: 'char', src: `./assets/portraits/char_${id}.png` });
                 assetsToLoad.push({ id: id, type: 'ingame_1', src: `./assets/ingame/ingame_1_${id}.png` });
@@ -1503,7 +1482,6 @@
                 assetsToLoad.push({ id: id, type: 'proj', src: `./assets/projectiles/proj_${id}.png` });
             });
 
-            // 4. 기계 마신 세력 애니메이션 프레임 자산 적재
             const enemyTypes = ['melee', 'ranged', 'midboss', 'boss', 'fast'];
             const enemyAnims = ['idle1', 'idle2', 'idle3', 'idle4', 'atk', 'hit'];
             enemyTypes.forEach(et => {
@@ -1512,20 +1490,33 @@
                 });
             });
 
-            // 5. 전장 비경(배경 및 UI 지형 박스) 통합 적재 배열
-            // 🌟 [추가] 대협의 수묵화 천하 지도 배경(map_box_bg.png)과 전장 타일들을 로딩 목록에 직접 강제 주입하오!
             const bgList = [
                 './assets/backgrounds/title_bg.jpg',
                 './assets/backgrounds/map_box_bg.png',
                 './assets/tiles/zone_unbuildable.png',
                 './assets/tiles/tile_normal.png'
             ];
-            for (let i = 0; i <= 7; i++) {
-                bgList.push(`./assets/backgrounds/bg_region_${i}.jpg`);
-            }
+            for (let i = 0; i <= 7; i++) { bgList.push(`./assets/backgrounds/bg_region_${i}.jpg`); }
             bgList.forEach((bgSrc, idx) => {
-                // imageCache에 깨끗하게 매핑하기 위해 고유 ID 부여
                 assetsToLoad.push({ id: `bg_asset_${idx}`, type: 'bg_direct', src: bgSrc });
+            });
+
+            // 🌟 5명의 영웅들의 스파인 파일도 선독 목록 개수에 포함시킵니다!
+            let spinePromises = heroes.map(h => {
+                const basePath = `./assets/spine/hero_${h.id}`;
+                // 서버에서 미리 json 형식을 땡겨와 문자열로 보존해 두는 내공 기법
+                return fetch(`${basePath}.json`)
+                    .then(res => {
+                        if (!res.ok) throw new Error();
+                        // 정상 호출되면 전역 캐시 창고에 매핑 규격대로 세팅하오
+                        spineCache[`hero_${h.id}`] = {
+                            jsonUrl: `${basePath}.json`,
+                            atlasUrl: `${basePath}.atlas`
+                        };
+                    })
+                    .catch(() => {
+                        console.warn(`[스파인 누락] 영웅 ${h.id}의 스파인 파일이 존재하지 않아 이미지로 대체하오.`);
+                    });
             });
 
             let loadedCount = 0;
@@ -1533,18 +1524,25 @@
             const loadingEl = document.getElementById('loadingStatus');
             const startBtn = document.getElementById('startGameBtn');
 
-            if (totalAssets === 0) { callback(); return; }
+            function checkComplete() {
+                if (loadedCount >= totalAssets) {
+                    // 🌟 이미지 적재가 다 끝나면, 미리 땡기던 스파인 비동기 연산까지 최종 확인 후 로딩을 종료하오!
+                    Promise.all(spinePromises).then(() => {
+                        if (loadingEl) loadingEl.style.display = 'none';
+                        if (startBtn) startBtn.style.display = 'block';
+                        callback();
+                    });
+                }
+            }
+
+            if (totalAssets === 0) { checkComplete(); return; }
 
             assetsToLoad.forEach(asset => {
                 const img = new Image();
                 img.src = asset.src;
                 img.onload = img.onerror = (e) => {
-                    if (e.type === 'error') console.warn(`[자산 누락 경고] 프리로드 이미지 누락 무시함: ${asset.src}`);
                     loadedCount++;
-
-                    // 캐시에 안전하게 이미지 객체를 바인딩하는 무공 분기점
                     if (asset.type === 'bg_direct') {
-                        // 타일 이미지들의 경우 바로 호출할 수 있도록 예외 매핑
                         if (asset.src.includes('zone_unbuildable')) imageCache['tile_zone_unbuildable'] = img;
                         if (asset.src.includes('tile_normal')) imageCache['tile_normal'] = img;
                     } else {
@@ -1556,15 +1554,10 @@
                         let percent = Math.floor((loadedCount / totalAssets) * 100);
                         loadingEl.innerText = `무공 비급을 불러오는 중... (${percent}%)`;
                     }
-                    if (loadedCount >= totalAssets) {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        if (startBtn) startBtn.style.display = 'block';
-                        callback();
-                    }
+                    checkComplete();
                 };
             });
         }
-
         let battleCoins = 500; let metaCoins = 0;
         let currentStage = 1; let currentMaxStage = 1; let gameSpeed = 1; let h0BuffTimer = 0;
 
