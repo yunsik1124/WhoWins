@@ -1423,7 +1423,7 @@
             container.appendChild(fallbackImg);
 
             const cacheKey = `hero_${heroId}`;
-            // 🌟 [핵심] 캐시 창고에 미리 선독된 비급이 있다면 즉시 구동하오!
+
             if (spineCache[cacheKey]) {
                 fallbackImg.style.display = 'none';
                 const spineDiv = document.createElement('div');
@@ -1443,6 +1443,7 @@
                     spineDiv.style.transformOrigin = 'center center';
                 }
 
+                // 🌟 [핵심 무공] 스파인 플레이어가 독자 로딩을 못 하도록 매개변수를 탈취하오!
                 new spine.SpinePlayer(spineDiv, {
                     jsonUrl: spineCache[cacheKey].jsonUrl,
                     atlasUrl: spineCache[cacheKey].atlasUrl,
@@ -1451,10 +1452,13 @@
                     backgroundColor: "#00000000",
                     showControls: false,
                     preserveAspectRatio: true,
+                    // 💡 서버 요청을 가로채서 프리로드된 영웅 포트레이트 이미지 객체(`getImage`)를 즉시 주입하는 신공!
+                    rawDataURIs: {
+                        [`hero_${heroId}.png`]: getImage(heroId, 'hero').src
+                    },
                     error: () => { spineDiv.remove(); fallbackImg.style.display = 'block'; }
                 });
             } else {
-                // 프리로드가 작동 중이 아닐 때를 대비한 안전 예외선 (원래 실시간 호출 코드)
                 fallbackImg.style.display = 'block';
             }
         }
