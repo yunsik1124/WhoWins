@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>강철의 난: 무림수호맹 V13.34 - 타일 에셋 확장 아키텍처 적용판</title>
+    <title>강철의 난: 무림수호맹 V13.34 - 진(眞) 풀버전 최적화판 (Sound 적용)</title>
     <script src="https://unpkg.com/@esotericsoftware/spine-player@4.1.28/dist/iife/spine-player.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/@esotericsoftware/spine-player@4.1.28/dist/spine-player.css">
     <style>
@@ -86,6 +86,7 @@
             box-shadow: 0 0 30px rgba(0,0,0,0.9);
         }
 
+        /* Screens & Backgrounds */
         #titleScreen {
             background: linear-gradient(rgba(0,0,0,var(--title-dim)), rgba(0,0,0,var(--title-dim))), url('./assets/backgrounds/title_bg.jpg') no-repeat center/cover;
         }
@@ -102,12 +103,13 @@
             background: linear-gradient(rgba(0,0,0,var(--stage-dim)), rgba(0,0,0,var(--stage-dim))), url('./assets/backgrounds/title_bg.jpg') no-repeat center/cover;
         }
 
+        /* Story Text */
         .story-container {
             width: 1000px;
             height: 350px;
             overflow: hidden;
             position: relative;
-            margin-bottom:-200px;
+            margin-bottom: -200px;
             border: none;
             background: transparent;
             padding: 20px;
@@ -135,6 +137,7 @@
             }
         }
 
+        /* HUD UI */
         .hud-panel {
             position: absolute;
             top: 15px;
@@ -190,6 +193,7 @@
                 transform: translateY(-2px);
             }
 
+        /* Game Logs */
         #gameLogUI {
             position: absolute;
             top: 130px;
@@ -238,6 +242,7 @@
                 white-space: nowrap;
             }
 
+        /* Mid Boss Prompt */
         #midBossUI {
             position: absolute;
             top: 220px;
@@ -400,6 +405,7 @@
             }
         }
 
+        /* Upgrade Popup (수호 관청) */
         #upgradePopup {
             display: none;
             position: absolute;
@@ -637,6 +643,7 @@
                 border-radius: 10px;
             }
 
+        /* Hero Section in Popup */
         .hero-section h2 {
             color: #f1c40f;
             margin-top: 0;
@@ -778,6 +785,7 @@
                 box-shadow: 0 15px 30px rgba(192,57,43,0.8);
             }
 
+        /* Hero Carousel in Lobby */
         .hero-carousel {
             display: flex;
             align-items: center;
@@ -843,15 +851,14 @@
             word-break: keep-all;
         }
 
+        /* Map Area */
         #mapArea {
             width: 1500px;
             height: 850px;
-            /* 💡 준비하신 배경 이미지 경로와 파일명으로 교체하오 */
             background: url('./assets/backgrounds/map_box_bg.png') no-repeat center;
-            background-size: 100% 100%; /* 박스 크기에 완전히 맞추는 명세 */
+            background-size: 100% 100%;
             position: relative;
-            /* 둥근 테두리 및 효과를 이미지에 맞춰 살리거나 제거할 수 있소 */
-            border: 3px solid #f1c40f; /* 테두리를 문파의 금빛으로 제련 가능 */
+            border: 3px solid #f1c40f;
             border-radius: 25px;
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
         }
@@ -892,6 +899,7 @@
             text-shadow: 2px 2px 6px #000;
         }
 
+        /* Stage Select */
         #stageContainer {
             width: 1100px;
             height: 800px;
@@ -949,6 +957,7 @@
                 color: #fff;
             }
 
+        /* Mercenary & Buffs */
         .top-ui-wrapper {
             position: absolute;
             left: 20px;
@@ -1038,7 +1047,7 @@
         }
 
         @keyframes mercGlowPulse {
-            0% {
+            0%, 100% {
                 transform: scale(1.0);
                 box-shadow: 0 0 15px #00d2d3;
                 border-color: #00d2d3;
@@ -1048,12 +1057,6 @@
                 transform: scale(1.1);
                 box-shadow: 0 0 35px #0abde3, 0 0 15px #2ecc71;
                 border-color: #ffda79;
-            }
-
-            100% {
-                transform: scale(1.0);
-                box-shadow: 0 0 15px #00d2d3;
-                border-color: #00d2d3;
             }
         }
 
@@ -1146,6 +1149,7 @@
                 color: #f1c40f;
             }
 
+        /* Overlays */
         #victoryOverlay {
             position: absolute;
             top: 0;
@@ -1220,7 +1224,6 @@
 <body>
     <div id="gameContainer">
         <div id="globalDimOverlay"></div>
-
         <div id="bottomUiLayer">
             <div class="top-ui-wrapper" style="z-index: 20;">
                 <div id="mercenaryUI">
@@ -1243,7 +1246,6 @@
 
         <div id="uiLayer">
             <button id="speedUpBtn">X1</button>
-
             <div id="midBossUI">
                 <div id="midBossSpeechBubble">중간보스 도전!</div>
                 <button id="midBossIconBtn" onclick="toggleMidBossPrompt()">💀</button>
@@ -1341,17 +1343,11 @@
             <h2 style="font-size: 40px; margin-bottom: 20px;">천하 판도 (지역 선택)</h2>
             <div id="mapArea">
                 <div class="map-node" style="left: 23%; top: 22%;" onclick="selectRegion(0)"><div class="map-label">1. 화산 (華山)</div></div>
-
                 <div class="map-node locked" style="left: 45%; top: 40%;" onclick="selectRegion(1)"><div class="map-label">2. 소림 (少林)</div></div>
-
                 <div class="map-node locked" style="left: 60%; top: 48%;" onclick="selectRegion(2)"><div class="map-label">3. 무당 (武當)</div></div>
-
                 <div class="map-node locked" style="left: 76%; top: 46%;" onclick="selectRegion(3)"><div class="map-label">4. 개방 (丐幫)</div></div>
-
                 <div class="map-node locked" style="left: 53%; top: 76%;" onclick="selectRegion(4)"><div class="map-label">5. 아미 (峨嵋)</div></div>
-
                 <div class="map-node locked" style="left: 18%; top: 62%;" onclick="selectRegion(5)"><div class="map-label">6. 곤륜 (崑崙)</div></div>
-
                 <div class="map-node locked" style="left: 74%; top: 24%;" onclick="selectRegion(6)"><div class="map-label">7. 마교 (魔敎)</div></div>
             </div>
         </div>
@@ -1364,6 +1360,89 @@
     </div>
 
     <script>
+        // --- 🎵 사운드 매니저 (Sound Manager) 추가 🎵 ---
+        const Sound = {
+            ctx: null,
+            bgm: null,
+            files: {
+                'lobby_bgm': './assets/sounds/bgm_lobby.mp3',
+                'ingame_bgm': './assets/sounds/bgm_ingame.mp3',
+                'click': './assets/sounds/sfx_btn_click.mp3',
+                'place': './assets/sounds/sfx_place_unit.mp3',
+                'spin': './assets/sounds/sfx_roulette_spin.mp3',
+                'spin_done': './assets/sounds/sfx_roulette_done.mp3',
+                'bomb': './assets/sounds/sfx_bomb_hit.mp3',
+                'hero': './assets/sounds/sfx_hero_skill.mp3',
+                'boss_hit': './assets/sounds/sfx_boss_hit.mp3',
+                'enemy_die': './assets/sounds/sfx_enemy_die.mp3',
+                'clear': './assets/sounds/sfx_stage_clear.mp3',
+                'gameover': './assets/sounds/sfx_game_over.mp3'
+            },
+            initCtx: function () {
+                if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+            },
+            playBGM: function (id) {
+                this.initCtx();
+                if (this.bgm && this.bgm.src.includes(id)) return;
+                if (this.bgm) { this.bgm.pause(); this.bgm.currentTime = 0; }
+                this.bgm = new Audio(this.files[id]);
+                this.bgm.loop = true;
+                this.bgm.volume = 0.4;
+                this.bgm.play().catch(e => console.warn("[Sound] BGM 재생 불가 (파일 누락 혹은 정책)", e));
+            },
+            playSFX: function (id) {
+                this.initCtx();
+                const audio = new Audio(this.files[id]);
+                audio.volume = 0.6;
+                audio.play().catch(e => {
+                    // 파일이 없거나 에러 시 Web Audio API로 자체 더미 사운드 합성 송출 (Fallback)
+                    this.playDummy(id);
+                });
+            },
+            playDummy: function (id) {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                const now = this.ctx.currentTime;
+
+                if (id === 'click') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(600, now); gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1); osc.start(now); osc.stop(now + 0.1);
+                } else if (id === 'place') {
+                    osc.type = 'square'; osc.frequency.setValueAtTime(150, now); gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2); osc.start(now); osc.stop(now + 0.2);
+                } else if (id === 'spin') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(800, now); gain.gain.setValueAtTime(0.05, now); gain.gain.linearRampToValueAtTime(0, now + 0.05); osc.start(now); osc.stop(now + 0.05);
+                } else if (id === 'spin_done') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(880, now); osc.frequency.exponentialRampToValueAtTime(1760, now + 0.3); gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.5); osc.start(now); osc.stop(now + 0.5);
+                } else if (id === 'bomb') {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now); osc.frequency.exponentialRampToValueAtTime(10, now + 0.5); gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5); osc.start(now); osc.stop(now + 0.5);
+                } else if (id === 'hero') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); osc.frequency.linearRampToValueAtTime(1200, now + 0.5); gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 1.0); osc.start(now); osc.stop(now + 1.0);
+                } else if (id === 'boss_hit') {
+                    osc.type = 'square'; osc.frequency.setValueAtTime(50, now); gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3); osc.start(now); osc.stop(now + 0.3);
+                } else if (id === 'enemy_die') {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, now); osc.frequency.exponentialRampToValueAtTime(50, now + 0.2); gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2); osc.start(now); osc.stop(now + 0.2);
+                } else if (id === 'clear') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now + 0.2); osc.frequency.setValueAtTime(783.99, now + 0.4); osc.frequency.setValueAtTime(1046.50, now + 0.6); gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 1.5); osc.start(now); osc.stop(now + 1.5);
+                } else if (id === 'gameover') {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, now); osc.frequency.linearRampToValueAtTime(50, now + 1.5); gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 1.5); osc.start(now); osc.stop(now + 1.5);
+                }
+            }
+        };
+
+        // 전역 클릭 시 버튼음 자동 할당 (공통 버튼 효과음)
+        window.addEventListener('click', (e) => {
+            Sound.initCtx();
+            if (e.target.closest('button') || e.target.closest('.map-node') || e.target.closest('.stage-node') || e.target.closest('.node')) {
+                Sound.playSFX('click');
+            }
+        }, { capture: true });
+        // ------------------------------------
+
         const GLOBAL_UNIT_SCALE = 0.8;
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -1371,6 +1450,7 @@
 
         const imageCache = {};
         const spineCache = {};
+
         function getImage(id, type = 'char') {
             const key = type + '_' + id;
             if (!imageCache[key]) {
@@ -1424,7 +1504,7 @@
 
             const cacheKey = `hero_${heroId}`;
 
-            if (spineCache[cacheKey]) {
+            if (spineCache[cacheKey] && spineCache[cacheKey].jsonUrl && typeof spine.SpinePlayer !== 'undefined') {
                 fallbackImg.style.display = 'none';
                 const spineDiv = document.createElement('div');
                 spineDiv.style.position = 'absolute';
@@ -1443,125 +1523,26 @@
                     spineDiv.style.transformOrigin = 'center center';
                 }
 
-                // 🌟 [핵심 무공] 스파인 플레이어가 독자 로딩을 못 하도록 매개변수를 탈취하오!
-                new spine.SpinePlayer(spineDiv, {
-                    jsonUrl: spineCache[cacheKey].jsonUrl,
-                    atlasUrl: spineCache[cacheKey].atlasUrl,
-                    animation: "idle",
-                    alpha: true,
-                    backgroundColor: "#00000000",
-                    showControls: false,
-                    preserveAspectRatio: true,
-                    // 💡 서버 요청을 가로채서 프리로드된 영웅 포트레이트 이미지 객체(`getImage`)를 즉시 주입하는 신공!
-                    rawDataURIs: {
-                        [`hero_${heroId}.png`]: getImage(heroId, 'hero').src
-                    },
-                    error: () => { spineDiv.remove(); fallbackImg.style.display = 'block'; }
-                });
+                try {
+                    new spine.SpinePlayer(spineDiv, {
+                        jsonUrl: spineCache[cacheKey].jsonUrl,
+                        atlasUrl: spineCache[cacheKey].atlasUrl,
+                        animation: "idle",
+                        alpha: true,
+                        backgroundColor: "#00000000",
+                        showControls: false,
+                        preserveAspectRatio: true,
+                        rawDataURIs: { [`hero_${heroId}.png`]: getImage(heroId, 'hero').src },
+                        error: () => { spineDiv.remove(); fallbackImg.style.display = 'block'; }
+                    });
+                } catch (e) {
+                    spineDiv.remove(); fallbackImg.style.display = 'block';
+                }
             } else {
                 fallbackImg.style.display = 'block';
             }
         }
 
-        function preloadAllAssets(callback) {
-            let assetsToLoad = [];
-            assetsToLoad.push({ id: 'portal', type: 'tile', src: './assets/tiles/portal.png' });
-
-            deck.forEach(c => {
-                assetsToLoad.push({ id: c.id, type: 'char', src: `./assets/portraits/char_${c.id}.png` });
-                assetsToLoad.push({ id: c.id, type: 'ingame_1', src: `./assets/ingame/ingame_1_${c.id}.png` });
-                assetsToLoad.push({ id: c.id, type: 'ingame_2', src: `./assets/ingame/ingame_2_${c.id}.png` });
-                assetsToLoad.push({ id: c.id, type: 'proj', src: `./assets/projectiles/proj_${c.id}.png` });
-            });
-
-            // 5명의 전설적 영웅 포트레이트 이미지 목록 적재
-            heroes.forEach(h => {
-                assetsToLoad.push({ id: h.id, type: 'hero', src: `./assets/portraits/hero_${h.id}.png` });
-            });
-
-            [8, 9, 10, 11, 12].forEach(id => {
-                assetsToLoad.push({ id: id, type: 'char', src: `./assets/portraits/char_${id}.png` });
-                assetsToLoad.push({ id: id, type: 'ingame_1', src: `./assets/ingame/ingame_1_${id}.png` });
-                assetsToLoad.push({ id: id, type: 'ingame_2', src: `./assets/ingame/ingame_2_${id}.png` });
-                assetsToLoad.push({ id: id, type: 'proj', src: `./assets/projectiles/proj_${id}.png` });
-            });
-
-            const enemyTypes = ['melee', 'ranged', 'midboss', 'boss', 'fast'];
-            const enemyAnims = ['idle1', 'idle2', 'idle3', 'idle4', 'atk', 'hit'];
-            enemyTypes.forEach(et => {
-                enemyAnims.forEach(ea => {
-                    assetsToLoad.push({ id: `${et}_${ea}`, type: 'enemy', src: `./assets/enemies/${et}_${ea}.png` });
-                });
-            });
-
-            const bgList = [
-                './assets/backgrounds/title_bg.jpg',
-                './assets/backgrounds/map_box_bg.png',
-                './assets/tiles/zone_unbuildable.png',
-                './assets/tiles/tile_normal.png'
-            ];
-            for (let i = 0; i <= 7; i++) { bgList.push(`./assets/backgrounds/bg_region_${i}.jpg`); }
-            bgList.forEach((bgSrc, idx) => {
-                assetsToLoad.push({ id: `bg_asset_${idx}`, type: 'bg_direct', src: bgSrc });
-            });
-
-            // 🌟 5명의 영웅들의 스파인 파일도 선독 목록 개수에 포함시킵니다!
-            let spinePromises = heroes.map(h => {
-                const basePath = `./assets/spine/hero_${h.id}`;
-                // 서버에서 미리 json 형식을 땡겨와 문자열로 보존해 두는 내공 기법
-                return fetch(`${basePath}.json`)
-                    .then(res => {
-                        if (!res.ok) throw new Error();
-                        // 정상 호출되면 전역 캐시 창고에 매핑 규격대로 세팅하오
-                        spineCache[`hero_${h.id}`] = {
-                            jsonUrl: `${basePath}.json`,
-                            atlasUrl: `${basePath}.atlas`
-                        };
-                    })
-                    .catch(() => {
-                        console.warn(`[스파인 누락] 영웅 ${h.id}의 스파인 파일이 존재하지 않아 이미지로 대체하오.`);
-                    });
-            });
-
-            let loadedCount = 0;
-            const totalAssets = assetsToLoad.length;
-            const loadingEl = document.getElementById('loadingStatus');
-            const startBtn = document.getElementById('startGameBtn');
-
-            function checkComplete() {
-                if (loadedCount >= totalAssets) {
-                    // 🌟 이미지 적재가 다 끝나면, 미리 땡기던 스파인 비동기 연산까지 최종 확인 후 로딩을 종료하오!
-                    Promise.all(spinePromises).then(() => {
-                        if (loadingEl) loadingEl.style.display = 'none';
-                        if (startBtn) startBtn.style.display = 'block';
-                        callback();
-                    });
-                }
-            }
-
-            if (totalAssets === 0) { checkComplete(); return; }
-
-            assetsToLoad.forEach(asset => {
-                const img = new Image();
-                img.src = asset.src;
-                img.onload = img.onerror = (e) => {
-                    loadedCount++;
-                    if (asset.type === 'bg_direct') {
-                        if (asset.src.includes('zone_unbuildable')) imageCache['tile_zone_unbuildable'] = img;
-                        if (asset.src.includes('tile_normal')) imageCache['tile_normal'] = img;
-                    } else {
-                        const key = asset.type + '_' + asset.id;
-                        imageCache[key] = img;
-                    }
-
-                    if (loadingEl) {
-                        let percent = Math.floor((loadedCount / totalAssets) * 100);
-                        loadingEl.innerText = `무공 비급을 불러오는 중... (${percent}%)`;
-                    }
-                    checkComplete();
-                };
-            });
-        }
         let battleCoins = 500; let metaCoins = 0;
         let currentStage = 1; let currentMaxStage = 1; let gameSpeed = 1; let h0BuffTimer = 0;
 
@@ -1576,7 +1557,6 @@
             else { scale = Math.min(winW / baseW, winH / baseH); rotation = 0; }
             container.style.transform = `translate(${tx}px, ${ty}px) rotate(${rotation}deg) scale(${scale})`;
         }
-
         window.addEventListener('resize', () => { resizeGame(); setTimeout(resizeGame, 300); });
         window.addEventListener('load', resizeGame);
         window.addEventListener('orientationchange', () => setTimeout(resizeGame, 200));
@@ -1598,6 +1578,12 @@
             }
             if (screenId === 'heroSelectScreen') updateHeroCarousel();
             if (screenId === 'regionSelectScreen') updateMapNodes();
+
+            // BGM 처리
+            if (['titleScreen', 'heroSelectScreen', 'regionSelectScreen', 'stageSelectScreen'].includes(screenId)) {
+                Sound.playBGM('lobby_bgm');
+            }
+
             setTimeout(resizeGame, 10);
         }
 
@@ -1653,14 +1639,13 @@
         const rowHeight = 99; const colWidth = 165; const skewX = 40;
         const lanes = []; const fieldSlots = [];
 
-        // 모든 타일을 'normal'로 초기화
         for (let r = 0; r < rows; r++) {
             let currentY = startY + r * rowHeight;
             let currentBaseX = startX + r * skewX;
             let portalX = 1700 + r * skewX;
             lanes.push({ id: r, y: currentY, startX: portalX, endX: currentBaseX - 30, scale: 0.88 + (r * 0.055), color: `rgba(52, 152, 219, 0.${2 + r})` });
             for (let c = 0; c < cols; c++) {
-                fieldSlots.push({ id: `R${r}C${c}`, x: currentBaseX + c * colWidth, y: currentY, char: null, laneId: r, zone: 'normal' });
+                fieldSlots.push({ id: `R${r}C${c}`, r: r, c: c, x: currentBaseX + c * colWidth, y: currentY, char: null, laneId: r, zone: 'normal' });
             }
         }
 
@@ -1706,34 +1691,25 @@
             if ('wakeLock' in navigator) {
                 try {
                     wakeLock = await navigator.wakeLock.request('screen');
-                    console.log("화면 꺼짐 방지(Wake Lock)가 활성화되었소.");
-                    wakeLock.addEventListener('release', () => {
-                        console.log('Wake Lock이 해제되었소.');
-                    });
-                } catch (err) {
-                    console.warn(`Wake Lock 활성화 실패: ${err.name}, ${err.message}`);
-                }
+                    wakeLock.addEventListener('release', () => { console.log('Wake Lock이 해제되었소.'); });
+                } catch (err) { console.warn(`Wake Lock 활성화 실패: ${err.name}, ${err.message}`); }
             }
         }
-        document.addEventListener('visibilitychange', async () => {
-            if (wakeLock !== null && document.visibilityState === 'visible') {
-                await requestWakeLock();
-            }
-        });
+        document.addEventListener('visibilitychange', async () => { if (wakeLock !== null && document.visibilityState === 'visible') { await requestWakeLock(); } });
 
         let gameState = 'title'; let glitchGauge = 0; let mercState = 'charging'; let enemyOffsetY = 15;
         let pendingMerc = null; let mercSpinFrames = 0; let mercFinalIcons = [0, 0, 0, 0];
         let mercFinalTier = 0; let mercRewardType = 'merc'; let mercBuffAtk = 0; let mercBuffSpd = 0; let activeBuffsLog = [];
         let midBossTriggeredWaves = []; let pendingMidBossMulti = 1; let pendingMidBossReward = 0;
-        let baseEnergy = 100; let frameCount = 0; let selectedInvenIdx = -1;
+        let frameCount = 0;
         let timeStopFrames = 0; let invincibleFrames = 0; let isHeroTargeting = false; let shakeFrames = 0;
-        let mouseX = 0; let mouseY = 0; let laneEffect = { laneId: -1, timer: 0 };
+        let laneEffect = { laneId: -1, timer: 0 };
         let currentWave = 0; let waveTimer = 0; let enemiesSpawned = 0; let showWaveWarning = 0;
         let waveState = 'stage_intro'; let waveWaitTimer = 90; let bossSpawned = false;
-        let enemies = []; let projectiles = []; let floatingTexts = []; let energyCores = []; let logHistory = [];
+        let logHistory = [];
         let maxWaves = 10; let waveDurations = []; let waveQuotas = [];
 
-
+        let renderEntities = [];
 
         function initDynamicWaves(stageNum) {
             maxWaves = Math.min(10, 3 + (stageNum - 1));
@@ -1819,30 +1795,9 @@
         }
 
         document.getElementById('speedUpBtn').addEventListener('click', function () {
-            if (gameSpeed === 1) {
-                gameSpeed = 2;
-                this.innerHTML = 'X2';
-                this.classList.add('active');
-                this.style.borderColor = "#3498db";
-                this.style.color = "#3498db";
-                updateUI();
-                addLog("가속(X2)을 활성화했소.", "#3498db");
-            } else if (gameSpeed === 2) {
-                gameSpeed = 3;
-                this.innerHTML = 'X3';
-                this.style.borderColor = "#f1c40f";
-                this.style.color = "#f1c40f";
-                updateUI();
-                addLog("최대 가속(X3)을 활성화했소!", "#f1c40f");
-            } else {
-                gameSpeed = 1;
-                this.innerHTML = 'X1';
-                this.classList.remove('active');
-                this.style.borderColor = "";
-                this.style.color = "";
-                updateUI();
-                addLog("기본 속도(X1)로 복원했소.", "#bdc3c7");
-            }
+            if (gameSpeed === 1) { gameSpeed = 2; this.innerHTML = 'X2'; this.classList.add('active'); this.style.borderColor = "#3498db"; this.style.color = "#3498db"; updateUI(); addLog("가속(X2)을 활성화했소.", "#3498db"); }
+            else if (gameSpeed === 2) { gameSpeed = 3; this.innerHTML = 'X3'; this.style.borderColor = "#f1c40f"; this.style.color = "#f1c40f"; updateUI(); addLog("최대 가속(X3)을 활성화했소!", "#f1c40f"); }
+            else { gameSpeed = 1; this.innerHTML = 'X1'; this.classList.remove('active'); this.style.borderColor = ""; this.style.color = ""; updateUI(); addLog("기본 속도(X1)로 복원했소.", "#bdc3c7"); }
         });
 
         function updateDimming() {
@@ -1869,16 +1824,81 @@
             if (el) { el.classList.add('glow'); setTimeout(() => el.classList.remove('glow'), 300); }
         }
 
-        function startBattle(stageNum) {
-            requestWakeLock(); // 🌟 [추가됨] 전투 시작 시 화면 꺼짐 방지 발동!
+        function preloadAllAssets(callback) {
+            let assetsToLoad = [];
+            assetsToLoad.push({ id: 'portal', type: 'tile', src: './assets/tiles/portal.png' });
+            deck.forEach(c => {
+                assetsToLoad.push({ id: c.id, type: 'char', src: `./assets/portraits/char_${c.id}.png` });
+                assetsToLoad.push({ id: c.id, type: 'ingame_1', src: `./assets/ingame/ingame_1_${c.id}.png` });
+                assetsToLoad.push({ id: c.id, type: 'ingame_2', src: `./assets/ingame/ingame_2_${c.id}.png` });
+                assetsToLoad.push({ id: c.id, type: 'proj', src: `./assets/projectiles/proj_${c.id}.png` });
+            });
+            heroes.forEach(h => { assetsToLoad.push({ id: h.id, type: 'hero', src: `./assets/portraits/hero_${h.id}.png` }); });
+            [8, 9, 10, 11, 12].forEach(id => {
+                assetsToLoad.push({ id: id, type: 'char', src: `./assets/portraits/char_${id}.png` });
+                assetsToLoad.push({ id: id, type: 'ingame_1', src: `./assets/ingame/ingame_1_${id}.png` });
+                assetsToLoad.push({ id: id, type: 'ingame_2', src: `./assets/ingame/ingame_2_${id}.png` });
+                assetsToLoad.push({ id: id, type: 'proj', src: `./assets/projectiles/proj_${id}.png` });
+            });
+            const enemyTypes = ['melee', 'ranged', 'midboss', 'boss', 'fast'];
+            const enemyAnims = ['idle1', 'idle2', 'idle3', 'idle4', 'atk', 'hit'];
+            enemyTypes.forEach(et => {
+                enemyAnims.forEach(ea => { assetsToLoad.push({ id: `${et}_${ea}`, type: 'enemy', src: `./assets/enemies/${et}_${ea}.png` }); });
+            });
+            const bgList = ['./assets/backgrounds/title_bg.jpg', './assets/backgrounds/map_box_bg.png', './assets/tiles/zone_unbuildable.png', './assets/tiles/tile_normal.png'];
+            for (let i = 0; i <= 7; i++) { bgList.push(`./assets/backgrounds/bg_region_${i}.jpg`); }
+            bgList.forEach((bgSrc, idx) => { assetsToLoad.push({ id: `bg_asset_${idx}`, type: 'bg_direct', src: bgSrc }); });
 
+            let spinePromises = heroes.map(h => {
+                const basePath = `./assets/spine/hero_${h.id}`;
+                return fetch(`${basePath}.json`).then(res => {
+                    if (!res.ok) throw new Error();
+                    spineCache[`hero_${h.id}`] = { jsonUrl: `${basePath}.json`, atlasUrl: `${basePath}.atlas` };
+                }).catch(() => { console.warn(`[스파인 누락] 영웅 ${h.id}의 스파인 파일이 존재하지 않아 이미지로 대체하오.`); });
+            });
+
+            let loadedCount = 0; const totalAssets = assetsToLoad.length;
+            const loadingEl = document.getElementById('loadingStatus');
+            const startBtn = document.getElementById('startGameBtn');
+
+            function checkComplete() {
+                if (loadedCount >= totalAssets) {
+                    Promise.all(spinePromises).then(() => {
+                        if (loadingEl) loadingEl.style.display = 'none';
+                        if (startBtn) startBtn.style.display = 'block';
+                        callback();
+                    });
+                }
+            }
+
+            if (totalAssets === 0) { checkComplete(); return; }
+
+            assetsToLoad.forEach(asset => {
+                const img = new Image(); img.src = asset.src;
+                img.onload = img.onerror = (e) => {
+                    loadedCount++;
+                    if (asset.type === 'bg_direct') {
+                        if (asset.src.includes('zone_unbuildable')) imageCache['tile_zone_unbuildable'] = img;
+                        if (asset.src.includes('tile_normal')) imageCache['tile_normal'] = img;
+                    } else {
+                        const key = asset.type + '_' + asset.id;
+                        imageCache[key] = img;
+                    }
+                    if (loadingEl) {
+                        let percent = Math.floor((loadedCount / totalAssets) * 100);
+                        loadingEl.innerText = `무공 비급을 불러오는 중... (${percent}%)`;
+                    }
+                    checkComplete();
+                };
+            });
+        }
+
+        function startBattle(stageNum) {
+            requestWakeLock();
             currentStage = stageNum; initDynamicWaves(currentStage);
             gameState = 'playing'; battleCoins = 500; gameSpeed = 1;
             let spdBtn = document.getElementById('speedUpBtn');
-            spdBtn.innerHTML = `X1`;
-            spdBtn.classList.remove('active');
-            spdBtn.style.borderColor = "";
-            spdBtn.style.color = "";
+            spdBtn.innerHTML = `X1`; spdBtn.classList.remove('active'); spdBtn.style.borderColor = ""; spdBtn.style.color = "";
 
             let currentRegionIdx = Math.floor((currentStage - 1) / 10);
             const gameContainer = document.getElementById('gameContainer');
@@ -1900,21 +1920,9 @@
             mercBuffAtk = 0; mercBuffSpd = 0; activeBuffsLog = []; renderBuffIcons();
             deck.forEach(c => { c.state = 'ready'; c.timer = 0; c.hp = getBase('hp', c.maxHp); c.cd = 0; c.jumpAnim = 0; c.strikeAnim = 0; c.facingDir = 1; });
 
-            // 모든 구역을 'normal'로 리셋
             fieldSlots.forEach(s => { s.char = null; s.zone = 'normal'; });
 
-            // 💡 관문(스테이지) 진척도에 따른 설치 불가 구역 동적 스케일링 (완화된 밸런스)
-            let unbuildableCount = 0;
-            if (currentStage <= 3) {
-                unbuildableCount = 2;       // 1~3 관문: 2개
-            } else if (currentStage <= 7) {
-                unbuildableCount = 3;       // 4~7 관문: 3개
-            } else if (currentStage <= 9) {
-                unbuildableCount = 4;       // 8~9 관문: 4개
-            } else {
-                unbuildableCount = 5;       // 10 관문 이상: 5개
-            }
-
+            let unbuildableCount = (currentStage <= 3) ? 2 : (currentStage <= 7 ? 3 : (currentStage <= 9 ? 4 : 5));
             let availableIndices = Array.from({ length: fieldSlots.length }, (_, i) => i);
             for (let i = 0; i < unbuildableCount; i++) {
                 let randIdx = Math.floor(Math.random() * availableIndices.length);
@@ -1923,12 +1931,13 @@
             }
 
             heroSlot.cd = 0; heroSlot.activeTimer = 0;
-
             renderHeroGraphic('ingameHeroGraphic', equippedHero, true);
-
             document.getElementById('victoryOverlay').style.display = 'none';
             addLog(`제 ${currentStage} 관문 전투를 개시하오.`, "#f1c40f");
             updateUI(); showScreen('');
+
+            // 인게임 BGM 실행
+            Sound.playBGM('ingame_bgm');
         }
 
         function updateUI() {
@@ -1997,16 +2006,13 @@
             if (key === 'atkSpeed') return (lvl * 0.01) + mercBuffSpd;
             if (key === 'lifesteal') return (lvl * 0.015);
             if (key === 'hp') return baseVal + (lvl * 15);
-
             if (key === 'def') return lvl * 1;
-
             if (key === 'critRate') return 0.2 + (lvl * 0.01);
             if (key === 'critDmg') return 2.0 + (lvl * 0.04);
             if (key === 'regenHP') return baseVal + (lvl * 2);
             if (key === 'respawnReduc') return Math.max(50, baseVal - (lvl * 2));
             if (key === 'costReduc') return lvl * 0.006;
             if (key === 'coinGain') return lvl * 0.02;
-
             return baseVal;
         }
 
@@ -2017,6 +2023,9 @@
         function triggerHeroSkill(heroId, targetLaneId) {
             let activeHeroData = heroes.find(h => h.id === heroId); let eff = 1 + (activeHeroData.upg.effect * 0.2); let cdReduc = activeHeroData.upg.cd * 0.05;
             heroSlot.activeTimer = Math.floor(166 * eff); heroSlot.cd = Math.floor(heroSlot.maxCd * (1 - cdReduc)); shakeFrames = 16;
+
+            Sound.playSFX('hero'); // 전설 영웅 발동 사운드
+
             if (heroId === 'h0') { timeStopFrames = Math.floor(166 * eff); h0BuffTimer = Math.floor(300 * eff); createFloatingText(W / 2, H / 2, "아군 공속 2배!", activeHeroData.color, true); }
             else if (heroId === 'h1') { timeStopFrames = Math.floor(166 * eff); enemies.forEach(e => { e.kbTimer = Math.floor(45 * eff); e.kbSpeed = 150 / 45; }); fieldSlots.forEach(fs => { if (fs.char) { let healAmt = Math.floor(getBase('hp', fs.char.maxHp) * 0.4); fs.char.hp = Math.min(getBase('hp', fs.char.maxHp), fs.char.hp + healAmt); createFloatingText(fs.x, fs.y - 30, `+${healAmt}`, "lime", true); } }); }
             else if (heroId === 'h2') { invincibleFrames = Math.floor(166 * eff); laneEffect = { laneId: targetLaneId, timer: Math.floor(75 * eff) }; enemies.forEach(en => { if (en.lane.id === targetLaneId) { if (en.type === 'boss' || en.type === 'midboss') { let dmg = Math.floor(en.hp * Math.min(1, 0.3 * eff)); en.hp -= dmg; createFloatingText(en.x, en.y - 80, `-${dmg}`, activeHeroData.color, true); } else { en.hp = 0; createFloatingText(en.x, en.y - 80, `절명!`, activeHeroData.color, true); } } }); }
@@ -2044,14 +2053,12 @@
         function activateMercenary() {
             if (gameState !== 'playing') return;
             let btn = document.getElementById('mercBtn');
-
             if (mercState === 'charging' && glitchGauge >= 100) {
                 mercState = 'spinning'; glitchGauge = 0; updateMercUI(); updateDimming();
                 btn.innerHTML = "진행중"; btn.classList.remove('ready'); mercSpinFrames = 150;
                 let randVal = Math.random() * 110; let tier = 1;
                 if (randVal < 10) tier = 4; else if (randVal < 30) tier = 3; else if (randVal < 60) tier = 2; else tier = 1;
                 mercRewardType = Math.random() < 0.25 ? 'buff' : 'merc';
-
                 if (tier === 4) { let t = Math.floor(Math.random() * 4); mercFinalIcons = [t, t, t, t]; }
                 else if (tier === 3) { let t = Math.floor(Math.random() * 4); let d1 = (t + 1) % 4; mercFinalIcons = [t, t, t, d1].sort(() => Math.random() - 0.5); }
                 else if (tier === 2) { let t = Math.floor(Math.random() * 4); let d1 = (t + 1) % 4; let d2 = (t + 2) % 4; mercFinalIcons = [t, t, d1, d2].sort(() => Math.random() - 0.5); }
@@ -2093,40 +2100,40 @@
                 return;
             }
 
-            // 1. 하단 슬롯 클릭 처리 구역 (기존 동일)
             if (mouseY > 880) {
                 const slotWidth = 150; const deckStartX = 280; const slotY = 890;
-                for (let i = 0; i < deck.length; i++) {
-                    const bx = deckStartX + (i * (slotWidth + 8));
-                    if (mouseX >= bx && mouseX <= bx + slotWidth && mouseY >= slotY && mouseY <= slotY + 180) {
-                        let charInfo = deck[i]; let isLocked = false;
-                        if (charInfo.id === 4 && currentMaxStage < 2) isLocked = true;
-                        if (charInfo.id === 5 && currentMaxStage < 5) isLocked = true;
-                        if (charInfo.id === 6 && currentMaxStage < 7) isLocked = true;
-                        if (charInfo.id === 7 && currentMaxStage < 9) isLocked = true;
-                        if (isLocked) { createFloatingText(bx + slotWidth / 2, slotY, "해금 조건을 충족하시오!", "#e74c3c", false); return; }
+                let clickedIdx = Math.floor((mouseX - deckStartX) / (slotWidth + 10));
 
-                        if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
+                if (clickedIdx >= 0 && clickedIdx < deck.length && mouseX <= deckStartX + deck.length * (slotWidth + 10)) {
+                    let charInfo = deck[clickedIdx]; let isLocked = false;
+                    if (charInfo.id === 4 && currentMaxStage < 2) isLocked = true;
+                    if (charInfo.id === 5 && currentMaxStage < 5) isLocked = true;
+                    if (charInfo.id === 6 && currentMaxStage < 7) isLocked = true;
+                    if (charInfo.id === 7 && currentMaxStage < 9) isLocked = true;
 
-                        if (deck[i].state === 'deployed') {
-                            let slot = fieldSlots.find(fs => fs.char === deck[i]);
-                            if (slot) {
-                                slot.char = null; deck[i].state = 'waiting'; deck[i].timer = 125; deck[i].showRangeTimer = 0;
-                                deck[i].strikeAnim = 0; deck[i].jumpAnim = 0; deck[i].pendingStrike = null;
-                                deck[i].painImmuneTimer = 0; deck[i].frostEnhanceTimer = 0; deck[i].bleedTimer = 0;
-                                addLog(`[회수] ${deck[i].name} 유닛을 대기열로 복귀시켰소.`, "#f39c12");
-                            }
-                            selectedInvenIdx = -1; return;
+                    if (isLocked) { createFloatingText(mouseX, slotY, "해금 조건을 충족하시오!", "#e74c3c", false); return; }
+
+                    if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
+
+                    if (charInfo.state === 'deployed') {
+                        let slot = fieldSlots.find(fs => fs.char === charInfo);
+                        if (slot) {
+                            slot.char = null; charInfo.state = 'waiting'; charInfo.timer = 125; charInfo.showRangeTimer = 0;
+                            charInfo.strikeAnim = 0; charInfo.jumpAnim = 0; charInfo.pendingStrike = null;
+                            charInfo.painImmuneTimer = 0; charInfo.frostEnhanceTimer = 0; charInfo.bleedTimer = 0;
+                            addLog(`[회수] ${charInfo.name} 유닛을 대기열로 복귀시켰소.`, "#f39c12");
                         }
-
-                        if (deck[i].state === 'ready') {
-                            let actualCost = getActualCost(deck[i]);
-                            if (battleCoins >= actualCost) { selectedInvenIdx = (selectedInvenIdx === i) ? -1 : i; }
-                            else { createFloatingText(bx + slotWidth / 2, slotY, "코인 부족!", "#e74c3c", false); selectedInvenIdx = -1; }
-                        }
-                        return;
+                        selectedInvenIdx = -1; return;
                     }
+
+                    if (charInfo.state === 'ready') {
+                        let actualCost = getActualCost(charInfo);
+                        if (battleCoins >= actualCost) { selectedInvenIdx = (selectedInvenIdx === clickedIdx) ? -1 : clickedIdx; }
+                        else { createFloatingText(mouseX, slotY, "코인 부족!", "#e74c3c", false); selectedInvenIdx = -1; }
+                    }
+                    return;
                 }
+
                 if (mouseX >= heroSlot.x && mouseX <= heroSlot.x + heroSlot.w && mouseY >= heroSlot.y && mouseY <= heroSlot.y + heroSlot.h) {
                     if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
                     if (heroSlot.cd <= 0 && heroSlot.activeTimer <= 0) { let activeHeroData = heroes.find(h => h.id === equippedHero); if (activeHeroData.id === 'h2') isHeroTargeting = true; else triggerHeroSkill(activeHeroData.id, null); } return;
@@ -2134,56 +2141,52 @@
                 return;
             }
 
-            // 🌟 2. 전장 타일 클릭 구역 [진짜 해결책]
-            // 롤오버될 때와 100% 똑같은 공식으로, 클릭한 좌표에서 '가장 가까운 타일'을 직접 찾아냅니다.
-            let targetSlot = null;
-            let minHoverDist = 80; // 80 반경 내에서만 동작
+            let clickedRow = Math.floor((mouseY - (startY - rowHeight / 2)) / rowHeight);
+            if (clickedRow >= 0 && clickedRow < rows) {
+                let currentBaseX = startX + clickedRow * skewX;
+                let clickedCol = Math.round((mouseX - currentBaseX) / colWidth);
 
-            for (let i = 0; i < fieldSlots.length; i++) {
-                let d = Math.hypot(mouseX - fieldSlots[i].x, mouseY - fieldSlots[i].y);
-                if (d < minHoverDist) {
-                    minHoverDist = d; // 반경이 겹치는 경계선이라도, '더 가까운' 타일을 덮어씀
-                    targetSlot = fieldSlots[i];
-                }
-            }
+                if (clickedCol >= 0 && clickedCol < cols) {
+                    let targetSlot = fieldSlots.find(s => s.r === clickedRow && s.c === clickedCol);
+                    if (targetSlot) {
+                        const s = targetSlot;
+                        if (s.char) {
+                            if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
+                            s.char.showRangeTimer = 90;
+                            selectedInvenIdx = -1;
+                            return;
+                        }
 
-            // 찾아낸 가장 가까운 타일(롤오버 타일과 100% 동일)에 유닛을 배치하오.
-            if (targetSlot) {
-                const s = targetSlot;
+                        if (selectedInvenIdx !== -1) {
+                            if (s.zone === 'unbuildable') {
+                                if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
+                                createFloatingText(s.x, s.y, "배치 불가 지역!", "#e74c3c", false); selectedInvenIdx = -1; return;
+                            }
 
-                if (s.char) {
-                    if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
-                    s.char.showRangeTimer = 90;
-                    selectedInvenIdx = -1;
-                    return;
-                }
-
-                if (selectedInvenIdx !== -1) {
-                    if (s.zone === 'unbuildable') {
-                        if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
-                        createFloatingText(s.x, s.y, "배치 불가 지역!", "#e74c3c", false); selectedInvenIdx = -1; return;
-                    }
-
-                    if (selectedInvenIdx === 'merc') {
-                        s.char = JSON.parse(JSON.stringify(pendingMerc));
-                        s.char.state = 'deployed'; s.char.cd = 0; s.char.showRangeTimer = 75; s.char.strikeAnim = 0; s.char.jumpAnim = 0;
-                        s.char.facingDir = 1;
-                        s.char.hp = getBase('hp', s.char.maxHp);
-                        s.char.painImmuneTimer = 0; s.char.frostEnhanceTimer = 0; s.char.bleedTimer = 0;
-                        addLog(`[용병] ${s.char.name} 용병을 성공적으로 투입했소.`, "#0abde3"); selectedInvenIdx = -1; clearMercSlots();
-                    } else {
-                        let c = deck[selectedInvenIdx]; let finalCost = getActualCost(c);
-                        if (battleCoins >= finalCost) {
-                            battleCoins -= finalCost; updateUI(); s.char = c;
-                            s.char.state = 'deployed'; s.char.cd = 0; s.char.showRangeTimer = 75; s.char.strikeAnim = 0; s.char.jumpAnim = 0;
-                            s.char.facingDir = 1;
-                            s.char.hp = getBase('hp', s.char.maxHp);
-                            s.char.painImmuneTimer = 0; s.char.frostEnhanceTimer = 0; s.char.bleedTimer = 0;
-                            addLog(`[배치] ${c.name} 고수를 전선에 배치했소. (-${finalCost}💰)`, "#2ecc71"); selectedInvenIdx = -1;
-                        } else { createFloatingText(s.x, s.y, "전투 코인 부족!", "#e74c3c", false); }
+                            if (selectedInvenIdx === 'merc') {
+                                s.char = JSON.parse(JSON.stringify(pendingMerc));
+                                s.char.state = 'deployed'; s.char.cd = 0; s.char.showRangeTimer = 75; s.char.strikeAnim = 0; s.char.jumpAnim = 0;
+                                s.char.facingDir = 1; s.char.hp = getBase('hp', s.char.maxHp);
+                                s.char.painImmuneTimer = 0; s.char.frostEnhanceTimer = 0; s.char.bleedTimer = 0;
+                                addLog(`[용병] ${s.char.name} 용병을 성공적으로 투입했소.`, "#0abde3");
+                                Sound.playSFX('place'); // 유닛 배치 사운드 송출
+                                selectedInvenIdx = -1; clearMercSlots();
+                            } else {
+                                let c = deck[selectedInvenIdx]; let finalCost = getActualCost(c);
+                                if (battleCoins >= finalCost) {
+                                    battleCoins -= finalCost; updateUI(); s.char = c;
+                                    s.char.state = 'deployed'; s.char.cd = 0; s.char.showRangeTimer = 75; s.char.strikeAnim = 0; s.char.jumpAnim = 0;
+                                    s.char.facingDir = 1; s.char.hp = getBase('hp', s.char.maxHp);
+                                    s.char.painImmuneTimer = 0; s.char.frostEnhanceTimer = 0; s.char.bleedTimer = 0;
+                                    addLog(`[배치] ${c.name} 고수를 전선에 배치했소. (-${finalCost}💰)`, "#2ecc71");
+                                    Sound.playSFX('place'); // 유닛 배치 사운드 송출
+                                    selectedInvenIdx = -1;
+                                } else { createFloatingText(s.x, s.y, "전투 코인 부족!", "#e74c3c", false); }
+                            }
+                        }
+                        return;
                     }
                 }
-                return;
             }
 
             if (mercState === 'deploying') { mercState = 'rewarded'; document.getElementById('mercBtn').classList.remove('dimmed'); }
@@ -2209,6 +2212,7 @@
             let stageFixedReward = currentStage * 300; let coinBonusMeta = Math.floor(battleCoins * 0.20); let totalReward = stageFixedReward + coinBonusMeta; metaCoins += totalReward; updateUI();
             document.getElementById('victoryRewardText').innerHTML = `관문 돌파 기본 보상: <span style="color:#00d2d3;">${stageFixedReward} 💎</span><br>잔여 전투 코인(<span style="color:white;">${battleCoins}</span>)의 20% 보너스: <span style="color:#00d2d3;">${coinBonusMeta} 💎</span><br><br><span style="font-size:36px; color:#f1c40f; font-weight:bold; text-shadow: 0 0 10px rgba(241,196,15,0.5);">총 획득 천기 영석: ${totalReward} 개!</span>`;
             addLog(`제 ${currentStage} 관문을 성공적으로 돌파하였소!`, "#2ecc71");
+            Sound.playSFX('clear'); // 관문 돌파음
         }
 
         function goToNextStage() { document.getElementById('victoryOverlay').style.display = 'none'; currentStage += 1; startBattle(currentStage); }
@@ -2225,6 +2229,7 @@
                     if (baseEnergy <= 0 && gameState !== 'gameover') {
                         gameState = 'gameover'; let bonusMeta = Math.floor(battleCoins * 0.1); metaCoins += bonusMeta; saveGame(); togglePopup(false);
                         document.querySelector('.top-ui-wrapper').style.display = 'none'; document.querySelector('.hud-panel').style.display = 'none'; document.getElementById('gameLogUI').style.display = 'none'; document.getElementById('speedUpBtn').style.display = 'none'; document.getElementById('midBossUI').style.display = 'none';
+                        Sound.playSFX('gameover'); // 패배음
                         break;
                     }
 
@@ -2243,57 +2248,33 @@
                         if (laneEffect.timer > 0) { let lane = lanes[laneEffect.laneId]; ctx.fillStyle = "rgba(230, 126, 34, " + (laneEffect.timer / 75 * 0.5) + ")"; ctx.fillRect(0, lane.y - 40, W, 80); if (!isRoulettePaused) laneEffect.timer--; }
 
                         lanes.forEach(lane => {
-                            let visualY = lane.y - 90;
-                            // 💡 [X축 이동] 우측으로 50px 이동시키는 시각적 변수 선언
-                            let visualX = lane.startX + 30;
-
-                            // 💡 포탈 이미지 로드 확인
+                            let visualY = lane.y - 90; let visualX = lane.startX + 30;
                             let portalImg = getImage('portal', 'tile');
-
                             if (portalImg && portalImg.complete && portalImg.naturalWidth > 0) {
-                                ctx.save();
-                                // 1. 포탈의 중심축으로 캔버스 이동 (visualX 반영)
-                                ctx.translate(visualX, visualY);
-
-                                // 2. 가로폭을 좁혀서 2.5D 원근감 부여 (가로 35%, 세로 100%)
-                                ctx.scale(0.35, 1.0);
-
-                                // 3. 시계 방향으로 아주 천천히 회전 (frameCount 활용)
-                                ctx.rotate(frameCount * 0.005);
-
-                                // 4. 이미지 렌더링 (정중앙 정렬)
-                                let pw = 240; // 렌더링할 포탈의 크기
-                                ctx.drawImage(portalImg, -pw / 2, -pw / 2, pw, pw);
-
-                                ctx.restore();
+                                ctx.save(); ctx.translate(visualX, visualY); ctx.scale(0.35, 1.0); ctx.rotate(frameCount * 0.005);
+                                let pw = 240; ctx.drawImage(portalImg, -pw / 2, -pw / 2, pw, pw); ctx.restore();
                             } else {
-                                // 💡 이미지가 없을 때의 기존 캔버스 그리기 (Fallback에도 visualX 반영)
                                 let portalRadius = 50 + Math.sin(frameCount * 0.1) * 5;
-                                ctx.fillStyle = "rgba(142, 68, 173, 0.8)";
-                                ctx.beginPath();
-                                ctx.ellipse(visualX, visualY, 25, portalRadius, 0, 0, Math.PI * 2);
-                                ctx.fill();
-                                ctx.fillStyle = "black";
-                                ctx.beginPath();
-                                ctx.ellipse(visualX, visualY, 15, portalRadius - 15, 0, 0, Math.PI * 2);
-                                ctx.fill();
+                                ctx.fillStyle = "rgba(142, 68, 173, 0.8)"; ctx.beginPath(); ctx.ellipse(visualX, visualY, 25, portalRadius, 0, 0, Math.PI * 2); ctx.fill();
+                                ctx.fillStyle = "black"; ctx.beginPath(); ctx.ellipse(visualX, visualY, 15, portalRadius - 15, 0, 0, Math.PI * 2); ctx.fill();
                             }
                         });
 
                         if (mercState === 'spinning') {
                             mercSpinFrames--; const icons = ['🌟', '🔥', '💀', '💨']; let interval = mercSpinFrames > 90 ? 3 : (mercSpinFrames > 45 ? 6 : 10);
-                            if (mercSpinFrames > 120) { if (mercSpinFrames % interval === 0) document.getElementById('mSlot1').innerText = icons[Math.floor(Math.random() * 4)]; }
+                            if (mercSpinFrames > 120) { if (mercSpinFrames % interval === 0) { document.getElementById('mSlot1').innerText = icons[Math.floor(Math.random() * 4)]; Sound.playSFX('spin'); } }
                             else if (mercSpinFrames === 120) { triggerSlotGlow('mSlot1'); document.getElementById('mSlot1').innerText = icons[mercFinalIcons[0]]; }
                             if (mercSpinFrames > 120) { document.getElementById('mSlot2').innerText = ''; }
-                            else if (mercSpinFrames > 90) { if (mercSpinFrames % interval === 0) document.getElementById('mSlot2').innerText = icons[Math.floor(Math.random() * 4)]; }
+                            else if (mercSpinFrames > 90) { if (mercSpinFrames % interval === 0) { document.getElementById('mSlot2').innerText = icons[Math.floor(Math.random() * 4)]; Sound.playSFX('spin'); } }
                             else if (mercSpinFrames === 90) { triggerSlotGlow('mSlot2'); document.getElementById('mSlot2').innerText = icons[mercFinalIcons[1]]; }
                             if (mercSpinFrames > 90) { document.getElementById('mSlot3').innerText = ''; }
-                            else if (mercSpinFrames > 60) { if (mercSpinFrames % interval === 0) document.getElementById('mSlot3').innerText = icons[Math.floor(Math.random() * 4)]; }
+                            else if (mercSpinFrames > 60) { if (mercSpinFrames % interval === 0) { document.getElementById('mSlot3').innerText = icons[Math.floor(Math.random() * 4)]; Sound.playSFX('spin'); } }
                             else if (mercSpinFrames === 60) { triggerSlotGlow('mSlot3'); shakeFrames = 5; document.getElementById('mSlot3').innerText = icons[mercFinalIcons[2]]; }
                             if (mercSpinFrames > 60) { document.getElementById('mSlot4').innerText = ''; }
-                            else if (mercSpinFrames > 30) { if (mercSpinFrames % interval === 0) document.getElementById('mSlot4').innerText = icons[Math.floor(Math.random() * 4)]; }
+                            else if (mercSpinFrames > 30) { if (mercSpinFrames % interval === 0) { document.getElementById('mSlot4').innerText = icons[Math.floor(Math.random() * 4)]; Sound.playSFX('spin'); } }
                             else if (mercSpinFrames === 30) {
                                 triggerSlotGlow('mSlot4'); shakeFrames = 10; createFloatingText(W / 2, H / 2 - 50, "용병 확정!!", "#0abde3", true); document.getElementById('mSlot4').innerText = icons[mercFinalIcons[3]];
+                                Sound.playSFX('spin_done'); // 용병 확정음
                                 let btn = document.getElementById('mercBtn'); let traitBox = document.getElementById('mercTraitInfo'); let tier = mercFinalTier;
                                 if (mercRewardType === 'merc') {
                                     if (tier === 1) pendingMerc = { id: 11, name: '개방거지', role: '곡선원거리', cost: 0, attackType: 'ranged', projType: 'parabola', range: 1000, damage: 15, color: '#8d6e63', cd: 0, maxCd: 35, hp: 50, maxHp: 50, state: 'ready', timer: 0, accuracy: 0.7, aoe: false, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 8 };
@@ -2347,7 +2328,7 @@
                             } else if (waveState === 'stage_cleared') { waveWaitTimer--; if (waveWaitTimer <= 0) { if (currentStage === currentMaxStage) currentMaxStage++; showVictoryPopup(); saveGame(); } }
                         }
 
-                        let renderEntities = [];
+                        renderEntities.length = 0;
 
                         let closestSlot = null; let minHoverDist = 80;
                         fieldSlots.forEach(s => {
@@ -2357,86 +2338,53 @@
 
                         fieldSlots.forEach(s => {
                             let isHovered = (s === closestSlot);
-
-                            // 💡 일반 타일 에셋 렌더링 로직 (Fallback 포함)
                             let normalImg = getImage('tile_normal', 'tile');
                             if (normalImg && normalImg.complete && normalImg.naturalWidth > 0) {
-                                let tw = 160, th = 100;
-                                ctx.drawImage(normalImg, s.x - (tw / 2), s.y - (th / 2), tw, th);
+                                let tw = 160, th = 100; ctx.drawImage(normalImg, s.x - (tw / 2), s.y - (th / 2), tw, th);
                             } else {
-                                ctx.fillStyle = "rgba(0,0,0,0.15)";
-                                ctx.beginPath(); ctx.ellipse(s.x, s.y, 72, 42, 0, 0, Math.PI * 2); ctx.fill();
+                                ctx.fillStyle = "rgba(0,0,0,0.15)"; ctx.beginPath(); ctx.ellipse(s.x, s.y, 72, 42, 0, 0, Math.PI * 2); ctx.fill();
                             }
 
-                            // 💡 설치불가 구역 에셋 렌더링 로직
                             if (s.zone === 'unbuildable') {
                                 let tileImg = getImage('zone_unbuildable', 'tile');
                                 if (tileImg && tileImg.complete && tileImg.naturalWidth > 0) {
-                                    let tw = 160, th = 100;
-                                    ctx.drawImage(tileImg, s.x - (tw / 2), s.y - (th / 2), tw, th);
+                                    let tw = 160, th = 100; ctx.drawImage(tileImg, s.x - (tw / 2), s.y - (th / 2), tw, th);
                                 } else {
-                                    ctx.fillStyle = "rgba(100, 100, 100, 0.4)";
-                                    ctx.beginPath(); ctx.ellipse(s.x, s.y, 72, 42, 0, 0, Math.PI * 2); ctx.fill();
-                                    drawText("설치불가", s.x, s.y, 20, "rgba(231, 76, 60, 0.8)");
+                                    ctx.fillStyle = "rgba(100, 100, 100, 0.4)"; ctx.beginPath(); ctx.ellipse(s.x, s.y, 72, 42, 0, 0, Math.PI * 2); ctx.fill(); drawText("설치불가", s.x, s.y, 20, "rgba(231, 76, 60, 0.8)");
                                 }
                             }
 
                             if (selectedInvenIdx !== -1 && !s.char && s.zone !== 'unbuildable') {
-                                ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 15; ctx.strokeStyle = "rgba(0, 210, 211, 0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, 80, 50, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); // 👈 80, 50으로 수정
+                                ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 15; ctx.strokeStyle = "rgba(0, 210, 211, 0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, 80, 50, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
                             }
                             if (isHovered && selectedInvenIdx === -1) {
                                 if (!s.char && s.zone !== 'unbuildable') {
-                                    ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 15; ctx.strokeStyle = "rgba(0, 210, 211, 0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, 80, 50, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); // 👈 80, 50으로 수정
+                                    ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 15; ctx.strokeStyle = "rgba(0, 210, 211, 0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, 80, 50, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
                                 } else if (s.char) {
-                                    ctx.save(); ctx.shadowColor = "#e74c3c"; ctx.shadowBlur = 15; ctx.strokeStyle = "rgba(231, 76, 60, 0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, 80, 50, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); // 👈 80, 50으로 수정
+                                    ctx.save(); ctx.shadowColor = "#e74c3c"; ctx.shadowBlur = 15; ctx.strokeStyle = "rgba(231, 76, 60, 0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(s.x, s.y, 80, 50, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
                                 }
                             }
                             if (selectedInvenIdx !== -1 && !s.char && isHovered && !isHeroTargeting && !isRoulettePaused) {
-                                ctx.strokeStyle = (s.zone === 'unbuildable') ? "red" : "lime";
-                                ctx.lineWidth = 4;
-                                ctx.beginPath();
-                                ctx.ellipse(s.x, s.y, 80, 50, 0, 0, Math.PI * 2); // 80, 50 규격 적용된 타일 윤곽선
-                                ctx.stroke();
-
+                                ctx.strokeStyle = (s.zone === 'unbuildable') ? "red" : "lime"; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(s.x, s.y, 80, 50, 0, 0, Math.PI * 2); ctx.stroke();
                                 if (s.zone !== 'unbuildable') {
                                     let charData = (selectedInvenIdx === 'merc') ? pendingMerc : deck[selectedInvenIdx];
-                                    let range = charData.range;
-                                    let fillColor = charData.attackType === 'heal' ? "rgba(46, 204, 113, 0.3)" : "rgba(231, 76, 60, 0.3)";
-                                    let strokeColor = charData.attackType === 'heal' ? "rgba(46, 204, 113, 0.9)" : "rgba(231, 76, 60, 0.9)";
-
-                                    ctx.fillStyle = fillColor;
-                                    ctx.strokeStyle = strokeColor;
-                                    ctx.lineWidth = 3;
-
-                                    if (charData.id === 11) {
-                                        ctx.fillRect(s.x - range, s.y - rowHeight - 35, range * 2, (rowHeight * 2) + 70);
-                                        ctx.strokeRect(s.x - range, s.y - rowHeight - 35, range * 2, (rowHeight * 2) + 70);
-                                    }
-                                    else if (charData.id === 1) {
-                                        ctx.beginPath(); ctx.ellipse(s.x, s.y, colWidth + 20, rowHeight + 10, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-                                    }
-                                    else if (charData.role === '탱커') {
-                                        ctx.beginPath(); ctx.ellipse(s.x, s.y, 165, 99, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-                                    }
-                                    else if (charData.attackType === 'heal' || charData.attackType === 'melee') {
-                                        ctx.beginPath(); ctx.ellipse(s.x, s.y, range, range * 0.75, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-                                    }
-                                    else {
-                                        ctx.fillRect(s.x - range, s.y - 35, range * 2, 70);
-                                        ctx.strokeRect(s.x - range, s.y - 35, range * 2, 70);
-                                    }
+                                    let range = charData.range; let fillColor = charData.attackType === 'heal' ? "rgba(46, 204, 113, 0.3)" : "rgba(231, 76, 60, 0.3)"; let strokeColor = charData.attackType === 'heal' ? "rgba(46, 204, 113, 0.9)" : "rgba(231, 76, 60, 0.9)";
+                                    ctx.fillStyle = fillColor; ctx.strokeStyle = strokeColor; ctx.lineWidth = 3;
+                                    if (charData.id === 11) { ctx.fillRect(s.x - range, s.y - rowHeight - 35, range * 2, (rowHeight * 2) + 70); ctx.strokeRect(s.x - range, s.y - rowHeight - 35, range * 2, (rowHeight * 2) + 70); }
+                                    else if (charData.id === 1) { ctx.beginPath(); ctx.ellipse(s.x, s.y, colWidth + 20, rowHeight + 10, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
+                                    else if (charData.role === '탱커') { ctx.beginPath(); ctx.ellipse(s.x, s.y, 165, 99, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
+                                    else if (charData.attackType === 'heal' || charData.attackType === 'melee') { ctx.beginPath(); ctx.ellipse(s.x, s.y, range, range * 0.75, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
+                                    else { ctx.fillRect(s.x - range, s.y - 35, range * 2, 70); ctx.strokeRect(s.x - range, s.y - 35, range * 2, 70); }
                                 }
                             }
+
                             if (s.char) {
                                 if (!isRoulettePaused) {
                                     if (s.char.id !== 999 && timeStopFrames <= 0 && frameCount % 60 === 0) {
                                         let regenAmount = getBase('regenHP', 0);
                                         if (regenAmount > 0) {
                                             let maxH = getBase('hp', s.char.maxHp);
-                                            if (s.char.hp < maxH) {
-                                                s.char.hp = Math.min(maxH, s.char.hp + regenAmount);
-                                                createFloatingText(s.x, s.y - 40, `+${regenAmount}`, "#2ecc71", false);
-                                            }
+                                            if (s.char.hp < maxH) { s.char.hp = Math.min(maxH, s.char.hp + regenAmount); createFloatingText(s.x, s.y - 40, `+${regenAmount}`, "#2ecc71", false); }
                                         }
                                     }
                                     if (s.char.strikeAnim > 0) s.char.strikeAnim--;
@@ -2459,8 +2407,7 @@
                                                     }
                                                 });
                                                 if (hitCount > 0 && p.isCrit) shakeFrames = 3;
-                                            }
-                                            else {
+                                            } else {
                                                 if (p.target && p.target.hp > 0) {
                                                     p.target.hp -= p.dmg; applyLifesteal(s.char, p.dmg); p.target.hitAnim = 6;
                                                     if (s.char.frostEnhanceTimer > 0 && p.target.type !== 'boss') { p.target.slowTimer = 600; p.target.slowRate = 0.3; }
@@ -2475,18 +2422,13 @@
 
                                     let cdReduce = (s.char.id === 999 || s.char.id > 7) ? 0 : getBase('atkSpeed', 0);
                                     let actualMaxCd = Math.max(3, Math.floor(s.char.maxCd * (1 - cdReduce)));
-
                                     if (h0BuffTimer > 0) actualMaxCd = Math.max(2, Math.floor(actualMaxCd / 2));
 
                                     if (s.char.attackType === 'heal') {
                                         if (s.char.cd <= 0) {
                                             let targets = [];
-                                            if (s.char.id === 9) {
-                                                targets = fieldSlots.filter(fs => fs.char && fs.char.hp < getBase('hp', fs.char.maxHp) && Math.hypot(fs.x - s.x, fs.y - s.y) <= s.char.range && Math.abs(fs.laneId - s.laneId) <= 1);
-                                            }
-                                            else {
-                                                targets = fieldSlots.filter(fs => fs.char && fs.char.hp < getBase('hp', fs.char.maxHp) && Math.hypot(fs.x - s.x, fs.y - s.y) <= s.char.range);
-                                            }
+                                            if (s.char.id === 9) targets = fieldSlots.filter(fs => fs.char && fs.char.hp < getBase('hp', fs.char.maxHp) && Math.hypot(fs.x - s.x, fs.y - s.y) <= s.char.range && Math.abs(fs.laneId - s.laneId) <= 1);
+                                            else targets = fieldSlots.filter(fs => fs.char && fs.char.hp < getBase('hp', fs.char.maxHp) && Math.hypot(fs.x - s.x, fs.y - s.y) <= s.char.range);
                                             if (targets.length > 0) {
                                                 targets.sort((a, b) => a.char.hp - b.char.hp); let t = targets[0]; let distY = (t.y - 20) - (s.y - 30); let distX = t.x - s.x; let T = 29; let g = 0.87; let vx = distX / T; let vy = (distY - 0.5 * g * T * T) / T; let actualHeal = getBase('healInc', s.char.healAmount);
                                                 let projStartX = s.x + ((s.char.projOffsetX || 0) * (s.char.facingDir || 1)); let projStartY = s.y - 30 + (s.char.projOffsetY || 0);
@@ -2497,13 +2439,8 @@
                                     } else {
                                         let enemiesInRange = enemies.filter(e => {
                                             if (s.char.role === '탱커') return Math.abs(e.lane.id - s.laneId) <= 1 && Math.abs(e.x - s.x) <= s.char.range;
-                                            else if (s.char.id === 1) {
-                                                let realDist = Math.hypot(e.x - s.x, e.y - s.y);
-                                                return realDist <= s.char.range;
-                                            }
-                                            else if (s.char.id === 10) {
-                                                return Math.hypot(e.x - s.x, e.y - s.y) <= s.char.range && Math.abs(e.lane.id - s.laneId) <= 1;
-                                            }
+                                            else if (s.char.id === 1) return Math.hypot(e.x - s.x, e.y - s.y) <= s.char.range;
+                                            else if (s.char.id === 10) return Math.hypot(e.x - s.x, e.y - s.y) <= s.char.range && Math.abs(e.lane.id - s.laneId) <= 1;
                                             else if (s.char.attackType === 'melee') return Math.hypot(e.x - s.x, e.y - s.y) <= s.char.range;
                                             else if (s.char.id === 11) return Math.abs(e.lane.id - s.laneId) <= 1 && Math.abs(e.x - s.x) <= s.char.range;
                                             else return e.lane.id === s.laneId && Math.abs(e.x - s.x) <= s.char.range;
@@ -2511,11 +2448,8 @@
                                         if (enemiesInRange.length > 0) {
                                             if (s.char.projType === 'beam' || s.char.projType === 'straight') { enemiesInRange.sort((a, b) => a.x - b.x); } else { enemiesInRange.sort((a, b) => { let aB = a.x < s.x; let bB = b.x < s.x; if (aB && !bB) return -1; if (!aB && bB) return 1; return Math.abs(a.x - s.x) - Math.abs(b.x - s.x); }); }
                                             let target = enemiesInRange[0]; let dmgStat = s.char.attackType === 'melee' ? 'atkMelee' : 'atkRanged';
-
                                             let finalBaseDmg = (s.char.id === 999 || s.char.id > 7) ? s.char.damage : getBase(dmgStat, s.char.damage);
-
-                                            let shootDir = target.x > s.x ? 1 : -1;
-                                            s.char.facingDir = shootDir;
+                                            let shootDir = target.x > s.x ? 1 : -1; s.char.facingDir = shootDir;
 
                                             if (s.char.attackType === 'ranged') {
                                                 if (s.char.cd <= 0) {
@@ -2526,128 +2460,49 @@
                                                     else {
                                                         if (isMiss) { targetX += (Math.random() > 0.5 ? 1 : -1) * 150; targetY += (Math.random() > 0.5 ? 1 : -1) * 50; }
                                                         if (s.char.projType === 'parabola') {
-                                                            let distY = targetY - projStartY;
-                                                            let distX = targetX - projStartX;
-
-                                                            let T = 50;
-                                                            let g = 0.86;
-
-                                                            switch (s.char.id) {
-                                                                case 3:
-                                                                    T = 50;
-                                                                    g = 0.86;
-                                                                    break;
-                                                                case 6:
-                                                                    T = 50;
-                                                                    g = 0.86;
-                                                                    break;
-                                                                case 11:
-                                                                    T = 35;
-                                                                    g = 1.5;
-                                                                    break;
-                                                                case 12:
-                                                                    T = 45;
-                                                                    g = 0.86;
-                                                                    break;
-                                                            }
-
-                                                            let predictedX = isMiss ? targetX : targetX - (target.speed * T * shootDir);
-                                                            let vx = (predictedX - projStartX) / T;
-                                                            let vy = (distY - 0.5 * g * T * T) / T;
-
-                                                            projectiles.push({
-                                                                type: 'parabola', x: projStartX, y: projStartY,
-                                                                vx: vx, vy: vy, g: g, targetY: target.y - 20,
-                                                                char: s.char, isMiss: isMiss, isCrit: isCrit,
-                                                                baseDmg: finalBaseDmg, laneId: target.lane.id, charId: s.char.id
-                                                            });
-                                                        }
-                                                        else {
-                                                            projectiles.push({
-                                                                type: s.char.projType,
-                                                                startX: projStartX,
-                                                                startY: projStartY,
-                                                                tx: targetX,
-                                                                ty: projStartY,
-                                                                progress: 0,
-                                                                char: s.char,
-                                                                isMiss: isMiss,
-                                                                isCrit: isCrit,
-                                                                baseDmg: finalBaseDmg,
-                                                                laneId: s.laneId,
-                                                                shootDir: shootDir,
-                                                                charId: s.char.id
-                                                            });
+                                                            let distY = targetY - projStartY; let distX = targetX - projStartX; let T = 50; let g = 0.86;
+                                                            if (s.char.id === 11) { T = 35; g = 1.5; } else if (s.char.id === 12) { T = 45; g = 0.86; }
+                                                            let predictedX = isMiss ? targetX : targetX - (target.speed * T * shootDir); let vx = (predictedX - projStartX) / T; let vy = (distY - 0.5 * g * T * T) / T;
+                                                            projectiles.push({ type: 'parabola', x: projStartX, y: projStartY, vx: vx, vy: vy, g: g, targetY: target.y - 20, char: s.char, isMiss: isMiss, isCrit: isCrit, baseDmg: finalBaseDmg, laneId: target.lane.id, charId: s.char.id });
+                                                        } else {
+                                                            projectiles.push({ type: s.char.projType, startX: projStartX, startY: projStartY, tx: targetX, ty: projStartY, progress: 0, char: s.char, isMiss: isMiss, isCrit: isCrit, baseDmg: finalBaseDmg, laneId: s.laneId, shootDir: shootDir, charId: s.char.id });
                                                         }
                                                     }
-
                                                     if (['straight', 'pierce', 'beam'].includes(s.char.projType) && s.char.id !== 999) {
                                                         let alliesInLine = fieldSlots.filter(fs => fs.char && fs.char !== s.char && fs.laneId === s.laneId && ((shootDir === 1 && fs.x > s.x && fs.x < targetX) || (shootDir === -1 && fs.x < s.x && fs.x > targetX)));
                                                         alliesInLine.forEach(fs => {
                                                             if (!fs.char || fs.char.id === 999) return;
-                                                            if (s.char.id === 4) {
-                                                                fs.char.painImmuneTimer = 600;
-                                                                fs.char.frostEnhanceTimer = 0;
-                                                                fs.char.bleedTimer = 0;
-                                                            }
-                                                            else if (s.char.id === 8) {
-                                                                fs.char.frostEnhanceTimer = 600;
-                                                                fs.char.painImmuneTimer = 0;
-                                                                fs.char.bleedTimer = 0;
-                                                            }
-                                                            else if (s.char.id === 5) {
-                                                                fs.char.bleedTimer = 600;
-                                                                fs.char.painImmuneTimer = 0;
-                                                                fs.char.frostEnhanceTimer = 0;
-                                                            }
+                                                            if (s.char.id === 4) { fs.char.painImmuneTimer = 600; fs.char.frostEnhanceTimer = 0; fs.char.bleedTimer = 0; }
+                                                            else if (s.char.id === 8) { fs.char.frostEnhanceTimer = 600; fs.char.painImmuneTimer = 0; fs.char.bleedTimer = 0; }
+                                                            else if (s.char.id === 5) { fs.char.bleedTimer = 600; fs.char.painImmuneTimer = 0; fs.char.frostEnhanceTimer = 0; }
                                                         });
                                                     }
                                                     s.char.cd = actualMaxCd;
                                                 } else { s.char.cd--; }
                                             } else if (s.char.attackType === 'melee') {
                                                 if (s.char.cd <= 0) {
-                                                    let isCrit = Math.random() < getBase('critRate', 0);
-                                                    let finalDmg = isCrit ? Math.floor(finalBaseDmg * getBase('critDmg', 0)) : finalBaseDmg;
-
+                                                    let isCrit = Math.random() < getBase('critRate', 0); let finalDmg = isCrit ? Math.floor(finalBaseDmg * getBase('critDmg', 0)) : finalBaseDmg;
                                                     if (s.char.role.includes('근거리') || s.char.role.includes('엘리트')) {
-                                                        s.char.strikeAnim = s.char.attackFrameDuration || 4;
-                                                        let dist = Math.hypot(target.x - s.x, target.y - s.y);
-                                                        s.char.strikeDirX = dist > 0 ? (target.x - s.x) / dist : shootDir;
-                                                        s.char.strikeDirY = dist > 0 ? (target.y - s.y) / dist : 0;
+                                                        s.char.strikeAnim = s.char.attackFrameDuration || 4; let dist = Math.hypot(target.x - s.x, target.y - s.y);
+                                                        s.char.strikeDirX = dist > 0 ? (target.x - s.x) / dist : shootDir; s.char.strikeDirY = dist > 0 ? (target.y - s.y) / dist : 0;
                                                         s.char.lungeDist = Math.min(s.char.range, Math.max(0, dist - 40));
-
-                                                        target.hp -= finalDmg;
-                                                        target.hitAnim = 4;
-                                                        applyLifesteal(s.char, finalDmg);
+                                                        target.hp -= finalDmg; target.hitAnim = 4; applyLifesteal(s.char, finalDmg);
                                                         if (s.char.frostEnhanceTimer > 0 && target.type !== 'boss') { target.slowTimer = 600; target.slowRate = 0.3; }
                                                         if (s.char.bleedTimer > 0) { target.isBleeding = true; }
-                                                        createFloatingText(target.x, target.y - 50, Math.floor(finalDmg), isCrit ? "#ff3333" : "white", isCrit);
-                                                        if (isCrit) shakeFrames = 3;
+                                                        createFloatingText(target.x, target.y - 50, Math.floor(finalDmg), isCrit ? "#ff3333" : "white", isCrit); if (isCrit) shakeFrames = 3;
                                                     }
-
                                                     if (s.char.role === '탱커') {
-                                                        s.char.strikeAnim = s.char.attackFrameDuration || 4;
-                                                        s.char.jumpAnim = 10;
-                                                        s.char.pendingStrike = { target: target, dmg: finalDmg, isCrit: isCrit };
-
-                                                        let dist = Math.hypot(target.x - s.x, target.y - s.y);
-                                                        s.char.strikeDirX = dist > 0 ? (target.x - s.x) / dist : shootDir;
-                                                        s.char.strikeDirY = dist > 0 ? (target.y - s.y) / dist : 0;
-                                                        s.char.lungeDist = Math.min(s.char.range, Math.max(0, dist - 40));
+                                                        s.char.strikeAnim = s.char.attackFrameDuration || 4; s.char.jumpAnim = 10; s.char.pendingStrike = { target: target, dmg: finalDmg, isCrit: isCrit };
+                                                        let dist = Math.hypot(target.x - s.x, target.y - s.y); s.char.strikeDirX = dist > 0 ? (target.x - s.x) / dist : shootDir; s.char.strikeDirY = dist > 0 ? (target.y - s.y) / dist : 0; s.char.lungeDist = Math.min(s.char.range, Math.max(0, dist - 40));
                                                     }
-
                                                     s.char.cd = actualMaxCd;
-                                                    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-                                                    ctx.beginPath();
-                                                    ctx.arc(target.x, target.y - 20, 20, 0, Math.PI * 2);
-                                                    ctx.fill();
-                                                } else {
-                                                    s.char.cd--;
-                                                }
+                                                    ctx.fillStyle = "rgba(255, 255, 255, 0.8)"; ctx.beginPath(); ctx.arc(target.x, target.y - 20, 20, 0, Math.PI * 2); ctx.fill();
+                                                } else { s.char.cd--; }
                                             }
                                         } else if (s.char.cd > 0) { s.char.cd--; }
                                     }
-                                } renderEntities.push({ y: s.y, type: 'char', data: s });
+                                }
+                                renderEntities.push({ y: s.y, type: 'char', data: s });
                             }
                         });
 
@@ -2660,28 +2515,18 @@
                                     if (e.poisoned && frameCount % 25 === 0) { let poisonDmg = Math.max(1, Math.floor(e.maxHp * 0.005)); e.hp -= poisonDmg; createFloatingText(e.x + (Math.random() * 20 - 10), e.y - 60, `독 -${poisonDmg}`, "#8e44ad", false); }
                                     if (e.isBleeding && frameCount % 60 === 0) { let bleedDmg = Math.max(2, Math.floor(e.maxHp * 0.02)); e.hp -= bleedDmg; createFloatingText(e.x + (Math.random() * 20 - 10), e.y - 60, `출혈 -${bleedDmg}`, "#ff3838", false); }
                                     let isBlocked = false; let blockX = 0; fieldSlots.forEach(fs => { if (fs.char && fs.laneId === e.lane.id && e.x > fs.x && e.x - fs.x <= 60) { isBlocked = true; blockX = fs.x + 60; } });
-
                                     if (isBlocked && e.type !== 'boss' && e.type !== 'midboss') { e.x = blockX; }
-                                    else {
-                                        let curSpd = e.speed;
-                                        if (e.slowTimer > 0) curSpd = e.slowRate ? e.speed * e.slowRate : e.speed * 0.5;
-                                        e.x -= curSpd;
-                                    }
+                                    else { let curSpd = e.speed; if (e.slowTimer > 0) curSpd = e.slowRate ? e.speed * e.slowRate : e.speed * 0.5; e.x -= curSpd; }
 
                                     if (e.isRanged && e.type !== 'boss') {
                                         if (e.type === 'midboss') {
                                             if (e.cd <= 0) {
                                                 let targets = fieldSlots.filter(fs => fs.char);
                                                 if (targets.length > 0) {
-                                                    let t = targets[Math.floor(Math.random() * targets.length)];
-                                                    let g = 0.86; let T = 45;
-                                                    let targetX = t.x; let targetY = t.y - 20;
-                                                    let startX = e.x; let startY = e.y - 30;
-                                                    let vx = (targetX - startX) / T;
-                                                    let vy = (targetY - startY - 0.5 * g * T * T) / T;
+                                                    let t = targets[Math.floor(Math.random() * targets.length)]; let g = 0.86; let T = 45; let targetX = t.x; let targetY = t.y - 20; let startX = e.x; let startY = e.y - 30;
+                                                    let vx = (targetX - startX) / T; let vy = (targetY - startY - 0.5 * g * T * T) / T;
                                                     projectiles.push({ type: 'midbossProj', x: startX, y: startY, vx: vx, vy: vy, g: g, targetY: targetY, tx: targetX, ty: targetY, color: '#c0392b', damage: e.damage }); e.atkAnim = 15;
-                                                }
-                                                e.cd = 90;
+                                                } e.cd = 90;
                                             } else { e.cd--; }
                                         } else {
                                             let validTargets = fieldSlots.filter(fs => fs.char && fs.laneId === e.lane.id && e.x > fs.x && e.x - fs.x <= e.range);
@@ -2691,24 +2536,18 @@
                                     if (e.type !== 'boss' && e.type !== 'midboss') {
                                         let overlapSlots = fieldSlots.filter(fs => {
                                             if (!fs.char) return false;
-                                            if (fs.char.id === 1) {
-                                                let laneDiff = Math.abs(e.lane.id - fs.laneId);
-                                                let distPx = Math.abs(e.x - fs.x);
-                                                return (laneDiff === 1 && distPx <= 80) || (laneDiff === 0 && distPx <= 65);
-                                            }
+                                            if (fs.char.id === 1) { let laneDiff = Math.abs(e.lane.id - fs.laneId); let distPx = Math.abs(e.x - fs.x); return (laneDiff === 1 && distPx <= 80) || (laneDiff === 0 && distPx <= 65); }
                                             return fs.laneId === e.lane.id && Math.abs(e.x - fs.x) <= 65;
                                         });
                                         if (overlapSlots.length > 0) {
                                             overlapSlots.sort((a, b) => b.x - a.x); let overlapSlot = overlapSlots[0];
                                             if (e.meleeCd <= 0) {
-                                                let actualDef = getBase('def', 0) + (overlapSlot.char.painImmuneTimer > 0 ? 30 : 0);
-                                                let fDamage = Math.max(1, e.damage - actualDef);
+                                                let actualDef = getBase('def', 0) + (overlapSlot.char.painImmuneTimer > 0 ? 30 : 0); let fDamage = Math.max(1, e.damage - actualDef);
                                                 if (invincibleFrames > 0 || overlapSlot.char.id === 999) fDamage = 0; overlapSlot.char.hp -= fDamage;
                                                 ctx.fillStyle = "rgba(200, 0, 0, 0.5)"; ctx.beginPath(); ctx.arc(overlapSlot.x, overlapSlot.y - 20, 30, 0, Math.PI * 2); ctx.fill();
                                                 if (invincibleFrames > 0) createFloatingText(overlapSlot.x, overlapSlot.y - 40, "무적!", "gold", false);
                                                 if (overlapSlot.char.hp <= 0 && invincibleFrames <= 0) { addLog(`${overlapSlot.char.name}이(가) 마신의 일격에 쓰러졌소...`, "#c0392b"); if (overlapSlot.char.id === 999 || overlapSlot.char.id > 7) { overlapSlot.char = null; } else { overlapSlot.char.state = 'dead'; overlapSlot.char.timer = getBase('respawnReduc', 250); overlapSlot.char.hp = getBase('hp', overlapSlot.char.maxHp); overlapSlot.char = null; } }
-                                                e.meleeCd = 25;
-                                                e.atkAnim = 15;
+                                                e.meleeCd = 25; e.atkAnim = 15;
                                             } else { e.meleeCd--; }
                                         } else { e.meleeCd = 0; }
                                     } else if (e.type === 'boss') {
@@ -2717,7 +2556,12 @@
                                         fieldSlots.forEach(s => { if (s.char && s.laneId === e.lane.id && Math.abs(e.x - s.x) < 100) { if (invincibleFrames <= 0 && s.char.id !== 999) s.char.hp -= 2; if (s.char.hp <= 0 && invincibleFrames <= 0) { addLog(`${s.char.name}이(가) 마신왕의 기백에 눌려 전사했소!`, "#c0392b"); if (s.char.id === 999 || s.char.id > 7) { s.char = null; } else { s.char.state = 'dead'; s.char.timer = getBase('respawnReduc', 250); s.char.hp = getBase('hp', s.char.maxHp); s.char = null; } } } });
                                     }
                                 }
-                                if (e.hitAnim > 0) e.hitAnim--;
+                                if (e.hitAnim > 0) {
+                                    e.hitAnim--;
+                                    if (e.type === 'boss' || e.type === 'midboss') {
+                                        Sound.playSFX('boss_hit'); // 보스급 타격음
+                                    }
+                                }
                             }
                             renderEntities.push({ y: e.y, type: 'enemy', data: e });
 
@@ -2727,13 +2571,11 @@
                                         if (e.type === 'boss') baseEnergy = 0; else if (e.type === 'midboss') baseEnergy -= 30; else baseEnergy -= 10;
                                         enemies.splice(i, 1); shakeFrames = 8; continue;
                                     } else if (e.hp <= 0) {
+                                        Sound.playSFX('enemy_die'); // 적 사망음 송출
                                         let actualReward = Math.floor(e.reward * (1 + getBase('coinGain', 0))); battleCoins += actualReward;
                                         if (e.type === 'midboss' && e.metaReward) { metaCoins += e.metaReward; createFloatingText(e.x, e.y - 60, `+${e.metaReward}💎`, "#00d2d3", true); addLog(`도전자를 처치하여 영석 ${e.metaReward}개를 획득했소!`, "#00d2d3"); } else { metaCoins += Math.floor(actualReward * 0.5); }
                                         updateUI(); createFloatingText(e.x, e.y - 30, `+${actualReward}💰`, "#f1c40f", false);
-                                        if (e.hasJewel) {
-                                            let birthOffset = (e.type === 'boss') ? 200 : ((e.type === 'midboss') ? 200 : 160);
-                                            energyCores.push({ x: e.x, y: e.y - birthOffset, tx: 100, ty: 80, progress: 0, amount: e.gaugeAmt });
-                                        }
+                                        if (e.hasJewel) { let birthOffset = (e.type === 'boss' || e.type === 'midboss') ? 200 : 160; energyCores.push({ x: e.x, y: e.y - birthOffset, tx: 100, ty: 80, progress: 0, amount: e.gaugeAmt }); }
                                         enemies.splice(i, 1); continue;
                                     }
                                 }
@@ -2743,104 +2585,49 @@
                         renderEntities.sort((a, b) => a.y - b.y);
                         renderEntities.forEach(ent => {
                             if (ent.type === 'char') {
-                                let s = ent.data;
-                                let renderOffsetX = 0;
-                                let renderOffsetY = 0;
-                                let renderRotate = 0;
-                                let scaleX = 1;
-                                let scaleY = 1;
-
+                                let s = ent.data; let renderOffsetX = 0; let renderOffsetY = 0; let renderRotate = 0; let scaleX = 1; let scaleY = 1;
                                 let currJump = s.char.jumpAnim + 1;
-
                                 if (currJump > 1 && currJump <= 10) {
-                                    let progress = currJump / 10;
-                                    let arc = Math.sin(progress * Math.PI);
-                                    renderOffsetY = -arc * 80;
-
-                                    if (currJump < 3) { scaleX = 1.3; scaleY = 0.7; }
-                                    else if (currJump > 8) { scaleX = 0.8; scaleY = 1.2; }
+                                    let progress = currJump / 10; let arc = Math.sin(progress * Math.PI); renderOffsetY = -arc * 80;
+                                    if (currJump < 3) { scaleX = 1.3; scaleY = 0.7; } else if (currJump > 8) { scaleX = 0.8; scaleY = 1.2; }
                                 }
-
-                                let duration = s.char.attackFrameDuration || 10;
-                                let currStrike = s.char.strikeAnim + 1;
+                                let duration = s.char.attackFrameDuration || 10; let currStrike = s.char.strikeAnim + 1;
                                 if (s.char.attackType === 'melee' && s.char.role !== '탱커' && currStrike > 1 && currStrike <= duration) {
-                                    let progress = Math.sin((1 - currStrike / duration) * Math.PI);
-                                    renderOffsetX = progress * (s.char.lungeDist || 0) * (s.char.strikeDirX || 1);
-                                    renderOffsetY = progress * (s.char.lungeDist || 0) * (s.char.strikeDirY || 0);
-                                    renderRotate = progress * 0.05 * (s.char.strikeDirX > 0 ? 1 : -1);
+                                    let progress = Math.sin((1 - currStrike / duration) * Math.PI); renderOffsetX = progress * (s.char.lungeDist || 0) * (s.char.strikeDirX || 1); renderOffsetY = progress * (s.char.lungeDist || 0) * (s.char.strikeDirY || 0); renderRotate = progress * 0.05 * (s.char.strikeDirX > 0 ? 1 : -1);
                                 }
-
-                                ctx.save();
-                                ctx.translate(s.x + renderOffsetX, s.y + renderOffsetY);
-                                ctx.rotate(renderRotate);
-
-                                let facingX = s.char.facingDir || 1;
-                                ctx.scale(scaleX * facingX, scaleY);
+                                ctx.save(); ctx.translate(s.x + renderOffsetX, s.y + renderOffsetY); ctx.rotate(renderRotate);
+                                let facingX = s.char.facingDir || 1; ctx.scale(scaleX * facingX, scaleY);
 
                                 if (s.char.painImmuneTimer > 0) { ctx.shadowColor = "gold"; ctx.shadowBlur = 20; }
                                 else if (s.char.frostEnhanceTimer > 0) { ctx.shadowColor = "#00cec9"; ctx.shadowBlur = 20; }
                                 else if (s.char.bleedTimer > 0) { ctx.shadowColor = "red"; ctx.shadowBlur = 20; }
 
-                                if (invincibleFrames > 0 || s.char.id === 999) {
-                                    ctx.strokeStyle = "gold"; ctx.lineWidth = 3; let defaultW = 100; let defaultH = 140; ctx.strokeRect(- (defaultW / 2) - 5, -defaultH + 5, defaultW + 10, defaultH + 10);
-                                }
+                                if (invincibleFrames > 0 || s.char.id === 999) { ctx.strokeStyle = "gold"; ctx.lineWidth = 3; let defaultW = 100; let defaultH = 140; ctx.strokeRect(- (defaultW / 2) - 5, -defaultH + 5, defaultW + 10, defaultH + 10); }
 
                                 let imgType = 'ingame_1';
                                 if (s.char.role === '탱커') {
-                                    if (s.char.jumpAnim > 5) {
-                                        s.char.tankStrikeTimer = 0;
-                                        imgType = 'ingame_1';
-                                    }
-                                    else if (s.char.jumpAnim >= 0 && s.char.jumpAnim <= 5) {
-                                        if (s.char.tankStrikeTimer === undefined || s.char.tankStrikeTimer === 0) {
-                                            s.char.tankStrikeTimer = 1;
-                                        }
-                                    }
-
-                                    if (s.char.tankStrikeTimer > 0 && s.char.tankStrikeTimer <= 15) {
-                                        imgType = 'ingame_2';
-                                        if (!isRoulettePaused) s.char.tankStrikeTimer++;
-                                    } else {
-                                        imgType = 'ingame_1';
-                                    }
-                                } else {
-                                    imgType = (s.char.strikeAnim > 0) ? 'ingame_2' : 'ingame_1';
-                                }
+                                    if (s.char.jumpAnim > 5) { s.char.tankStrikeTimer = 0; imgType = 'ingame_1'; }
+                                    else if (s.char.jumpAnim >= 0 && s.char.jumpAnim <= 5) { if (s.char.tankStrikeTimer === undefined || s.char.tankStrikeTimer === 0) { s.char.tankStrikeTimer = 1; } }
+                                    if (s.char.tankStrikeTimer > 0 && s.char.tankStrikeTimer <= 15) { imgType = 'ingame_2'; if (!isRoulettePaused) s.char.tankStrikeTimer++; } else { imgType = 'ingame_1'; }
+                                } else { imgType = (s.char.strikeAnim > 0) ? 'ingame_2' : 'ingame_1'; }
 
                                 let cImg = getImage(s.char.id, imgType);
                                 if (!cImg.complete || cImg.naturalWidth === 0) cImg = getImage(s.char.id, 'ingame_1');
-
-                                let laneScale = lanes[s.laneId].scale;
-                                let baseScale = (s.char.ingameScale || 1.0) * laneScale;
-                                let targetH = 250 * baseScale * GLOBAL_UNIT_SCALE;
-                                let targetW = targetH * 0.2;
-
-                                if (cImg.complete && cImg.naturalWidth > 0) {
-                                    targetW = targetH * (cImg.naturalWidth / cImg.naturalHeight); ctx.drawImage(cImg, -(targetW / 2), -targetH + 10, targetW, targetH);
-                                } else {
-                                    ctx.fillStyle = s.char.color; ctx.fillRect(-(targetW / 2), -targetH + 10, targetW, targetH);
-                                }
-
-                                ctx.scale(facingX, 1);
-                                drawText(s.char.name, 0, -targetH - 10 + (s.char.fontOffsetY || 0), 22 * laneScale, "#fff");
+                                let laneScale = lanes[s.laneId].scale; let baseScale = (s.char.ingameScale || 1.0) * laneScale; let targetH = 250 * baseScale * GLOBAL_UNIT_SCALE; let targetW = targetH * 0.2;
+                                if (cImg.complete && cImg.naturalWidth > 0) { targetW = targetH * (cImg.naturalWidth / cImg.naturalHeight); ctx.drawImage(cImg, -(targetW / 2), -targetH + 10, targetW, targetH); } else { ctx.fillStyle = s.char.color; ctx.fillRect(-(targetW / 2), -targetH + 10, targetW, targetH); }
+                                ctx.scale(facingX, 1); drawText(s.char.name, 0, -targetH - 10 + (s.char.fontOffsetY || 0), 22 * laneScale, "#fff");
 
                                 let buffY = -targetH - 40;
                                 if (s.char.painImmuneTimer > 0) { drawText("[고통면역]", 0, buffY, 20 * laneScale, "gold"); buffY -= 22 * laneScale; }
                                 if (s.char.frostEnhanceTimer > 0) { drawText("[빙결강화]", 0, buffY, 20 * laneScale, "#00cec9"); buffY -= 22 * laneScale; }
                                 if (s.char.bleedTimer > 0) { drawText("[출혈습득]", 0, buffY, 20 * laneScale, "#e74c3c"); buffY -= 22 * laneScale; }
 
-                                let curMaxHp = (s.char.id === 999) ? s.char.maxHp : getBase('hp', s.char.maxHp);
-                                let gaugeFixedWidth = 60;
-                                ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; ctx.fillRect(-(gaugeFixedWidth / 2), 15, gaugeFixedWidth, 6);
-                                ctx.fillStyle = "lime"; ctx.fillRect(-(gaugeFixedWidth / 2), 15, gaugeFixedWidth * (s.char.hp / curMaxHp), 6);
-                                ctx.restore();
+                                let curMaxHp = (s.char.id === 999) ? s.char.maxHp : getBase('hp', s.char.maxHp); let gaugeFixedWidth = 60;
+                                ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; ctx.fillRect(-(gaugeFixedWidth / 2), 15, gaugeFixedWidth, 6); ctx.fillStyle = "lime"; ctx.fillRect(-(gaugeFixedWidth / 2), 15, gaugeFixedWidth * (s.char.hp / curMaxHp), 6); ctx.restore();
 
-                                let currRangeTimer = s.char.showRangeTimer + 1;
-                                let isPopupOpen = document.getElementById('upgradePopup').style.display === 'flex';
-
+                                let currRangeTimer = s.char.showRangeTimer + 1; let isPopupOpen = document.getElementById('upgradePopup').style.display === 'flex';
                                 if (currRangeTimer > 1 && !isPopupOpen) {
-                                    let fillColor = s.char.attackType === 'heal' ? "rgba(46, 204, 113, 0.15)" : "rgba(231, 76, 60, 0.15)"; ctx.fillStyle = fillColor;
-                                    ctx.strokeStyle = s.char.attackType === 'heal' ? "rgba(46, 204, 113, 0.9)" : "rgba(231, 76, 60, 0.9)"; ctx.lineWidth = 3;
+                                    let fillColor = s.char.attackType === 'heal' ? "rgba(46, 204, 113, 0.15)" : "rgba(231, 76, 60, 0.15)"; ctx.fillStyle = fillColor; ctx.strokeStyle = s.char.attackType === 'heal' ? "rgba(46, 204, 113, 0.9)" : "rgba(231, 76, 60, 0.9)"; ctx.lineWidth = 3;
                                     if (s.char.id === 11) { ctx.fillRect(s.x - s.char.range, s.y - rowHeight - 35, s.char.range * 2, (rowHeight * 2) + 70); }
                                     else if (s.char.id === 1) { ctx.beginPath(); ctx.ellipse(s.x, s.y, colWidth + 20, rowHeight + 10, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
                                     else if (s.char.role === '탱커') { ctx.beginPath(); ctx.ellipse(s.x, s.y, 165, 99, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
@@ -2849,128 +2636,56 @@
                                 }
                             } else {
                                 let e = ent.data; let currHit = e.hitAnim + 1; let enemyOffsetX = 0;
-
-                                if (e.spawnFrame > 0) {
-                                    if (!isRoulettePaused) e.spawnFrame--;
-                                    ctx.globalAlpha = 1 - (e.spawnFrame / 60);
-                                } else {
-                                    ctx.globalAlpha = 1.0;
-                                }
-
+                                if (e.spawnFrame > 0) { if (!isRoulettePaused) e.spawnFrame--; ctx.globalAlpha = 1 - (e.spawnFrame / 60); } else { ctx.globalAlpha = 1.0; }
                                 if (currHit > 1 && currHit <= 6) { enemyOffsetX = currHit * 3; }
 
                                 let enemyCategory = 'melee';
-                                if (e.type === 'boss') enemyCategory = 'boss';
-                                else if (e.type === 'midboss') enemyCategory = 'midboss';
-                                else if (e.isRanged) enemyCategory = 'ranged';
-                                else if (e.speed > 0.8) enemyCategory = 'fast';
+                                if (e.type === 'boss') enemyCategory = 'boss'; else if (e.type === 'midboss') enemyCategory = 'midboss'; else if (e.isRanged) enemyCategory = 'ranged'; else if (e.speed > 0.8) enemyCategory = 'fast';
 
                                 let animState = 'idle1';
-                                if (e.atkAnim > 0) {
-                                    animState = 'atk';
-                                    if (!isRoulettePaused) e.atkAnim--;
-                                } else if (e.hitAnim > 0) {
-                                    animState = 'hit';
-                                } else {
-                                    if (enemyCategory === 'midboss') {
-                                        const frame = Math.floor(frameCount / 30) % 4 + 1;
-                                        animState = 'idle' + frame;
-                                    } else {
-                                        animState = (Math.floor(frameCount / 30) % 2 === 0) ? 'idle1' : 'idle2';
-                                    }
-                                }
+                                if (e.atkAnim > 0) { animState = 'atk'; if (!isRoulettePaused) e.atkAnim--; }
+                                else if (e.hitAnim > 0) { animState = 'hit'; }
+                                else { if (enemyCategory === 'midboss') { const frame = Math.floor(frameCount / 30) % 4 + 1; animState = 'idle' + frame; } else { animState = (Math.floor(frameCount / 30) % 2 === 0) ? 'idle1' : 'idle2'; } }
 
-                                let eImg = getImage(`${enemyCategory}_${animState}`, 'enemy');
-                                let hasImg = (eImg && eImg.complete && eImg.naturalWidth > 0);
-
-                                let glowColor = "#00d2d3";
-                                if (e.slowTimer > 0) glowColor = "blue";
-                                else if (e.poisoned) glowColor = "purple";
-                                else if (e.isBleeding) glowColor = "red";
+                                let eImg = getImage(`${enemyCategory}_${animState}`, 'enemy'); let hasImg = (eImg && eImg.complete && eImg.naturalWidth > 0);
+                                let glowColor = "#00d2d3"; if (e.slowTimer > 0) glowColor = "blue"; else if (e.poisoned) glowColor = "purple"; else if (e.isBleeding) glowColor = "red";
 
                                 if (e.type === 'boss') {
                                     ctx.save(); ctx.shadowColor = glowColor; ctx.shadowBlur = 20;
-                                    if (hasImg) {
-                                        ctx.drawImage(eImg, e.x - 150 + enemyOffsetX, e.y - 335 + enemyOffsetY, 300, 340);
-                                    } else {
+                                    if (hasImg) { ctx.drawImage(eImg, e.x - 150 + enemyOffsetX, e.y - 335 + enemyOffsetY, 300, 340); }
+                                    else {
                                         ctx.strokeStyle = "#00d2d3"; ctx.lineWidth = 3; ctx.strokeRect(e.x - 75 + enemyOffsetX, e.y - 165 + enemyOffsetY, 150, 170);
                                         ctx.fillStyle = timeStopFrames > 0 ? "#555" : "#8e44ad"; ctx.fillRect(e.x - 70 + enemyOffsetX, e.y - 160 + enemyOffsetY, 140, 160);
-                                        ctx.fillStyle = "red"; ctx.beginPath(); ctx.arc(e.x - 25 + enemyOffsetX, e.y - 120 + enemyOffsetY, 15, 0, Math.PI * 2); ctx.fill();
-                                        ctx.beginPath(); ctx.arc(e.x + 25 + enemyOffsetX, e.y - 120 + enemyOffsetY, 15, 0, Math.PI * 2); ctx.fill();
+                                        ctx.fillStyle = "red"; ctx.beginPath(); ctx.arc(e.x - 25 + enemyOffsetX, e.y - 120 + enemyOffsetY, 15, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(e.x + 25 + enemyOffsetX, e.y - 120 + enemyOffsetY, 15, 0, Math.PI * 2); ctx.fill();
                                     }
                                     ctx.restore();
-
                                     const barW = 100; const barH = 12; const barY = e.y - 180 + enemyOffsetY;
-                                    ctx.fillStyle = "rgba(0, 0, 0, 0.7)"; ctx.fillRect(e.x - (barW / 2) + enemyOffsetX, barY, barW, barH);
-                                    ctx.fillStyle = "#c0392b"; ctx.fillRect(e.x - (barW / 2) + enemyOffsetX, barY, barW * (e.hp / e.maxHp), barH);
-                                    ctx.strokeStyle = "#f1c40f"; ctx.lineWidth = 2; ctx.strokeRect(e.x - (barW / 2) + enemyOffsetX, barY, barW, barH);
-                                    drawText("기계 마신왕", e.x + enemyOffsetX, barY - 20, 28, "#f1c40f");
-                                }
-                                else if (e.type === 'midboss') {
+                                    ctx.fillStyle = "rgba(0, 0, 0, 0.7)"; ctx.fillRect(e.x - (barW / 2) + enemyOffsetX, barY, barW, barH); ctx.fillStyle = "#c0392b"; ctx.fillRect(e.x - (barW / 2) + enemyOffsetX, barY, barW * (e.hp / e.maxHp), barH); ctx.strokeStyle = "#f1c40f"; ctx.lineWidth = 2; ctx.strokeRect(e.x - (barW / 2) + enemyOffsetX, barY, barW, barH); drawText("기계 마신왕", e.x + enemyOffsetX, barY - 20, 28, "#f1c40f");
+                                } else if (e.type === 'midboss') {
                                     ctx.save(); ctx.shadowColor = glowColor; ctx.shadowBlur = 20;
-                                    if (hasImg) {
-                                        ctx.drawImage(eImg, e.x - 120 + enemyOffsetX, e.y - 255 + enemyOffsetY, 240, 260);
-                                    } else {
+                                    if (hasImg) { ctx.drawImage(eImg, e.x - 120 + enemyOffsetX, e.y - 255 + enemyOffsetY, 240, 260); }
+                                    else {
                                         ctx.strokeStyle = "#00d2d3"; ctx.lineWidth = 3; ctx.strokeRect(e.x - 60 + enemyOffsetX, e.y - 125 + enemyOffsetY, 120, 130);
                                         ctx.fillStyle = timeStopFrames > 0 ? "#555" : "#c0392b"; ctx.fillRect(e.x - 55 + enemyOffsetX, e.y - 120 + enemyOffsetY, 110, 120);
                                         ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(e.x + enemyOffsetX, e.y - 100 + enemyOffsetY, 12, 0, Math.PI * 2); ctx.fill();
                                     }
                                     ctx.restore();
-
-                                    ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; ctx.fillRect(e.x - 27.5 + enemyOffsetX, e.y - 230 + enemyOffsetY, 55, 8);
-                                    ctx.fillStyle = "lime"; ctx.fillRect(e.x - 27.5 + enemyOffsetX, e.y - 230 + enemyOffsetY, 55 * (e.hp / e.maxHp), 8);
-                                    drawText("중간보스", e.x + enemyOffsetX, e.y - 240 + enemyOffsetY, 22, "red");
-                                }
-                                else {
-                                    let baseHeight = 220;
-                                    let laneScale = e.lane.scale;
-                                    let eh = baseHeight * laneScale * GLOBAL_UNIT_SCALE;
-                                    let ew = eh * (160 / 180);
-
-                                    if (hasImg) {
-                                        ew = eh * (eImg.naturalWidth / eImg.naturalHeight);
-                                    }
-
-                                    if (e.slowTimer > 0 && !hasImg) {
-                                        ctx.fillStyle = "rgba(0, 255, 255, 0.4)";
-                                        ctx.fillRect(e.x - (ew / 2) - 5 + enemyOffsetX, e.y - eh - 5 + enemyOffsetY, ew + 10, eh + 10);
-                                    }
-
+                                    ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; ctx.fillRect(e.x - 27.5 + enemyOffsetX, e.y - 230 + enemyOffsetY, 55, 8); ctx.fillStyle = "lime"; ctx.fillRect(e.x - 27.5 + enemyOffsetX, e.y - 230 + enemyOffsetY, 55 * (e.hp / e.maxHp), 8); drawText("중간보스", e.x + enemyOffsetX, e.y - 240 + enemyOffsetY, 22, "red");
+                                } else {
+                                    let baseHeight = 220; let laneScale = e.lane.scale; let eh = baseHeight * laneScale * GLOBAL_UNIT_SCALE; let ew = eh * (160 / 180);
+                                    if (hasImg) { ew = eh * (eImg.naturalWidth / eImg.naturalHeight); }
+                                    if (e.slowTimer > 0 && !hasImg) { ctx.fillStyle = "rgba(0, 255, 255, 0.4)"; ctx.fillRect(e.x - (ew / 2) - 5 + enemyOffsetX, e.y - eh - 5 + enemyOffsetY, ew + 10, eh + 10); }
                                     ctx.save();
-                                    if (glowColor !== "#00d2d3") {
-                                        ctx.shadowColor = glowColor;
-                                        ctx.shadowBlur = 15;
-                                    }
-
-                                    if (hasImg) {
-                                        ctx.drawImage(eImg, e.x - (ew / 2) + enemyOffsetX, e.y - eh + enemyOffsetY, ew, eh);
-                                    } else {
-                                        ctx.fillStyle = timeStopFrames > 0 ? "#7f8c8d" : (e.poisoned ? "#8e44ad" : e.color);
-                                        ctx.fillRect(e.x - (ew / 2) + enemyOffsetX, e.y - eh + enemyOffsetY, ew, eh);
-                                    }
+                                    if (glowColor !== "#00d2d3") { ctx.shadowColor = glowColor; ctx.shadowBlur = 15; }
+                                    if (hasImg) { ctx.drawImage(eImg, e.x - (ew / 2) + enemyOffsetX, e.y - eh + enemyOffsetY, ew, eh); } else { ctx.fillStyle = timeStopFrames > 0 ? "#7f8c8d" : (e.poisoned ? "#8e44ad" : e.color); ctx.fillRect(e.x - (ew / 2) + enemyOffsetX, e.y - eh + enemyOffsetY, ew, eh); }
                                     ctx.restore();
-
-                                    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-                                    ctx.fillRect(e.x - (ew * 0.15) + enemyOffsetX, e.y - eh - 7 + enemyOffsetY, ew * 0.3, 6);
-                                    ctx.fillStyle = "lime";
-                                    ctx.fillRect(e.x - (ew * 0.15) + enemyOffsetX, e.y - eh - 7 + enemyOffsetY, (ew * 0.3) * (e.hp / e.maxHp), 6);
+                                    ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; ctx.fillRect(e.x - (ew * 0.15) + enemyOffsetX, e.y - eh - 7 + enemyOffsetY, ew * 0.3, 6); ctx.fillStyle = "lime"; ctx.fillRect(e.x - (ew * 0.15) + enemyOffsetX, e.y - eh - 7 + enemyOffsetY, (ew * 0.3) * (e.hp / e.maxHp), 6);
                                 }
 
                                 if (e.hasJewel) {
-                                    ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 10;
-                                    let baseHeight = 240;
-                                    let laneScale = e.lane.scale;
-                                    let eh = baseHeight * laneScale * GLOBAL_UNIT_SCALE;
-                                    let dynamicJewelY = e.y + enemyOffsetY - eh;
-                                    if (e.type === 'boss') {
-                                        dynamicJewelY -= 40;
-                                    } else if (e.type === 'midboss') {
-                                        dynamicJewelY -= 30;
-                                    } else {
-                                        dynamicJewelY -= 20;
-                                    }
-                                    drawText("💎", e.x + enemyOffsetX, dynamicJewelY, 24);
-                                    ctx.restore();
+                                    ctx.save(); ctx.shadowColor = "#00d2d3"; ctx.shadowBlur = 10; let baseHeight = 240; let laneScale = e.lane.scale; let eh = baseHeight * laneScale * GLOBAL_UNIT_SCALE; let dynamicJewelY = e.y + enemyOffsetY - eh;
+                                    if (e.type === 'boss') { dynamicJewelY -= 40; } else if (e.type === 'midboss') { dynamicJewelY -= 30; } else { dynamicJewelY -= 20; }
+                                    drawText("💎", e.x + enemyOffsetX, dynamicJewelY, 24); ctx.restore();
                                 }
                                 ctx.globalAlpha = 1.0;
                             }
@@ -2986,24 +2701,14 @@
                             }
 
                             let angle = 0;
-                            if (p.type === 'parabola' || p.type === 'heal_parabola' || p.type === 'midbossProj') {
-                                angle = Math.atan2(p.vy, p.vx);
-                            } else {
-                                angle = Math.atan2(p.ty - p.startY, p.tx - p.startX);
-                            }
+                            if (p.type === 'parabola' || p.type === 'heal_parabola' || p.type === 'midbossProj') { angle = Math.atan2(p.vy, p.vx); } else { angle = Math.atan2(p.ty - p.startY, p.tx - p.startX); }
 
-                            ctx.save();
-                            ctx.translate(p.x, p.y);
-                            ctx.rotate(angle);
-
+                            ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(angle);
                             let pImg = p.charId ? getImage(p.charId, 'proj') : null;
-
                             if (pImg && pImg.complete && pImg.naturalWidth > 0) {
-                                let pw = 120; let ph = pw * (pImg.naturalHeight / pImg.naturalWidth);
-                                ctx.drawImage(pImg, -pw / 2, -ph / 2, pw, ph);
+                                let pw = 120; let ph = pw * (pImg.naturalHeight / pImg.naturalWidth); ctx.drawImage(pImg, -pw / 2, -ph / 2, pw, ph);
                             } else {
-                                ctx.rotate(-angle);
-                                ctx.fillStyle = p.color || (p.char ? p.char.color : 'red');
+                                ctx.rotate(-angle); ctx.fillStyle = p.color || (p.char ? p.char.color : 'red');
                                 if (p.type === 'heal_parabola') { ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = "white"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(8, 0); ctx.moveTo(0, -8); ctx.lineTo(0, 8); ctx.stroke(); }
                                 else if (p.type === 'midbossProj') { ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = "#e74c3c"; ctx.lineWidth = 3; ctx.stroke(); }
                                 else if (p.type === 'pierce') { ctx.rotate(angle); ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(20, 0); ctx.lineTo(0, 20); ctx.lineTo(-20, 0); ctx.closePath(); ctx.fill(); }
@@ -3018,9 +2723,7 @@
                                     else if (p.type === 'enemyProj') {
                                         let hitSlots = fieldSlots.filter(fs => fs.char && Math.hypot(fs.x - p.tx, fs.y - p.ty) < 60);
                                         if (hitSlots.length > 0) {
-                                            hitSlots.sort((a, b) => b.x - a.x); let hitSlot = hitSlots[0];
-                                            let actualDef = getBase('def', 0) + (hitSlot.char.painImmuneTimer > 0 ? 30 : 0);
-                                            let fHit = Math.max(1, p.damage - actualDef);
+                                            hitSlots.sort((a, b) => b.x - a.x); let hitSlot = hitSlots[0]; let actualDef = getBase('def', 0) + (hitSlot.char.painImmuneTimer > 0 ? 30 : 0); let fHit = Math.max(1, p.damage - actualDef);
                                             if (invincibleFrames > 0 || hitSlot.char.id === 999) fHit = 0; hitSlot.char.hp -= fHit; createFloatingText(hitSlot.x, hitSlot.y - 30, `-${fHit}`, "#e74c3c", true); if (invincibleFrames > 0) createFloatingText(hitSlot.x, hitSlot.y - 40, "무적!", "gold", false); if (hitSlot.char.hp <= 0 && invincibleFrames <= 0) { addLog(`${hitSlot.char.name}이(가) 마신의 원거리 포격에 당했소.`, "#c0392b"); if (hitSlot.char.id === 999 || hitSlot.char.id > 7) { hitSlot.char = null; } else { hitSlot.char.state = 'dead'; hitSlot.char.timer = getBase('respawnReduc', 250); hitSlot.char.hp = getBase('hp', hitSlot.char.maxHp); hitSlot.char = null; } }
                                         }
                                     }
@@ -3029,19 +2732,13 @@
                                         else {
                                             let finalDmg = p.isCrit ? Math.floor(p.baseDmg * getBase('critDmg', 0)) : p.baseDmg; if (p.isCrit) shakeFrames = 8;
                                             if (p.char.aoe) {
+                                                Sound.playSFX('bomb'); // 폭발음
                                                 let explosionRadius = p.char.aoeRadius || 180;
                                                 enemies.forEach(e => { if (Math.hypot(e.x - p.tx, e.y - p.ty) < explosionRadius) { e.hp -= finalDmg; e.hitAnim = 6; applyLifesteal(p.char, finalDmg); if (p.char.poison) e.poisoned = true; if (p.char.frostEnhanceTimer > 0 && e.type !== 'boss') { e.slowTimer = 600; e.slowRate = 0.3; } if (p.char.bleedTimer > 0) { e.isBleeding = true; } createFloatingText(e.x, e.y - 30, Math.floor(finalDmg), p.isCrit ? "#ff3333" : "white", p.isCrit); } });
                                                 if (p.char.friendlyFire) { fieldSlots.forEach(fs => { if (fs.char && Math.hypot(fs.x - p.tx, fs.y - p.ty) < explosionRadius) { let friendlyDmg = Math.floor(finalDmg * 0.2); if (invincibleFrames > 0 || fs.char.id === 999) friendlyDmg = 0; fs.char.hp -= friendlyDmg; createFloatingText(fs.x, fs.y - 50, `-${friendlyDmg}`, "#ff0000", false); if (fs.char.hp <= 0 && invincibleFrames <= 0) { addLog(`${fs.char.name}이(가) 폭발 아군 오폭에 휩쓸렸소.`, "#c0392b"); if (fs.char.id === 999 || fs.char.id > 7) { fs.char = null; } else { fs.char.state = 'dead'; fs.char.timer = getBase('respawnReduc', 250); fs.char.hp = getBase('hp', fs.char.maxHp); fs.char = null; } } } }); } ctx.fillStyle = "rgba(231, 76, 60, 0.6)"; ctx.beginPath(); ctx.arc(p.tx, p.ty, explosionRadius, 0, Math.PI * 2); ctx.fill();
                                             } else {
                                                 let hitEnemy = null; let enemiesInLane = enemies.filter(e => e.lane.id === p.laneId); if (enemiesInLane.length > 0) { enemiesInLane.sort((a, b) => Math.abs(a.x - p.tx) - Math.abs(b.x - p.tx)); hitEnemy = enemiesInLane[0]; }
-                                                if (hitEnemy) {
-                                                    hitEnemy.hp -= finalDmg; hitEnemy.hitAnim = 20; applyLifesteal(p.char, finalDmg);
-                                                    if (p.char.poison) hitEnemy.poisoned = true;
-                                                    if (p.char.slow && hitEnemy.type !== 'boss' && hitEnemy.type !== 'midboss') { hitEnemy.slowTimer = 75; hitEnemy.slowRate = 0.5; }
-                                                    if (p.char.frostEnhanceTimer > 0 && hitEnemy.type !== 'boss') { hitEnemy.slowTimer = 600; hitEnemy.slowRate = 0.3; }
-                                                    if (p.char.bleedTimer > 0) { hitEnemy.isBleeding = true; }
-                                                    createFloatingText(hitEnemy.x, hitEnemy.y - 30, Math.floor(finalDmg), p.isCrit ? "#ff3333" : "white", p.isCrit);
-                                                }
+                                                if (hitEnemy) { hitEnemy.hp -= finalDmg; hitEnemy.hitAnim = 20; applyLifesteal(p.char, finalDmg); if (p.char.poison) hitEnemy.poisoned = true; if (p.char.slow && hitEnemy.type !== 'boss' && hitEnemy.type !== 'midboss') { hitEnemy.slowTimer = 75; hitEnemy.slowRate = 0.5; } if (p.char.frostEnhanceTimer > 0 && hitEnemy.type !== 'boss') { hitEnemy.slowTimer = 600; hitEnemy.slowRate = 0.3; } if (p.char.bleedTimer > 0) { hitEnemy.isBleeding = true; } createFloatingText(hitEnemy.x, hitEnemy.y - 30, Math.floor(finalDmg), p.isCrit ? "#ff3333" : "white", p.isCrit); }
                                             }
                                         }
                                     }
@@ -3077,21 +2774,18 @@
 
                             let img = getImage(char.id, 'char');
                             if (char.state === 'deployed') {
-                                if (img.complete && img.naturalWidth > 0) { ctx.drawImage(img, bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); }
-                                else { ctx.fillStyle = char.color; ctx.fillRect(bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); }
+                                if (img.complete && img.naturalWidth > 0) { ctx.drawImage(img, bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); } else { ctx.fillStyle = char.color; ctx.fillRect(bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); }
                                 ctx.fillStyle = "rgba(0,0,0,0.7)"; ctx.fillRect(bx + innerMargin, slotY + innerMargin, slotInnerW, squareH);
                                 drawText("배치됨", bx + (slotWidth / 2), slotY + innerMargin + (squareH / 2) - 15, 24, "#bdc3c7"); drawText("(회수!)", bx + (slotWidth / 2), slotY + innerMargin + (squareH / 2) + 15, 28, "#f1c40f");
                             }
                             else if (char.state === 'waiting' || char.state === 'dead') {
                                 if (!isRoulettePaused) char.timer--; if (char.timer <= 0) char.state = 'ready';
-                                if (img.complete && img.naturalWidth > 0) { ctx.drawImage(img, bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); }
-                                else { ctx.fillStyle = char.color; ctx.fillRect(bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); }
+                                if (img.complete && img.naturalWidth > 0) { ctx.drawImage(img, bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); } else { ctx.fillStyle = char.color; ctx.fillRect(bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); }
                                 let maxT = char.state === 'dead' ? getBase('respawnReduc', 250) : 125; ctx.fillStyle = "rgba(0, 0, 0, 0.75)"; ctx.fillRect(bx + innerMargin, slotY + innerMargin, slotInnerW, squareH * (char.timer / maxT));
                                 drawText(char.state === 'dead' ? "운기" : "대기", bx + (slotWidth / 2), slotY + innerMargin + (squareH / 2), 24, "#ff4757");
                             }
                             else {
-                                if (img.complete && img.naturalWidth > 0) { ctx.drawImage(img, bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); }
-                                else { ctx.fillStyle = char.color; ctx.fillRect(bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); }
+                                if (img.complete && img.naturalWidth > 0) { ctx.drawImage(img, bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); } else { ctx.fillStyle = char.color; ctx.fillRect(bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); }
                                 if (isSelected) { ctx.fillStyle = "rgba(255, 255, 255, 0.2)"; ctx.fillRect(bx + innerMargin, slotY + innerMargin, slotInnerW, squareH); }
                             }
 
