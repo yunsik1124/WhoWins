@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>강철의 난: 무림수호맹 V13.34 - 진(眞) 풀버전 최적화판 (Sound 적용)</title>
+    <title>강철의 난: 무림수호맹 V13.36 - 진(眞) 풀버전 사운드 완벽 최적화</title>
     <script src="https://unpkg.com/@esotericsoftware/spine-player@4.1.28/dist/iife/spine-player.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/@esotericsoftware/spine-player@4.1.28/dist/spine-player.css">
     <style>
@@ -24,7 +24,27 @@
             position: fixed;
             display: block;
         }
+/* --- 타이틀 화면 게임 시작 이미지 버튼 전용 연출 --- */
+        @keyframes titleBlingBling {
+            0%, 100% { 
+                transform: scale(1); 
+                opacity: 0.7; 
+                /* 기존에 있던 filter: drop-shadow(글로우) 삭제 */
+            }
+            50% { 
+                transform: scale(1.04); 
+                opacity: 1; 
+                /* 기존에 있던 filter: drop-shadow(글로우) 삭제 */
+            }
+        }
 
+        .img-start-btn {
+            cursor: pointer;
+            animation: titleBlingBling 2s infinite ease-in-out; /* 2s -> 4s로 액션 속도를 더 느리고 묵직하게 변경 */
+            z-index: 100;
+        }
+
+       
         #gameContainer {
             position: absolute;
             width: 1920px;
@@ -67,7 +87,7 @@
         }
 
         #uiLayer {
-            z-index: 30;
+            z-index: 10000;
             pointer-events: none;
         }
 
@@ -128,13 +148,8 @@
         }
 
         @keyframes scrollUp {
-            0% {
-                top: 80%;
-            }
-
-            100% {
-                top: -150%;
-            }
+            0% { top: 80%; }
+            100% { top: -150%; }
         }
 
         /* HUD UI */
@@ -170,10 +185,10 @@
             text-shadow: 1px 1px 3px #000;
         }
 
-            .coin-display-row span:last-child {
-                text-align: right;
-                flex-grow: 1;
-            }
+        .coin-display-row span:last-child {
+            text-align: right;
+            flex-grow: 1;
+        }
 
         .hud-btn {
             background: linear-gradient(180deg, #e67e22 0%, #d35400 100%);
@@ -188,10 +203,10 @@
             text-shadow: 1px 1px 2px #000;
         }
 
-            .hud-btn:hover {
-                background: linear-gradient(180deg, #f39c12 0%, #e67e22 100%);
-                transform: translateY(-2px);
-            }
+        .hud-btn:hover {
+            background: linear-gradient(180deg, #f39c12 0%, #e67e22 100%);
+            transform: translateY(-2px);
+        }
 
         /* Game Logs */
         #gameLogUI {
@@ -222,9 +237,9 @@
             transition: 0.2s;
         }
 
-            #gameLogHeader:hover {
-                background: rgba(41, 128, 185, 0.5);
-            }
+        #gameLogHeader:hover {
+            background: rgba(41, 128, 185, 0.5);
+        }
 
         #gameLogBody {
             display: none;
@@ -236,11 +251,11 @@
             border-top: 1px solid #3498db;
         }
 
-            #gameLogBody div {
-                margin-bottom: 5px;
-                line-height: 1.4;
-                white-space: nowrap;
-            }
+        #gameLogBody div {
+            margin-bottom: 5px;
+            line-height: 1.4;
+            white-space: nowrap;
+        }
 
         /* Mid Boss Prompt */
         #midBossUI {
@@ -253,20 +268,9 @@
         }
 
         @keyframes pulseAlert {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 0 5px #c0392b;
-            }
-
-            50% {
-                transform: scale(1.15);
-                box-shadow: 0 0 20px #e74c3c;
-            }
-
-            100% {
-                transform: scale(1);
-                box-shadow: 0 0 5px #c0392b;
-            }
+            0% { transform: scale(1); box-shadow: 0 0 5px #c0392b; }
+            50% { transform: scale(1.15); box-shadow: 0 0 20px #e74c3c; }
+            100% { transform: scale(1); box-shadow: 0 0 5px #c0392b; }
         }
 
         #midBossIconBtn {
@@ -307,13 +311,13 @@
             line-height: 1.6;
         }
 
-            .mid-boss-prompt-text span {
-                display: block;
-                margin-top: 10px;
-                font-size: 30px !important;
-                color: #00d2d3 !important;
-                text-shadow: 0 0 10px rgba(0, 210, 211, 0.5);
-            }
+        .mid-boss-prompt-text span {
+            display: block;
+            margin-top: 10px;
+            font-size: 30px !important;
+            color: #00d2d3 !important;
+            text-shadow: 0 0 10px rgba(0, 210, 211, 0.5);
+        }
 
         .mid-boss-btn-group {
             display: flex;
@@ -333,25 +337,25 @@
             transition: 0.2s;
         }
 
-            .mb-btn.accept {
-                background: #27ae60;
-                border: 1px solid #2ecc71;
-            }
+        .mb-btn.accept {
+            background: #27ae60;
+            border: 1px solid #2ecc71;
+        }
 
-                .mb-btn.accept:hover {
-                    transform: scale(1.1);
-                    background: #2ecc71;
-                }
+        .mb-btn.accept:hover {
+            transform: scale(1.1);
+            background: #2ecc71;
+        }
 
-            .mb-btn.decline {
-                background: #c0392b;
-                border: 1px solid #e74c3c;
-            }
+        .mb-btn.decline {
+            background: #c0392b;
+            border: 1px solid #e74c3c;
+        }
 
-                .mb-btn.decline:hover {
-                    transform: scale(1.1);
-                    background: #e74c3c;
-                }
+        .mb-btn.decline:hover {
+            transform: scale(1.1);
+            background: #e74c3c;
+        }
 
         #midBossSpeechBubble {
             position: absolute;
@@ -372,37 +376,32 @@
             border: 3px solid #e67e22;
         }
 
-            #midBossSpeechBubble::after {
-                content: '';
-                position: absolute;
-                bottom: -12px;
-                left: 50%;
-                transform: translateX(-50%);
-                border-width: 12px 10px 0;
-                border-style: solid;
-                border-color: #f1c40f transparent transparent transparent;
-            }
+        #midBossSpeechBubble::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 12px 10px 0;
+            border-style: solid;
+            border-color: #f1c40f transparent transparent transparent;
+        }
 
-            #midBossSpeechBubble::before {
-                content: '';
-                position: absolute;
-                bottom: -16px;
-                left: 50%;
-                transform: translateX(-50%);
-                border-width: 14px 12px 0;
-                border-style: solid;
-                border-color: #e67e22 transparent transparent transparent;
-                z-index: -1;
-            }
+        #midBossSpeechBubble::before {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 14px 12px 0;
+            border-style: solid;
+            border-color: #e67e22 transparent transparent transparent;
+            z-index: -1;
+        }
 
         @keyframes bounce {
-            0%, 100% {
-                transform: translateX(-50%) translateY(0);
-            }
-
-            50% {
-                transform: translateX(-50%) translateY(-10px);
-            }
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
         }
 
         /* Upgrade Popup (수호 관청) */
@@ -440,12 +439,12 @@
             margin-bottom: 20px;
         }
 
-            .popup-header h1 {
-                margin: 0;
-                color: #f1c40f;
-                font-size: 48px;
-                text-shadow: 2px 2px 4px #000;
-            }
+        .popup-header h1 {
+            margin: 0;
+            color: #f1c40f;
+            font-size: 48px;
+            text-shadow: 2px 2px 4px #000;
+        }
 
         .header-controls {
             display: flex;
@@ -454,10 +453,7 @@
         }
 
         @keyframes blinkWarning {
-            50% {
-                opacity: 0.5;
-                color: #fff;
-            }
+            50% { opacity: 0.5; color: #fff; }
         }
 
         #gameOverWarning {
@@ -481,10 +477,10 @@
             transition: 0.2s;
         }
 
-            .close-btn:hover {
-                filter: brightness(1.2);
-                transform: scale(1.05);
-            }
+        .close-btn:hover {
+            filter: brightness(1.2);
+            transform: scale(1.05);
+        }
 
         .hard-reset-btn {
             background: #c0392b;
@@ -498,9 +494,9 @@
             transition: 0.2s;
         }
 
-            .hard-reset-btn:hover {
-                background: #e74c3c;
-            }
+        .hard-reset-btn:hover {
+            background: #e74c3c;
+        }
 
         .popup-body {
             display: flex;
@@ -596,52 +592,52 @@
             z-index: 2;
         }
 
-            .node:hover:not(.locked) {
-                border-color: #f1c40f;
-                transform: scale(1.08) translateY(-2px);
-            }
+        .node:hover:not(.locked) {
+            border-color: #f1c40f;
+            transform: scale(1.08) translateY(-2px);
+        }
 
-            .node.max {
-                border-color: #27ae60;
-                background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-            }
+        .node.max {
+            border-color: #27ae60;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
 
-            .node.locked {
-                filter: grayscale(100%) brightness(0.7);
-                cursor: not-allowed;
-                border-color: #555;
-            }
+        .node.locked {
+            filter: grayscale(100%) brightness(0.7);
+            cursor: not-allowed;
+            border-color: #555;
+        }
 
-                .node.locked::after {
-                    content: '🔒';
-                    position: absolute;
-                    font-size: 60px;
-                    opacity: 0.8;
-                }
+        .node.locked::after {
+            content: '🔒';
+            position: absolute;
+            font-size: 60px;
+            opacity: 0.8;
+        }
 
-                .node.locked span {
-                    color: #eceff1;
-                }
+        .node.locked span {
+            color: #eceff1;
+        }
 
-            .node span {
-                color: white;
-                font-size: 26px;
-                font-weight: bold;
-                text-align: center;
-                line-height: 1.2;
-                word-break: keep-all;
-                padding: 0 8px;
-            }
+        .node span {
+            color: white;
+            font-size: 26px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.2;
+            word-break: keep-all;
+            padding: 0 8px;
+        }
 
-            .node .lvl {
-                color: #f1c40f;
-                font-size: 22px;
-                margin-top: 6px;
-                font-weight: bold;
-                background: rgba(0,0,0,0.5);
-                padding: 4px 12px;
-                border-radius: 10px;
-            }
+        .node .lvl {
+            color: #f1c40f;
+            font-size: 22px;
+            margin-top: 6px;
+            font-weight: bold;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 12px;
+            border-radius: 10px;
+        }
 
         /* Hero Section in Popup */
         .hero-section h2 {
@@ -712,17 +708,17 @@
             transition: 0.2s;
         }
 
-            .hero-upg-btn:hover:not(:disabled) {
-                border-color: #9b59b6;
-                background: rgba(60,40,80,0.6);
-                transform: translateY(-2px);
-            }
+        .hero-upg-btn:hover:not(:disabled) {
+            border-color: #9b59b6;
+            background: rgba(60,40,80,0.6);
+            transform: translateY(-2px);
+        }
 
-            .hero-upg-btn:disabled {
-                filter: grayscale(100%);
-                cursor: not-allowed;
-                opacity: 0.6;
-            }
+        .hero-upg-btn:disabled {
+            filter: grayscale(100%);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
 
         .hero-upg-circle {
             width: 60px;
@@ -780,10 +776,10 @@
             pointer-events: auto !important;
         }
 
-            .btn-large:hover {
-                transform: scale(1.05) translateY(-5px);
-                box-shadow: 0 15px 30px rgba(192,57,43,0.8);
-            }
+        .btn-large:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 15px 30px rgba(192,57,43,0.8);
+        }
 
         /* Hero Carousel in Lobby */
         .hero-carousel {
@@ -804,11 +800,11 @@
             padding: 0 20px;
         }
 
-            .arrow-btn:hover {
-                opacity: 1;
-                transform: scale(1.2);
-                color: #f1c40f;
-            }
+        .arrow-btn:hover {
+            opacity: 1;
+            transform: scale(1.2);
+            color: #f1c40f;
+        }
 
         .hero-showcase {
             width: 500px;
@@ -827,10 +823,10 @@
             overflow: hidden;
         }
 
-            .hero-showcase:hover {
-                transform: translateY(-5px) scale(1.02);
-                border-color: #ffda79;
-            }
+        .hero-showcase:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: #ffda79;
+        }
 
         #heroNameDisplay {
             font-size: 48px;
@@ -878,16 +874,16 @@
             align-items: center;
         }
 
-            .map-node:hover {
-                transform: translate(-50%, -50%) scale(1.3);
-                box-shadow: 0 0 25px #e74c3c;
-            }
+        .map-node:hover {
+            transform: translate(-50%, -50%) scale(1.3);
+            box-shadow: 0 0 25px #e74c3c;
+        }
 
-            .map-node.locked {
-                background: #555;
-                border-color: #333;
-                cursor: not-allowed;
-            }
+        .map-node.locked {
+            background: #555;
+            border-color: #333;
+            cursor: not-allowed;
+        }
 
         .map-label {
             position: absolute;
@@ -929,17 +925,17 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
-            .stage-node:hover {
-                border-color: #f1c40f;
-                background: linear-gradient(90deg, #e67e22 0%, #d35400 100%);
-                transform: scale(1.02);
-            }
+        .stage-node:hover {
+            border-color: #f1c40f;
+            background: linear-gradient(90deg, #e67e22 0%, #d35400 100%);
+            transform: scale(1.02);
+        }
 
-            .stage-node.locked {
-                filter: grayscale(100%);
-                opacity: 0.5;
-                cursor: not-allowed;
-            }
+        .stage-node.locked {
+            filter: grayscale(100%);
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
         .top-bar {
             position: absolute;
@@ -953,9 +949,9 @@
             z-index: 10;
         }
 
-            .top-bar:hover {
-                color: #fff;
-            }
+        .top-bar:hover {
+            color: #fff;
+        }
 
         /* Mercenary & Buffs */
         .top-ui-wrapper {
@@ -984,9 +980,9 @@
             position: relative;
         }
 
-            #mercenaryUI.dim-active {
-                box-shadow: 0 0 50px rgba(0, 210, 211, 1.0), inset 0 0 20px rgba(0, 210, 211, 0.6) !important;
-            }
+        #mercenaryUI.dim-active {
+            box-shadow: 0 0 50px rgba(0, 210, 211, 1.0), inset 0 0 20px rgba(0, 210, 211, 0.6) !important;
+        }
 
         .merc-title {
             color: #0abde3;
@@ -1032,12 +1028,12 @@
             box-shadow: inset 0 0 10px #000;
         }
 
-            .merc-slot.glow {
-                box-shadow: 0 0 30px #00d2d3, inset 0 0 20px #00d2d3;
-                border-color: #0abde3;
-                transform: scale(1.15);
-                transition: all 0.1s;
-            }
+        .merc-slot.glow {
+            box-shadow: 0 0 30px #00d2d3, inset 0 0 20px #00d2d3;
+            border-color: #0abde3;
+            transform: scale(1.15);
+            transition: all 0.1s;
+        }
 
         .merc-btn-wrapper {
             display: flex;
@@ -1047,17 +1043,8 @@
         }
 
         @keyframes mercGlowPulse {
-            0%, 100% {
-                transform: scale(1.0);
-                box-shadow: 0 0 15px #00d2d3;
-                border-color: #00d2d3;
-            }
-
-            50% {
-                transform: scale(1.1);
-                box-shadow: 0 0 35px #0abde3, 0 0 15px #2ecc71;
-                border-color: #ffda79;
-            }
+            0%, 100% { transform: scale(1.0); box-shadow: 0 0 15px #00d2d3; border-color: #00d2d3; }
+            50% { transform: scale(1.1); box-shadow: 0 0 35px #0abde3, 0 0 15px #2ecc71; border-color: #ffda79; }
         }
 
         .merc-btn.dimmed {
@@ -1092,11 +1079,11 @@
             background-repeat: no-repeat;
         }
 
-            .merc-btn.ready {
-                color: #fff;
-                opacity: 1;
-                animation: mercGlowPulse 1.2s infinite ease-in-out;
-            }
+        .merc-btn.ready {
+            color: #fff;
+            opacity: 1;
+            animation: mercGlowPulse 1.2s infinite ease-in-out;
+        }
 
         #mercTraitInfo {
             display: none;
@@ -1140,14 +1127,8 @@
             line-height: 1;
         }
 
-            .buff-icon span:first-child {
-                font-size: 22px !important;
-            }
-
-            .buff-icon span:last-child {
-                font-size: 12px !important;
-                color: #f1c40f;
-            }
+        .buff-icon span:first-child { font-size: 22px !important; }
+        .buff-icon span:last-child { font-size: 12px !important; color: #f1c40f; }
 
         /* Overlays */
         #victoryOverlay {
@@ -1165,12 +1146,12 @@
             pointer-events: auto;
         }
 
-            #victoryOverlay h2 {
-                font-size: 60px;
-                color: #2ecc71;
-                text-shadow: 0 0 20px #2ecc71;
-                margin-bottom: 20px;
-            }
+        #victoryOverlay h2 {
+            font-size: 60px;
+            color: #2ecc71;
+            text-shadow: 0 0 20px #2ecc71;
+            margin-bottom: 20px;
+        }
 
         .vic-btn-group {
             display: flex;
@@ -1200,16 +1181,34 @@
             box-shadow: inset 0 0 15px #000;
         }
 
-            #speedUpBtn span {
-                font-size: 20px !important;
-                color: gold;
-            }
+        #speedUpBtn span { font-size: 20px !important; color: gold; }
+        #speedUpBtn.active { border-color: #2ecc71 !important; color: #2ecc71 !important; box-shadow: 0 0 20px rgba(46, 204, 113, 0.5); }
 
-            #speedUpBtn.active {
-                border-color: #2ecc71 !important;
-                color: #2ecc71 !important;
-                box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
-            }
+        #bgmToggleBtn {
+            position: absolute;
+            left: 25px;
+            bottom: 390px;
+            width: 120px;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 4px solid #2ecc71;
+            color: #2ecc71;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.3;
+            pointer-events: auto;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+            z-index: 31;
+        }
+
+        #bgmToggleBtn.off { border-color: #e74c3c !important; color: #e74c3c !important; box-shadow: none !important; }
 
         #ingameHeroGraphic {
             z-index: 35 !important;
@@ -1245,6 +1244,7 @@
         <canvas id="gameCanvas" width="1920" height="1080" style="display:none;"></canvas>
 
         <div id="uiLayer">
+            <button id="bgmToggleBtn" onclick="Sound.toggleBGM()">BGM<br>ON</button>
             <button id="speedUpBtn">X1</button>
             <div id="midBossUI">
                 <div id="midBossSpeechBubble">중간보스 도전!</div>
@@ -1311,17 +1311,17 @@
         <div id="titleScreen" class="screen">
             <div class="story-container">
                 <div class="story-scroll">
-                    먼 미래, 극도로 진화한 AI 마신들은 심각한 에너지 고갈에 직면했다.<br><br>
+                    먼 미래, 극도로 진화한 AI 마신들은 심각한 에너지 고갈에 직면했다.<br>
                     가동 중단의 위기에 처한 그들은 시공간의 균열을 열어,<br>
-                    과거 무림 지하에 잠든 무한 동력원, '천기영석'을 약탈하기 시작했다.<br><br>
-                    강철 괴물들의 침공 앞에 모든 은원을 접어두고 결성된 [천하무림수호맹].<br><br>
+                    과거 무림 지하에 잠든 무한 동력원, '천기영석'을 약탈하기 시작했다.<br>
+                    강철 괴물들의 침공 앞에 모든 은원을 접어두고 결성된 [천하무림수호맹].<br>
                     강호의 파멸을 막기 위한, 인간과 강철의 최후 항전이 지금 시작된다.
                 </div>
             </div>
             <div id="loadingStatus" style="font-size: 30px; color: #0abde3; font-weight: bold; margin-bottom: 30px; text-shadow: 2px 2px 4px #000;">
                 무공 비급을 불러오는 중... (0%)
             </div>
-            <button id="startGameBtn" class="btn-large" onclick="showScreen('heroSelectScreen')" style="display: none; position: absolute; bottom: 80px;">게임 시작</button>
+            <img id="startGameBtn" class="img-start-btn" src="./assets/backgrounds/title.png" onclick="showScreen('heroSelectScreen')" alt="게임 시작" style="display: none; position: absolute; bottom: 80px; width: 400px;">
         </div>
 
         <div id="heroSelectScreen" class="screen lobby-screen">
@@ -1360,10 +1360,24 @@
     </div>
 
     <script>
-        // --- 🎵 사운드 매니저 (Sound Manager) 추가 🎵 ---
+        // --- 🌟 전역 변수(잔버그 방지) 명시적 선언 추가 🌟 ---
+        let baseEnergy = 100;
+        let mouseX = 0, mouseY = 0;
+        let enemies = [], projectiles = [], floatingTexts = [], energyCores = [];
+        let selectedInvenIdx = -1;
+
+        // --- 🎵 사운드 매니저 (Sound Manager) 🎵 ---
         const Sound = {
             ctx: null,
             bgm: null,
+            currentBgmId: null,
+            compressor: null,
+            lastPlayed: {},
+
+            masterBGMVolume: 1,
+            masterSFXVolume: 1,
+            bgmMuted: false,
+
             files: {
                 'lobby_bgm': './assets/sounds/bgm_lobby.mp3',
                 'ingame_bgm': './assets/sounds/bgm_ingame.mp3',
@@ -1376,72 +1390,146 @@
                 'boss_hit': './assets/sounds/sfx_boss_hit.mp3',
                 'enemy_die': './assets/sounds/sfx_enemy_die.mp3',
                 'clear': './assets/sounds/sfx_stage_clear.mp3',
-                'gameover': './assets/sounds/sfx_game_over.mp3'
+                'gameover': './assets/sounds/sfx_game_over.mp3',
+                'atk_melee': './assets/sounds/sfx_unit_attack_melee.mp3',
+                'atk_ranged': './assets/sounds/sfx_unit_attack_ranged.mp3',
+                'enemy_hit': './assets/sounds/sfx_enemy_hit.mp3',
+                'unit_heal': './assets/sounds/sfx_unit_heal.mp3'
             },
+
             initCtx: function () {
                 if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
                     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    this.compressor = this.ctx.createDynamicsCompressor();
+                    this.compressor.threshold.setValueAtTime(-24, this.ctx.currentTime);
+                    this.compressor.knee.setValueAtTime(30, this.ctx.currentTime);
+                    this.compressor.ratio.setValueAtTime(12, this.ctx.currentTime);
+                    this.compressor.attack.setValueAtTime(0.003, this.ctx.currentTime);
+                    this.compressor.release.setValueAtTime(0.25, this.ctx.currentTime);
+                    this.compressor.connect(this.ctx.destination);
                 }
-                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume().catch(() => {});
+                }
             },
+
+            setBGMVolume: function (volume) {
+                this.masterBGMVolume = Math.max(0.0, Math.min(1.0, volume));
+                if (this.bgm && !this.bgmMuted) this.bgm.volume = this.masterBGMVolume;
+            },
+
+            setSFXVolume: function (volume) {
+                this.masterSFXVolume = Math.max(0.0, Math.min(1.0, volume));
+            },
+
+            toggleBGM: function () {
+                const btn = document.getElementById('bgmToggleBtn');
+                if (!this.bgmMuted) {
+                    this.bgmMuted = true;
+                    if (this.bgm) this.bgm.volume = 0;
+                    if (btn) { btn.innerHTML = "BGM<br>OFF"; btn.classList.add('off'); }
+                } else {
+                    this.bgmMuted = false;
+                    if (this.bgm) {
+                        this.bgm.volume = this.masterBGMVolume;
+                        this.bgm.play().catch(()=>{}); 
+                    }
+                    if (btn) { btn.innerHTML = "BGM<br>ON"; btn.classList.remove('off'); }
+                }
+            },
+
             playBGM: function (id) {
-                this.initCtx();
-                if (this.bgm && this.bgm.src.includes(id)) return;
-                if (this.bgm) { this.bgm.pause(); this.bgm.currentTime = 0; }
+                if (this.currentBgmId === id && this.bgm) {
+                    if (this.bgm.paused && !this.bgmMuted) {
+                        this.bgm.play().catch(e => console.warn("[Sound] BGM 자동재생 대기 중..."));
+                    }
+                    return;
+                }
+                
+                if (this.bgm) { 
+                    this.bgm.pause(); 
+                    this.bgm.currentTime = 0; 
+                }
+                
+                this.currentBgmId = id;
                 this.bgm = new Audio(this.files[id]);
                 this.bgm.loop = true;
-                this.bgm.volume = 0.4;
-                this.bgm.play().catch(e => console.warn("[Sound] BGM 재생 불가 (파일 누락 혹은 정책)", e));
-            },
-            playSFX: function (id) {
-                this.initCtx();
-                const audio = new Audio(this.files[id]);
-                audio.volume = 0.6;
-                audio.play().catch(e => {
-                    // 파일이 없거나 에러 시 Web Audio API로 자체 더미 사운드 합성 송출 (Fallback)
-                    this.playDummy(id);
+                this.bgm.volume = this.bgmMuted ? 0 : this.masterBGMVolume;
+                
+                this.bgm.play().catch(e => {
+                    console.log("[안내] 브라우저 정책에 의해 자동재생이 일시 차단되었습니다. 화면 클릭 시 재생됩니다.");
                 });
             },
-            playDummy: function (id) {
-                if (!this.ctx) return;
+
+            // 🌟 1번 코드의 안정적인 Audio 생성 방식으로 복구 및 룰렛 최적화 병합
+            playSFX: function (id) {
+                this.initCtx();
+                const now = Date.now();
+                // 룰렛 스핀 등 짧은 소리가 씹히지 않게 최적화된 쿨다운
+                const cooldown = (id === 'spin') ? 15 : 60; 
+                if (this.lastPlayed[id] && (now - this.lastPlayed[id] < cooldown)) return;
+                this.lastPlayed[id] = now;
+
+                const audio = new Audio(this.files[id]);
+                let localVolume = this.masterSFXVolume;
+                if (id === 'enemy_hit' || id === 'atk_melee' || id === 'atk_ranged' || id === 'unit_heal') {
+                    localVolume *= 0.6;
+                }
+                audio.volume = localVolume;
+
+                audio.play().then(() => {
+                    audio.onended = () => {
+                        audio.remove();
+                    };
+                }).catch(() => {
+                    this.playDummy(id, localVolume);
+                });
+            },
+
+            // 🌟 1번 코드의 완벽한 더미 사운드 주파수(Oscillator) 로직 통째로 복원
+            playDummy: function (id, currentVol) {
+                if (!this.ctx || !this.compressor) return;
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 osc.connect(gain);
-                gain.connect(this.ctx.destination);
+                gain.connect(this.compressor);
                 const now = this.ctx.currentTime;
+                let baseVol = currentVol || this.masterSFXVolume;
 
-                if (id === 'click') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(600, now); gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1); osc.start(now); osc.stop(now + 0.1);
-                } else if (id === 'place') {
-                    osc.type = 'square'; osc.frequency.setValueAtTime(150, now); gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2); osc.start(now); osc.stop(now + 0.2);
-                } else if (id === 'spin') {
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(800, now); gain.gain.setValueAtTime(0.05, now); gain.gain.linearRampToValueAtTime(0, now + 0.05); osc.start(now); osc.stop(now + 0.05);
-                } else if (id === 'spin_done') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(880, now); osc.frequency.exponentialRampToValueAtTime(1760, now + 0.3); gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.5); osc.start(now); osc.stop(now + 0.5);
-                } else if (id === 'bomb') {
-                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now); osc.frequency.exponentialRampToValueAtTime(10, now + 0.5); gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5); osc.start(now); osc.stop(now + 0.5);
-                } else if (id === 'hero') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); osc.frequency.linearRampToValueAtTime(1200, now + 0.5); gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 1.0); osc.start(now); osc.stop(now + 1.0);
-                } else if (id === 'boss_hit') {
-                    osc.type = 'square'; osc.frequency.setValueAtTime(50, now); gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3); osc.start(now); osc.stop(now + 0.3);
-                } else if (id === 'enemy_die') {
-                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, now); osc.frequency.exponentialRampToValueAtTime(50, now + 0.2); gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2); osc.start(now); osc.stop(now + 0.2);
-                } else if (id === 'clear') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now + 0.2); osc.frequency.setValueAtTime(783.99, now + 0.4); osc.frequency.setValueAtTime(1046.50, now + 0.6); gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 1.5); osc.start(now); osc.stop(now + 1.5);
-                } else if (id === 'gameover') {
-                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, now); osc.frequency.linearRampToValueAtTime(50, now + 1.5); gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 1.5); osc.start(now); osc.stop(now + 1.5);
-                }
+                if (id === 'click') { osc.type = 'sine'; osc.frequency.setValueAtTime(600, now); gain.gain.setValueAtTime(baseVol * 0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1); osc.start(now); osc.stop(now + 0.1); }
+                else if (id === 'place') { osc.type = 'square'; osc.frequency.setValueAtTime(150, now); gain.gain.setValueAtTime(baseVol * 0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2); osc.start(now); osc.stop(now + 0.2); }
+                else if (id === 'spin') { osc.type = 'triangle'; osc.frequency.setValueAtTime(800, now); gain.gain.setValueAtTime(baseVol * 0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.05); osc.start(now); osc.stop(now + 0.05); }
+                else if (id === 'spin_done') { osc.type = 'sine'; osc.frequency.setValueAtTime(880, now); osc.frequency.exponentialRampToValueAtTime(1760, now + 0.3); gain.gain.setValueAtTime(baseVol * 0.2, now); gain.gain.linearRampToValueAtTime(0, now + 0.5); osc.start(now); osc.stop(now + 0.5); }
+                else if (id === 'bomb') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now); osc.frequency.exponentialRampToValueAtTime(10, now + 0.5); gain.gain.setValueAtTime(baseVol * 0.4, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5); osc.start(now); osc.stop(now + 0.5); }
+                else if (id === 'hero') { osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); osc.frequency.linearRampToValueAtTime(1200, now + 0.5); gain.gain.setValueAtTime(baseVol * 0.4, now); gain.gain.linearRampToValueAtTime(0, now + 1.0); osc.start(now); osc.stop(now + 1.0); }
+                else if (id === 'boss_hit') { osc.type = 'square'; osc.frequency.setValueAtTime(50, now); gain.gain.setValueAtTime(baseVol * 0.4, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3); osc.start(now); osc.stop(now + 0.3); }
+                else if (id === 'enemy_die') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, now); osc.frequency.exponentialRampToValueAtTime(50, now + 0.2); gain.gain.setValueAtTime(baseVol * 0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2); osc.start(now); osc.stop(now + 0.2); }
+                else if (id === 'clear') { osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now + 0.2); osc.frequency.setValueAtTime(783.99, now + 0.4); osc.frequency.setValueAtTime(1046.50, now + 0.6); gain.gain.setValueAtTime(baseVol * 0.3, now); gain.gain.linearRampToValueAtTime(0, now + 1.5); osc.start(now); osc.stop(now + 1.5); }
+                else if (id === 'gameover') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, now); osc.frequency.linearRampToValueAtTime(50, now + 1.5); gain.gain.setValueAtTime(baseVol * 0.4, now); gain.gain.linearRampToValueAtTime(0, now + 1.5); osc.start(now); osc.stop(now + 1.5); }
+                else if (id === 'atk_melee') { osc.type = 'triangle'; osc.frequency.setValueAtTime(300, now); osc.frequency.exponentialRampToValueAtTime(600, now + 0.08); gain.gain.setValueAtTime(baseVol * 0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.08); osc.start(now); osc.stop(now + 0.08); }
+                else if (id === 'atk_ranged') { osc.type = 'sine'; osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(200, now + 0.1); gain.gain.setValueAtTime(baseVol * 0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.1); osc.start(now); osc.stop(now + 0.1); }
+                else if (id === 'enemy_hit') { osc.type = 'triangle'; osc.frequency.setValueAtTime(120, now); gain.gain.setValueAtTime(baseVol * 0.15, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05); osc.start(now); osc.stop(now + 0.05); }
+                else if (id === 'unit_heal') { osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now); osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.25); gain.gain.setValueAtTime(baseVol * 0.18, now); gain.gain.linearRampToValueAtTime(0, now + 0.25); osc.start(now); osc.stop(now + 0.25); }
             }
         };
 
-        // 전역 클릭 시 버튼음 자동 할당 (공통 버튼 효과음)
-        window.addEventListener('click', (e) => {
+       // 🌟 브라우저 정책 우회 및 오디오 잠금 해제 통합 관리
+        const unlockAudio = (e) => {
             Sound.initCtx();
-            if (e.target.closest('button') || e.target.closest('.map-node') || e.target.closest('.stage-node') || e.target.closest('.node')) {
+            
+            if (Sound.bgm && Sound.bgm.paused && !Sound.bgmMuted) {
+                Sound.bgm.play().catch(() => {});
+            }
+
+            // 👇 여기에 .img-start-btn 조건을 추가하였소!
+            if (e.target.closest('button') || e.target.closest('.img-start-btn') || e.target.closest('.map-node') || e.target.closest('.stage-node') || e.target.closest('.node') || e.target.closest('.hero-showcase')) {
                 Sound.playSFX('click');
             }
-        }, { capture: true });
-        // ------------------------------------
+        };
+
+        // 모바일(Touch)과 PC(Click) 모두에서 최초 액션 시 오디오 제약을 해제하도록 수정
+        window.addEventListener('click', unlockAudio, { capture: true });
+        window.addEventListener('touchstart', unlockAudio, { capture: true, passive: true });
 
         const GLOBAL_UNIT_SCALE = 0.8;
         const canvas = document.getElementById('gameCanvas');
@@ -1579,7 +1667,6 @@
             if (screenId === 'heroSelectScreen') updateHeroCarousel();
             if (screenId === 'regionSelectScreen') updateMapNodes();
 
-            // BGM 처리
             if (['titleScreen', 'heroSelectScreen', 'regionSelectScreen', 'stageSelectScreen'].includes(screenId)) {
                 Sound.playBGM('lobby_bgm');
             }
@@ -1615,7 +1702,7 @@
 
         let heroes = [
             { id: 'h0', name: '백면검귀', desc: '시공간을 비틀어 적을 세우고, 아군의 기혈을 뚫어 공속을 극대화하오.', color: '#95a5a6', upg: { cd: 0, effect: 0 }, upgDesc: { cd: '천기 누설 (쿨감)', effect: '공속 및 지속시간 증가' } },
-            { id: 'h1', name: '장삼풍', desc: '태극의 기운으로 마신들을 밀쳐내고, 아군의 상처를 광역으로 치유하오.', color: '#3498db', upg: { cd: 0, effect: 0 }, upgDesc: { cd: '천기 누설 (쿨감)', effect: '광역 치유량 상승' } },
+            { id: 'h1', name: '장삼풍', desc: '태극의 기운으로 마신들을 밀쳐내고, 아군의 상처를 광역 치유하오.', color: '#3498db', upg: { cd: 0, effect: 0 }, upgDesc: { cd: '천기 누설 (쿨감)', effect: '광역 치유량 상승' } },
             { id: 'h2', name: '남만야수왕', desc: '지정 라인에 무지막지한 철퇴를 내려쳐 파쇄하고, 아군을 무적 상태로 만드오.', color: '#e67e22', upg: { cd: 0, effect: 0 }, upgDesc: { cd: '천기 누설 (쿨감)', effect: '타격 데미지 및 무적시간 증가' } },
             { id: 'h3', name: '독고구검', desc: '형체 없는 검기로 전장 전체의 마신들을 베어 체력 비례 치명상을 입히오.', color: '#e74c3c', upg: { cd: 0, effect: 0 }, upgDesc: { cd: '천기 누설 (쿨감)', effect: '검기 타격 데미지 상승' } },
             { id: 'h4', name: '천마강림', desc: '절대적인 마기로 공간을 장악하여 멈추고 파멸적인 폭발 피해를 주오.', color: '#8e44ad', upg: { cd: 0, effect: 0 }, upgDesc: { cd: '천기 누설 (쿨감)', effect: '폭발 타격 데미지 상승' } }
@@ -1655,12 +1742,12 @@
 
         function saveGame() {
             const data = { upgrades, heroes, equippedHero, currentMaxStage, metaCoins };
-            localStorage.setItem('murimGuardiansSaveV13_34', JSON.stringify(data));
+            localStorage.setItem('murimGuardiansSaveV13_36', JSON.stringify(data));
         }
 
         function loadGame() {
             try {
-                const saved = localStorage.getItem('murimGuardiansSaveV13_34') || localStorage.getItem('murimGuardiansSaveV13_33');
+                const saved = localStorage.getItem('murimGuardiansSaveV13_36') || localStorage.getItem('murimGuardiansSaveV13_35') || localStorage.getItem('murimGuardiansSaveV13_34');
                 if (saved) {
                     const data = JSON.parse(saved);
                     if (data.upgrades) upgrades = data.upgrades;
@@ -1674,8 +1761,9 @@
 
         function hardResetData() {
             if (confirm("모든 데이터를 포기하고 처음부터 다시 하시겠소?")) {
+                localStorage.removeItem('murimGuardiansSaveV13_36');
+                localStorage.removeItem('murimGuardiansSaveV13_35');
                 localStorage.removeItem('murimGuardiansSaveV13_34');
-                localStorage.removeItem('murimGuardiansSaveV13_33');
                 location.reload();
             }
         }
@@ -1695,7 +1783,18 @@
                 } catch (err) { console.warn(`Wake Lock 활성화 실패: ${err.name}, ${err.message}`); }
             }
         }
-        document.addEventListener('visibilitychange', async () => { if (wakeLock !== null && document.visibilityState === 'visible') { await requestWakeLock(); } });
+        
+        document.addEventListener('visibilitychange', async () => {
+            if (document.visibilityState === 'visible') {
+                if (wakeLock !== null) { await requestWakeLock(); }
+                if (Sound.ctx && Sound.ctx.state === 'suspended') Sound.ctx.resume();
+                if (Sound.bgm && !Sound.bgmMuted) {
+                    Sound.bgm.play().catch(() => { });
+                }
+            } else {
+                if (Sound.bgm) { Sound.bgm.pause(); }
+            }
+        });
 
         let gameState = 'title'; let glitchGauge = 0; let mercState = 'charging'; let enemyOffsetY = 15;
         let pendingMerc = null; let mercSpinFrames = 0; let mercFinalIcons = [0, 0, 0, 0];
@@ -1769,7 +1868,10 @@
             renderHeroGraphic('carouselHeroGraphic', h.id);
         }
         function changeHero(dir) { heroIndex += dir; if (heroIndex < 0) heroIndex = heroes.length - 1; if (heroIndex >= heroes.length) heroIndex = 0; updateHeroCarousel(); }
-        function confirmHeroSelection() { equippedHero = heroes[heroIndex].id; saveGame(); showScreen('regionSelectScreen'); }
+        function confirmHeroSelection() { 
+            Sound.playSFX('click'); 
+            equippedHero = heroes[heroIndex].id; saveGame(); showScreen('regionSelectScreen'); 
+        }
 
         function updateMapNodes() {
             let maxRegion = Math.floor((currentMaxStage - 1) / 10);
@@ -1805,9 +1907,13 @@
             let dimOverlay = document.getElementById('globalDimOverlay');
             let bottomUiLayer = document.getElementById('bottomUiLayer');
             if (mercState === 'spinning' || mercState === 'rewarded') {
-                mercUI.classList.add('dim-active'); dimOverlay.style.display = 'block'; bottomUiLayer.style.zIndex = '9999';
+                mercUI.classList.add('dim-active'); 
+                dimOverlay.style.display = 'block'; 
+                bottomUiLayer.style.zIndex = '9999';
             } else {
-                mercUI.classList.remove('dim-active'); dimOverlay.style.display = 'none'; bottomUiLayer.style.zIndex = '5';
+                mercUI.classList.remove('dim-active'); 
+                dimOverlay.style.display = 'none'; 
+                bottomUiLayer.style.zIndex = '35';
             }
         }
 
@@ -1936,7 +2042,6 @@
             addLog(`제 ${currentStage} 관문 전투를 개시하오.`, "#f1c40f");
             updateUI(); showScreen('');
 
-            // 인게임 BGM 실행
             Sound.playBGM('ingame_bgm');
         }
 
@@ -2024,7 +2129,7 @@
             let activeHeroData = heroes.find(h => h.id === heroId); let eff = 1 + (activeHeroData.upg.effect * 0.2); let cdReduc = activeHeroData.upg.cd * 0.05;
             heroSlot.activeTimer = Math.floor(166 * eff); heroSlot.cd = Math.floor(heroSlot.maxCd * (1 - cdReduc)); shakeFrames = 16;
 
-            Sound.playSFX('hero'); // 전설 영웅 발동 사운드
+            Sound.playSFX('hero');
 
             if (heroId === 'h0') { timeStopFrames = Math.floor(166 * eff); h0BuffTimer = Math.floor(300 * eff); createFloatingText(W / 2, H / 2, "아군 공속 2배!", activeHeroData.color, true); }
             else if (heroId === 'h1') { timeStopFrames = Math.floor(166 * eff); enemies.forEach(e => { e.kbTimer = Math.floor(45 * eff); e.kbSpeed = 150 / 45; }); fieldSlots.forEach(fs => { if (fs.char) { let healAmt = Math.floor(getBase('hp', fs.char.maxHp) * 0.4); fs.char.hp = Math.min(getBase('hp', fs.char.maxHp), fs.char.hp + healAmt); createFloatingText(fs.x, fs.y - 30, `+${healAmt}`, "lime", true); } }); }
@@ -2169,7 +2274,7 @@
                                 s.char.facingDir = 1; s.char.hp = getBase('hp', s.char.maxHp);
                                 s.char.painImmuneTimer = 0; s.char.frostEnhanceTimer = 0; s.char.bleedTimer = 0;
                                 addLog(`[용병] ${s.char.name} 용병을 성공적으로 투입했소.`, "#0abde3");
-                                Sound.playSFX('place'); // 유닛 배치 사운드 송출
+                                Sound.playSFX('place'); 
                                 selectedInvenIdx = -1; clearMercSlots();
                             } else {
                                 let c = deck[selectedInvenIdx]; let finalCost = getActualCost(c);
@@ -2179,7 +2284,7 @@
                                     s.char.facingDir = 1; s.char.hp = getBase('hp', s.char.maxHp);
                                     s.char.painImmuneTimer = 0; s.char.frostEnhanceTimer = 0; s.char.bleedTimer = 0;
                                     addLog(`[배치] ${c.name} 고수를 전선에 배치했소. (-${finalCost}💰)`, "#2ecc71");
-                                    Sound.playSFX('place'); // 유닛 배치 사운드 송출
+                                    Sound.playSFX('place'); 
                                     selectedInvenIdx = -1;
                                 } else { createFloatingText(s.x, s.y, "전투 코인 부족!", "#e74c3c", false); }
                             }
@@ -2208,11 +2313,25 @@
         const fpsInterval = 1000 / 60; let then = performance.now();
 
         function showVictoryPopup() {
-            gameState = 'paused'; document.getElementById('victoryOverlay').style.display = 'flex'; document.getElementById('victoryTitle').innerText = `🏆 제 ${currentStage} 관문 돌파 성공! 🏆`;
-            let stageFixedReward = currentStage * 300; let coinBonusMeta = Math.floor(battleCoins * 0.20); let totalReward = stageFixedReward + coinBonusMeta; metaCoins += totalReward; updateUI();
+            if (Sound.bgm) {
+                Sound.bgm.pause();
+                Sound.bgm.currentTime = 0;
+            }
+
+            gameState = 'paused';
+            document.getElementById('victoryOverlay').style.display = 'flex';
+            document.getElementById('victoryTitle').innerText = `🏆 제 ${currentStage} 관문 돌파 성공! 🏆`;
+
+            let stageFixedReward = currentStage * 300;
+            let coinBonusMeta = Math.floor(battleCoins * 0.20);
+            let totalReward = stageFixedReward + coinBonusMeta;
+            metaCoins += totalReward;
+            updateUI();
+
             document.getElementById('victoryRewardText').innerHTML = `관문 돌파 기본 보상: <span style="color:#00d2d3;">${stageFixedReward} 💎</span><br>잔여 전투 코인(<span style="color:white;">${battleCoins}</span>)의 20% 보너스: <span style="color:#00d2d3;">${coinBonusMeta} 💎</span><br><br><span style="font-size:36px; color:#f1c40f; font-weight:bold; text-shadow: 0 0 10px rgba(241,196,15,0.5);">총 획득 천기 영석: ${totalReward} 개!</span>`;
             addLog(`제 ${currentStage} 관문을 성공적으로 돌파하였소!`, "#2ecc71");
-            Sound.playSFX('clear'); // 관문 돌파음
+
+            Sound.playSFX('clear');
         }
 
         function goToNextStage() { document.getElementById('victoryOverlay').style.display = 'none'; currentStage += 1; startBattle(currentStage); }
@@ -2226,10 +2345,15 @@
                 then = now - (elapsed % fpsInterval); let loops = gameSpeed;
                 for (let loopIdx = 0; loopIdx < loops; loopIdx++) {
                     if (gameState === 'paused') break;
+
                     if (baseEnergy <= 0 && gameState !== 'gameover') {
+                        if (Sound.bgm) {
+                            Sound.bgm.pause();
+                            Sound.bgm.currentTime = 0;
+                        }
                         gameState = 'gameover'; let bonusMeta = Math.floor(battleCoins * 0.1); metaCoins += bonusMeta; saveGame(); togglePopup(false);
                         document.querySelector('.top-ui-wrapper').style.display = 'none'; document.querySelector('.hud-panel').style.display = 'none'; document.getElementById('gameLogUI').style.display = 'none'; document.getElementById('speedUpBtn').style.display = 'none'; document.getElementById('midBossUI').style.display = 'none';
-                        Sound.playSFX('gameover'); // 패배음
+                        Sound.playSFX('gameover'); 
                         break;
                     }
 
@@ -2274,7 +2398,7 @@
                             else if (mercSpinFrames > 30) { if (mercSpinFrames % interval === 0) { document.getElementById('mSlot4').innerText = icons[Math.floor(Math.random() * 4)]; Sound.playSFX('spin'); } }
                             else if (mercSpinFrames === 30) {
                                 triggerSlotGlow('mSlot4'); shakeFrames = 10; createFloatingText(W / 2, H / 2 - 50, "용병 확정!!", "#0abde3", true); document.getElementById('mSlot4').innerText = icons[mercFinalIcons[3]];
-                                Sound.playSFX('spin_done'); // 용병 확정음
+                                Sound.playSFX('spin_done'); 
                                 let btn = document.getElementById('mercBtn'); let traitBox = document.getElementById('mercTraitInfo'); let tier = mercFinalTier;
                                 if (mercRewardType === 'merc') {
                                     if (tier === 1) pendingMerc = { id: 11, name: '개방거지', role: '곡선원거리', cost: 0, attackType: 'ranged', projType: 'parabola', range: 1000, damage: 15, color: '#8d6e63', cd: 0, maxCd: 35, hp: 50, maxHp: 50, state: 'ready', timer: 0, accuracy: 0.7, aoe: false, ingameScale: 1, fontOffsetY: 0, projOffsetX: 0, projOffsetY: 0, attackFrameDuration: 8 };
@@ -2433,7 +2557,12 @@
                                                 targets.sort((a, b) => a.char.hp - b.char.hp); let t = targets[0]; let distY = (t.y - 20) - (s.y - 30); let distX = t.x - s.x; let T = 29; let g = 0.87; let vx = distX / T; let vy = (distY - 0.5 * g * T * T) / T; let actualHeal = getBase('healInc', s.char.healAmount);
                                                 let projStartX = s.x + ((s.char.projOffsetX || 0) * (s.char.facingDir || 1)); let projStartY = s.y - 30 + (s.char.projOffsetY || 0);
                                                 s.char.strikeAnim = s.char.attackFrameDuration || 10;
-                                                projectiles.push({ type: 'heal_parabola', x: projStartX, y: projStartY, vx: vx, vy: vy, g: g, targetY: t.y - 20, color: s.char.color, target: t.char, heal: actualHeal, charId: s.char.id }); s.char.cd = actualMaxCd;
+
+                                                projectiles.push({ type: 'heal_parabola', x: projStartX, y: projStartY, vx: vx, vy: vy, g: g, targetY: t.y - 20, color: s.char.color, target: t.char, heal: actualHeal, charId: s.char.id });
+
+                                                Sound.playSFX('unit_heal');
+
+                                                s.char.cd = actualMaxCd;
                                             }
                                         } else { s.char.cd--; }
                                     } else {
@@ -2559,7 +2688,7 @@
                                 if (e.hitAnim > 0) {
                                     e.hitAnim--;
                                     if (e.type === 'boss' || e.type === 'midboss') {
-                                        Sound.playSFX('boss_hit'); // 보스급 타격음
+                                        Sound.playSFX('boss_hit');
                                     }
                                 }
                             }
@@ -2571,7 +2700,7 @@
                                         if (e.type === 'boss') baseEnergy = 0; else if (e.type === 'midboss') baseEnergy -= 30; else baseEnergy -= 10;
                                         enemies.splice(i, 1); shakeFrames = 8; continue;
                                     } else if (e.hp <= 0) {
-                                        Sound.playSFX('enemy_die'); // 적 사망음 송출
+                                        Sound.playSFX('enemy_die'); 
                                         let actualReward = Math.floor(e.reward * (1 + getBase('coinGain', 0))); battleCoins += actualReward;
                                         if (e.type === 'midboss' && e.metaReward) { metaCoins += e.metaReward; createFloatingText(e.x, e.y - 60, `+${e.metaReward}💎`, "#00d2d3", true); addLog(`도전자를 처치하여 영석 ${e.metaReward}개를 획득했소!`, "#00d2d3"); } else { metaCoins += Math.floor(actualReward * 0.5); }
                                         updateUI(); createFloatingText(e.x, e.y - 30, `+${actualReward}💰`, "#f1c40f", false);
@@ -2732,7 +2861,7 @@
                                         else {
                                             let finalDmg = p.isCrit ? Math.floor(p.baseDmg * getBase('critDmg', 0)) : p.baseDmg; if (p.isCrit) shakeFrames = 8;
                                             if (p.char.aoe) {
-                                                Sound.playSFX('bomb'); // 폭발음
+                                                Sound.playSFX('bomb'); 
                                                 let explosionRadius = p.char.aoeRadius || 180;
                                                 enemies.forEach(e => { if (Math.hypot(e.x - p.tx, e.y - p.ty) < explosionRadius) { e.hp -= finalDmg; e.hitAnim = 6; applyLifesteal(p.char, finalDmg); if (p.char.poison) e.poisoned = true; if (p.char.frostEnhanceTimer > 0 && e.type !== 'boss') { e.slowTimer = 600; e.slowRate = 0.3; } if (p.char.bleedTimer > 0) { e.isBleeding = true; } createFloatingText(e.x, e.y - 30, Math.floor(finalDmg), p.isCrit ? "#ff3333" : "white", p.isCrit); } });
                                                 if (p.char.friendlyFire) { fieldSlots.forEach(fs => { if (fs.char && Math.hypot(fs.x - p.tx, fs.y - p.ty) < explosionRadius) { let friendlyDmg = Math.floor(finalDmg * 0.2); if (invincibleFrames > 0 || fs.char.id === 999) friendlyDmg = 0; fs.char.hp -= friendlyDmg; createFloatingText(fs.x, fs.y - 50, `-${friendlyDmg}`, "#ff0000", false); if (fs.char.hp <= 0 && invincibleFrames <= 0) { addLog(`${fs.char.name}이(가) 폭발 아군 오폭에 휩쓸렸소.`, "#c0392b"); if (fs.char.id === 999 || fs.char.id > 7) { fs.char = null; } else { fs.char.state = 'dead'; fs.char.timer = getBase('respawnReduc', 250); fs.char.hp = getBase('hp', fs.char.maxHp); fs.char = null; } } } }); } ctx.fillStyle = "rgba(231, 76, 60, 0.6)"; ctx.beginPath(); ctx.arc(p.tx, p.ty, explosionRadius, 0, Math.PI * 2); ctx.fill();
@@ -2742,7 +2871,8 @@
                                             }
                                         }
                                     }
-                                } projectiles.splice(i, 1);
+                                }
+                                projectiles.splice(i, 1);
                             } else if (isHit && p.type === 'midbossProj' && !isRoulettePaused) { projectiles.splice(i, 1); }
                         }
 
